@@ -4,156 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>About Me</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Custom CSS */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            line-height: 1.6;
+        .interest-image, .profile-image {
+            width: 100%;
+            height: 550px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            border: 3px solid black; 
         }
-
-        .navbar {
-            background: #333;
-            padding: 1rem;
-        }
-
-        .navbar-brand {
-            color: white;
-            text-decoration: none;
-            font-size: 1.2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .profile-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
         .profile-image {
-            flex: 1 1 250px;
-            max-width: 250px;
-        }
-
-        .profile-image img {
-            width: 100%;
-            height: auto;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
-        }
-
-        .profile-info {
-            flex: 2 1 500px;
-            background: #f8f9fa;
-            padding: 2rem;
-            border-radius: 8px;
-        }
-
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .image-container {
-            aspect-ratio: 16/9;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .github-link {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: #218838;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-top: 1rem;
-            transition: background-color 0.3s;
-        }
-
-        .github-link:hover {
-            background: #1e7e34;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            margin: 2rem 0;
-        }
-
-        @media (max-width: 768px) {
-            .profile-section {
-                flex-direction: column;
-                align-items: center;
-            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="../index.html">SK8TS</a>
+            <a class="navbar-brand" href="../about.html">About</a>
         </div>
     </nav>
 
-    <div class="container">
-        <h1 style="text-align: center; margin: 2rem 0;">About Me</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">About Me</h1>
 
         <!-- Profile Section -->
-        <div class="profile-section">
-            <div class="profile-image">
-                <img src="../images/john.jpeg" alt="John Vazquez">
+        <div class="row align-items-center mb-5">
+            <div class="col-md-4 text-center">
+                <img src="../images/john.jpeg" class="img-fluid profile-image mb-3" alt="John Vazquez" style="max-width: 250px;">
             </div>
-            <div class="profile-info">
-                <h2>Hello</h2>
-                <p>
-                    I’m John Vazquez, a Senior year Computer Science student at St. Edward’s University. 
-                    I am interested in learning more about the field of computer science and the tech field. 
-                    I am experienced in multiple programming languages and with the agile methodology. I hope 
-                    to learn more about the development process and documentation through the course of this project.
-                </p>
-                <p><strong>Location:</strong> Austin, TX</p>
-                <a href="https://github.com/JVMull" class="github-link">My GitHub Page</a>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">John Vazquez</h2>
+                        <p class="card-text lead">
+                            I'm a Senior Computer Science student at St. Edward's University. 
+                            I am interested in learning more about the field of computer science and the tech field. 
+                            I am experienced in multiple programming languages and with the agile methodology. I hope 
+                            to learn more about the development process and documentation through the course of this project.
+                        </p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Location:</strong> Austin, TX</li>
+                            <li class="list-group-item"><strong>Skills:</strong> Object Oriented Programming, Problem Solving</li>
+                            <li class="list-group-item"><strong>Interests:</strong> Software Development, Music</li>
+                        </ul>
+                        <a href="https://github.com/JVMull" class="btn btn-primary mt-3">My GitHub Page</a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Image Section -->
-        <div class="image-grid">
-            <div>
-                <div class="image-container">
-                    <img src="../images/piano.png" alt="Ryuichi Sakamoto playing piano">
-                </div>
-                <p>I am taking piano class and hoping to learn to play Good Morning Mr. Lawrence</p>
+        <div class="row mb-4">
+            <div class="col-md-6 mb-5 text-center">
+                <img src="../images/piano.png" 
+                     class="interest-image" alt="Ryuichi Sakamoto playing piano">
+                <div class="card w-75 mx-auto mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Piano</h5>
+                        <p class="card-text">I have always loved playing instruments and I'm currently learning to play the piano</p>
+                    </div>
+                </div>            
             </div>
-            <div>
-                <div class="image-container">
-                    <img src="https://irepo.primecp.com/2024/10/591060/1727794855_187593_Large600_ID-5698221.jpg?v=5698221" 
-                         alt="Granny squares made using crochet">
-                </div>
-                <p>I have done crochet projects in the past and enjoy doing it occasionally</p>
+            <div class="col-md-6 mb-5 text-center">
+                <img src="https://irepo.primecp.com/2024/10/591060/1727794855_187593_Large600_ID-5698221.jpg?v=5698221" 
+                     class="interest-image" alt="Crochet Granny squares">
+                <div class="card w-75 mx-auto mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Crochet</h5>
+                        <p class="card-text">I have done crochet projects in the past and enjoy doing it occasionally</p>
+                    </div>
+                </div>            
             </div>
         </div>
 
-        <div style="text-align: center;">
-            <a href="../about.html" class="btn">Back to About Us Page</a>
+        <div class="text-center my-5">
+            <a href="../about.html" class="btn btn-secondary">Back to About Us Page</a>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
