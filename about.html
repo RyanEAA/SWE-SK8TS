@@ -7,29 +7,76 @@
 
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .profile-img {
+            width: 150px; /* Set a fixed width */
+            height: 150px; /* Set a fixed height */
+            object-fit: cover; /* Ensure the image fills the space without distortion */
+            border: 2px solid black;
+        }
+        
+        .team-photo {
+            border: 2px solid black; /* Restore the border for the main team photo */
+        }
+        
+        body {
+            padding-bottom: 50px; /* Adjust this value for more or less whitespace */
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="index.html">My Website</a>
+            <a class="navbar-brand" href="index.html">SK8TS</a>
+            <a class="navbar-brand" href="about.html">About</a>
         </div>
     </nav>
 
     <div class="container mt-5 text-center">
-        <h1>About Us</h1>
-        <p class="lead">We are building a simple website using Bootstrap.</p>
+        <h1>Our Team</h1>
+        <h4 class="text-muted">Custom, High-Quality Product Solutions</h4>
 
-        <!-- Example team section -->
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <img src="images/team-photo.jpg" class="img-fluid rounded" alt="Our Team">
-            </div>
-            <div class="col-md-8">
-                <p>Our mission is to create a simple, user-friendly website using modern web technologies. Stay tuned for more updates!</p>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <img src="images/team.jpeg" class="img-fluid rounded team-photo" alt="Our Team">
             </div>
         </div>
 
-        <a href="index.html" class="btn btn-secondary mt-3">Back to Home</a>
+        <!-- Team Members Section -->
+        <div class="row mt-5 justify-content-center">
+            <div class="col-md-2 text-center">
+                <a href="AboutUsPages/ryan.html">
+                    <img src="images/ryan.jpeg" class="rounded-circle profile-img" alt="Member 1">
+                </a>
+                <h5 class="mt-2">Ryan Aparicio</h5>
+            </div>
+            <div class="col-md-2 text-center">
+                <a href="AboutUsPages/eli.html">
+                    <img src="images/eli.jpg" class="rounded-circle profile-img" alt="Member 2">
+                </a>
+                <h5 class="mt-2">Eli Gulley</h5>
+            </div>
+            <div class="col-md-2 text-center">
+                <a href="wilson.html">
+                    <img src="images/wilson.jpeg" class="rounded-circle profile-img" alt="Member 3">
+                </a>
+                <h5 class="mt-2">Wilson Flores</h5>
+            </div>
+            <div class="col-md-2 text-center">
+                <a href="AboutUsPages/john.html">
+                    <img src="images/john.jpeg" class="rounded-circle profile-img" alt="Member 4">
+                </a>
+                <h5 class="mt-2">John Vazquez-Grimaldi</h5>
+            </div>
+            <div class="col-md-2 text-center">
+                <a href="AboutUsPages/william.html">
+                    <img src="images/william.jpeg" class="rounded-circle profile-img" alt="Member 5">
+                </a>
+                <h5 class="mt-2">William Burgess</h5>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn btn-secondary mt-4">Return</a>
     </div>
 
     <!-- Bootstrap JavaScript (Optional) -->

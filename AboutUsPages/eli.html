@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About Me</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .interest-image, .profile-image {
+            width: 100%;
+            height: 550px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            border: 3px solid black; 
+        }
+        .profile-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">SK8TS</a>
+            <a class="navbar-brand" href="../about.html">About</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">About Me</h1>
+
+        <!-- Profile Section -->
+        <div class="row align-items-center mb-5">
+            <div class="col-md-4 text-center">
+                <img src="../images/eli.jpg" class="img-fluid profile-image mb-3" alt="Eli Gulley" style="max-width: 250px;">
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">Eli Gulley</h2>
+                        <p class="card-text lead">
+                            I am an undergraduate Computer Science student working to get my Bachelor's in Science at St. Edward's University in Austin, Texas. I have experience in Web Development, Mobile Programming,
+                            Database Management, and Computer Hardware. However, I have not had any experience managing any full-stack applications, such as the one we will be developing for this project. 
+                            Over the course of the project, I hope to gain more database experiecne, develop a more confident knowledge base in frontent development, as well as project management. 
+                            I am also looking forward to the experience I will gain in server management, as deploying full-stack applications on a remote server is something I am unfamiliar with. Overall, I am looking
+                            forward to the ways this projcet will both hone my existing skills, as well as allow me to learn and understand new tools and applications.
+                        </p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Location:</strong> Austin, TX</li>
+                            <li class="list-group-item"><strong>Skills:</strong> Web Application Development, Database Management</li>
+                            <li class="list-group-item"><strong>Interests:</strong> Computer Hardware, Datacenter Management</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-5 text-center">
+                <img src="https://cdn.theatlantic.com/thumbor/a6EwtLDytq2ywOXRkaAXnVnhgNM=/547x0:1953x1406/1080x1080/media/img/mt/2021/08/AP21134273144946/original.jpg" 
+                     class="interest-image" alt="Skateboarding">
+                <div class="card w-75 mx-auto mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Skateboarding</h5>
+                        <p class="card-text">Skateboarding is something that I make time for almost daily, as a sort of meditation. Cruising around campus is incredibly relaxing for me.</p>
+                    </div>
+                </div>            
+            </div>
+            <div class="col-md-6 mb-5 text-center">
+                <img src="../images/eli-interest.webp" class="interest-image" alt="Computer Hardware">
+                <div class="card w-75 mx-auto mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Computer Hardware</h5>
+                        <p class="card-text">I've always had fun tinkering and working with electronics or other projects, and building or working on personal computers seems to be the best way to fulfill this for me.</p>
+                    </div>
+                </div>            
+            </div>
+        </div>
+
+        <div class="text-center my-5">
+            <a href="../about.html" class="btn btn-secondary">Return</a>
+            <a href="https://github.com/eligulley1" class="btn btn-primary">My Github</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
