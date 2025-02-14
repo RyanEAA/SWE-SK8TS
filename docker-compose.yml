@@ -7,18 +7,10 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
     ports:
       - 3000:3000
 
-  # nginx:
-  #   image: nginx:latest
-  #   depends_on:
-  #     - sampleproject
-  #   volumes:
-  #     - /nginx:/config
-  #   ports:
-  #     - 80:80
 
 
 
