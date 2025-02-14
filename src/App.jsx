@@ -44,10 +44,11 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/Shop' element={<Catelog onAdd={onAdd}/>}/>
-          <Route path='/Contact'/>
+          <Route path='/Contact' element={<Home />}/>
           <Route path='/AboutUs' element={<AboutUs />}/>
           <Route path='/Cart' element={<Cart cartItems={cartItems} onAdd={onAdd} onRemove={onRemove}/>}/>
           <Route path='/ProductInfo/:id' element={<ProductInfo onAdd={onAdd}/>}/>
+          <Route path='/Login' element={<Home />}/>
 
           <Route path='AboutUs/wilson' element={<AboutMe 
             location='Austin, TX'
