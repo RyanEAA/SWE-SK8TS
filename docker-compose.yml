@@ -12,7 +12,7 @@ services:
       - 3000:3000
   nginx:
     image: lscr.io/linuxserver/nginx:latest
-    container_name: nginx
+    container_name: react-nginx
     environment:
       - PUID=1000
       - PGID=1000
