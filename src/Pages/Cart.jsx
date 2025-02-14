@@ -24,7 +24,7 @@ function Cart(props) {
           <div>Quantity</div>
         </div>
         <div id="cart-item-container">
-          {props.cartItems.length === 0 && <div>Cart Is Empty</div>}
+          {props.cartItems.length === 0 && <div className="cart-is-empty">Cart Is Empty</div>}
           {props.cartItems.map((item) => (
             <CartItem item={item} onAdd={props.onAdd} onRemove={props.onRemove}/>
           ))}

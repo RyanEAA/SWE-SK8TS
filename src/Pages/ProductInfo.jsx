@@ -9,15 +9,20 @@ function ProductInfo(props) {
     console.log(prod)
     return (
       <>
-      <div>
-        {prod.name}
-      </div>
-      <div>
-        ${prod.price}
-      </div>
-      <img src={prod.image} className='product-image'/>
-      <div>
-        <button className='add-to-cart-btn' onClick={() => props.onAdd(prod)}>Add To Cart</button>
+      <div className='product-info-container'>
+        <img src={prod.image} className='product-image'/>
+        <div className='product-text-container'>
+          <div className='product-name'>
+            {prod.name}
+          </div>
+          <div className='product-description'>
+            {prod.description}
+          </div>
+          <div className='product-price'>
+            ${prod.price}
+          </div>
+          <button className='add-to-cart-btn' onClick={() => props.onAdd(prod)}>Add To Cart</button>
+        </div>
       </div>
       </>
     )
