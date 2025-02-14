@@ -16,7 +16,6 @@ services:
     depends_on:
       - sampleproject
     volumes:
-      - ./:/usr/share/nginx/html:ro
       - ./nginx:/config
     ports:
       - 80:80
