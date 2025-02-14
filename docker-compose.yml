@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   app:
-    image: reactapp:2
+    pull_policy: build
     build:
       context: .
       dockerfile: ./Dockerfile
