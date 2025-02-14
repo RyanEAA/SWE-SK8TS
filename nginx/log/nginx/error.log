@@ -1,0 +1,7 @@
+2025/02/10 04:10:54 [error] 238#238: *1922 directory index of "/config/www/.git/refs/" is forbidden, client: 45.144.212.139, server: _, request: "GET /.git/refs/ HTTP/1.1", host: "167.71.25.102"
+2025/02/10 08:54:23 [error] 238#238: *1984 directory index of "/config/www/.git/refs/heads/" is forbidden, client: 45.144.212.139, server: _, request: "GET /.git/refs/heads/ HTTP/1.1", host: "167.71.25.102"
+2025/02/11 05:22:51 [crit] 238#238: *2490 SSL_do_handshake() failed (SSL: error:0A0000C6:SSL routines::packet length too long error:0A000139:SSL routines::record layer failure) while SSL handshaking, client: 45.95.169.130, server: 0.0.0.0:443
+2025/02/13 01:42:35 [error] 238#238: *45 access forbidden by rule, client: 193.41.206.98, server: _, request: "GET /.htaccess HTTP/1.1", host: "167.71.25.102"
+2025/02/13 01:42:48 [error] 238#238: *45 directory index of "/config/www/.git/logs/" is forbidden, client: 193.41.206.98, server: _, request: "GET /.git/logs/ HTTP/1.1", host: "167.71.25.102"
+2025/02/13 01:42:48 [error] 238#238: *45 directory index of "/config/www/.git/objects/" is forbidden, client: 193.41.206.98, server: _, request: "GET /.git/objects/ HTTP/1.1", host: "167.71.25.102"
+2025/02/13 01:42:48 [error] 238#238: *45 directory index of "/config/www/.git/refs/" is forbidden, client: 193.41.206.98, server: _, request: "GET /.git/refs/ HTTP/1.1", host: "167.71.25.102"
