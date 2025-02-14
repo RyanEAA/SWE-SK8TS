@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  sampleproject:
-    image: sampleproject
+  app:
+    pull_policy: build
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -10,6 +10,8 @@ services:
       NODE_ENV: production
     ports:
       - 3000:3000
+
+
 
 
 
