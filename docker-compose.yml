@@ -17,7 +17,6 @@ services:
       - sampleproject
     volumes:
       - ./:/usr/share/nginx/html:ro
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - 80:80
 
