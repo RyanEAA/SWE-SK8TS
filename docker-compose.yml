@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   sampleproject:
-    image: sampleproject
     build:
       context: .
       dockerfile: ./Dockerfile
