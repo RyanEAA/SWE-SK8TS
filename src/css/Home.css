@@ -1,19 +1,99 @@
-.home-container{
-    display: grid;
+/* FADE-IN ANIMATION */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.welcome-container{
     margin-top: 5%;
-    grid-template-columns: 50% 50%;
-    /* column-gap: 5%; */
+    font-size: 300%;
+    font-weight: bold;
 }
-.image-highlight-container{
-    display: inline-block;
-    
+
+/* APPLY FADE-IN TO ALL ELEMENTS */
+.home-container {
+    animation: fadeIn 2s ease-in-out;
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center'
 }
-.image-highlight{
-    max-height: 50%;
-    border-width: 3px;
-    border-style: solid;
-    border-radius: 25px;
+.header-image-container
+{
+    width: 100%;
 }
-.about-business-container{
-    display: inline-block;
+
+/* FLEXBOX CONTAINER FOR VIDEO, IMAGE, AND EXTRA IMAGE */
+.media-container {
+    display: flex;
+    justify-content: center;
+    /* align-items: first baseline;   Ensures top alignment */
+    gap: 10%; /* Space between items */
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    width: 100%;
+    /* max-width: 100%; */
+}
+
+/* FLEX ITEMS */
+.video-highlight-container,
+.image-highlight-container,
+.extra-image-container {
+    flex: 1;
+    max-width: 100%; /* Keeps all items the same width */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+    animation: fadeIn 1.2s ease-in-out;
+    font-weight: bolder;
+    font-size: 125%;
+}
+
+.desc-container
+{
+    padding: 4%;
+}
+
+/* IMAGE & EXTRA IMAGE */
+.image-highlight,
+.extra-image {
+    width: 100%;
+    border-radius: 10px;
+    border: 3px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* VIDEO */
+.video-highlight-container video {
+    width: 100%;
+    border-radius: 10px;
+    border: 3px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* HOVER EFFECTS */
+.image-highlight:hover,
+.extra-image:hover,
+.video-highlight-container:hover video {
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increased shadow */
+}
+footer {
+    font-size: 1.5rem;
+    margin-top: 10%;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+.about-business-container {
+    line-height: 2;
+    text-align: center;
+    margin: 5%;
+    font-size: large;
 }
