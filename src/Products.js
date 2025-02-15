@@ -1,26 +1,9 @@
 
-async function fetchData(){
-    try{
-        const response = await fetch('http://167.71.25.102:3636/products')
-
-        if(!response.ok){
-            throw new Error('Could not fetch')
-        }
-        const data = await response.json()
-        return data
-    }
-    catch(error){
-        console.error(error)
-    }
-}
-
-const data = await fetchData()
-
 export const PRODUCTS = {
     products: [
         {
-            id:data[0].product_id,
-            name:data[0].name,
+            id:1,
+            name:'Skateboard1',
             price:100.00,
             image:'/Images/skate_photo.jpg'
         },
