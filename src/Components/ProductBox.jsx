@@ -3,12 +3,12 @@ import '../css/ProductBox.css'
 function ProductBox(props) {
 
   return (
-    <Link className='product-info-link' to={`/ProductInfo/${props.id}`}>
+    <Link to={`/ProductInfo/${props.id}`}>
       <div className="polaroid">
       <img src={props.photo} className='profile-photo'/>
       <div className="caption">
-        <p className='prop-name'>{props.name}</p>
-        <p className='prop-price'>${props.price}</p>
+        <h3>{props.name}</h3>
+        <p>${props.price}</p>
       </div>
     </div>
     </Link>

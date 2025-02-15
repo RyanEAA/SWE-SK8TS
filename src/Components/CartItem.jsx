@@ -10,9 +10,9 @@ function CartItem(props) {
         <h3 className='cart-item-info'>id:{props.item.id} {props.item.name} ${(props.item.price * props.item.qty).toFixed(2)} Quantity: <button onClick={() => props.onRemove(props.item)}>dec</button> {props.item.qty} <button onClick={() => props.onAdd(props.item)}>inc</button></h3> */}
         {/* <div>id:{props.item.id}</div> */}
         <img className='cart-item-image' src={props.item.image}></img>
-        <div className='prod-att-container'>{props.item.name}</div>
-        <div className='prod-att-container'>${(props.item.price * props.item.qty).toFixed(2)}</div>
-        <div className='prod-att-container'><button className='dec-btn' onClick={() => props.onRemove(props.item)}>dec</button> {props.item.qty} <button className='inc-btn' onClick={() => props.onAdd(props.item)}>inc</button></div>
+        <div>{props.item.name}</div>
+        <div>${(props.item.price * props.item.qty).toFixed(2)}</div>
+        <div><button onClick={() => props.onRemove(props.item)}>dec</button> {props.item.qty} <button onClick={() => props.onAdd(props.item)}>inc</button></div>
         {/* <div><button onClick={() => props.onRemove(props.item)}>dec</button></div>
         <div><button onClick={() => props.onAdd(props.item)}>inc</button></div> */}
       </div>

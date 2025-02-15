@@ -3,24 +3,24 @@ import '../css/AboutMe.css'
 function AboutMe(props) {
 
   return (
-    <div className="container mt-5">
-        <h1 className="about-me-text">About Me</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">About Me</h1>
 
         <div class="card-and-profile-image">
-            <div className="headshot-container">
+            <div class="headshot-container">
                 <img src={props.profileimage} class="profile-image" alt="Wilson Flores"/>
             </div>
-            <div className="card-container">
-                    <h2 className="card-title">{props.name}</h2>
+            <div class="card-container">
+                    <h2 class="card-title">{props.name}</h2>
                     <p class="card-text lead">
                         {props.text}
                     </p>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Location:</strong> {props.location}</li>
-                        <li class="list-group-item"><strong>Skills:</strong> {props.skills}</li>
-                        <li class="list-group-item"><strong>Interests:</strong> {props.interests}</li>
+                        <li class="list-group-item"><strong>Location:</strong> Austin, TX</li>
+                        <li class="list-group-item"><strong>Skills:</strong> Python, SQL</li>
+                        <li class="list-group-item"><strong>Interests:</strong> Software Development, AI/Machine Learning</li>
                     </ul>
-                    <a href={props.github} className="github-button">My GitHub Page</a>
+                    <a href="https://github.com/Wilsonf8" class="btn btn-primary mt-3">My GitHub Page</a>
             </div>
         </div>
 
@@ -30,19 +30,19 @@ function AboutMe(props) {
                 <img src={props.interest1image} 
                      class="interest-image" alt="Wilson fishing"/>
                 <div class="card w-75 mx-auto mt-4">
-                    <div class="interest-card">
+                    <div class="card-body">
                         <h5 class="card-title">{props.interest1}</h5>
-                        <p class="intrests-desc">{props.interest1desc}</p>
+                        <p class="card-text">{props.interest1desc}</p>
                     </div>
                 </div>            
             </div>
             <div class="col-md-6 mb-5 text-center">
-                <img src={props.webimage}
-                     class="interest-image" alt="Web Image"/>
+                <img src='https://www.motortrend.com/uploads/sites/5/2018/07/2019-Mercedes-AMG-C-63-S-Coupe-front-three-quarter-in-motion-07.jpg'
+                     class="interest-image" alt="Car"/>
                 <div class="card w-75 mx-auto mt-4">
-                    <div class="interest-card">
+                    <div class="card-body">
                         <h5 class="card-title">{props.interest2}</h5>
-                        <p class="interests-desc">{props.interest2desc}</p>
+                        <p class="card-text">{props.interest2desc}</p>
                     </div>
                 </div>            
             </div>
