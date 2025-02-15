@@ -10,3 +10,6 @@ p{
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
 }
+.cart-is-empty{
+    margin-bottom: 15%;
+}

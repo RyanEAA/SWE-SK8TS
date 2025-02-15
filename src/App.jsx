@@ -44,12 +44,18 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/Shop' element={<Catelog onAdd={onAdd}/>}/>
-          <Route path='/Contact'/>
+          <Route path='/Contact' element={<Home />}/>
           <Route path='/AboutUs' element={<AboutUs />}/>
           <Route path='/Cart' element={<Cart cartItems={cartItems} onAdd={onAdd} onRemove={onRemove}/>}/>
           <Route path='/ProductInfo/:id' element={<ProductInfo onAdd={onAdd}/>}/>
+          <Route path='/Login' element={<Home />}/>
 
           <Route path='AboutUs/wilson' element={<AboutMe 
+            location='Austin, TX'
+            skills='Python, SQL'
+            interests='Software Development, AI/Machine Learning'
+            github='https://github.com/Wilsonf8'
+            webimage='https://www.motortrend.com/uploads/sites/5/2018/07/2019-Mercedes-AMG-C-63-S-Coupe-front-three-quarter-in-motion-07.jpg'
             interest1image='/Images/wilson-fish.png' 
             profileimage='/Images/wilson.jpeg' 
             name='Wilson Flores' 
@@ -60,6 +66,11 @@ function App() {
             interest2='Cars'
             />}/>
           <Route path='AboutUs/ryan' element={<AboutMe 
+            location='Austin, TX'
+            skills='Python, JS, SQL, AI'
+            interests='AI, Video Games'
+            github='https://github.com/RyanEAA'
+            webimage='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgPOjfOFnNZ3wKKpcza6PG_PEPgslvkrvXew&s'
             interest1image='/Images/ryan_interest.jpeg' 
             profileimage='/Images/ryan.jpeg' 
             name='Ryan Aparicio' 
@@ -69,6 +80,11 @@ function App() {
 
             />}/>
           <Route path='AboutUs/eli' element={<AboutMe 
+            location='Austin, TX'
+            skills='Web Application Development, Database Management'
+            interests='Computer Hardware, Datacenter Management'
+            github='https://github.com/eligulley1'
+            webimage='https://cdn.theatlantic.com/thumbor/a6EwtLDytq2ywOXRkaAXnVnhgNM=/547x0:1953x1406/1080x1080/media/img/mt/2021/08/AP21134273144946/original.jpg'
             interest1image='/Images/eli-interest.webp' 
             profileimage='/Images/eli.jpg' 
             name='Eli Gulley' 
@@ -80,6 +96,11 @@ function App() {
 
             />}/>
           <Route path='AboutUs/william' element={<AboutMe 
+            location='Austin, TX'
+            skills='Programming, math, music, and problem solving'
+            interests='Skateboarding, art, music, and more...'
+            github='https://github.com/willburgessiii'
+            webimage='https://source.boomplaymusic.com/group10/M00/03/23/040f13159c864fe19577f9e8acf2589c_464_464.webp'
             interest1image='/Images/willInterest.jpg' 
             profileimage='/Images/william.jpeg' 
             name='William Burgess' 
@@ -91,6 +112,11 @@ function App() {
 
             />}/>
           <Route path='AboutUs/john' element={<AboutMe 
+            location='Software Development, Music'
+            skills='Object Oriented Programming, Problem Solving'
+            interests='Software Development, Music'
+            github='https://github.com/JVMull'
+            webimage='https://irepo.primecp.com/2024/10/591060/1727794855_187593_Large600_ID-5698221.jpg?v=5698221'
             interest1image='/Images/piano.png' 
             profileimage='/Images/john.jpeg' 
             name='John Vazquez' 
