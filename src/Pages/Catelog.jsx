@@ -8,7 +8,7 @@ function Catelog() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Fetch products from the API
+    // Fetch all products from the API
     fetch('http://167.71.25.102:3636/products')
       .then((response) => {
         if (!response.ok) {
@@ -28,14 +28,20 @@ function Catelog() {
   return (
     <div className='product-gallery'>
       {products.map((product) => (
-        <Link key={product.product_id} to={`/products/${product.product_id}`}>
-          <ProductBox
-            id={product.product_id}
-            name={product.name}
-            price={product.price}
-            photo={product.image_url}
-          />
-        </Link>
+        <Link
+        key={product.product_id}
+        to={{
+          pathname: `/ProductInfo/${product.product_id}`,
+          state: { products } // Passing the entire products array to the product info page
+        }}
+      >
+        <ProductBox
+          id={product.product_id}
+          name={product.name}
+          price={product.price}
+          photo={product.image_url}
+        />
+      </Link>      
       ))}
     </div>
   );
