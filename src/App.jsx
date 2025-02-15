@@ -101,7 +101,7 @@ function App() {
             interest2='Crochet'
 
             />}/>
-
+          <Route path='*' element={<div>404 - Page Not Found</div>} />
         </Routes>
         <Footer />
       {/* </CartObjectProvider> */}
