@@ -60,7 +60,7 @@ function ProductInfo() {
           <p><strong>Description:</strong> {product.description}</p>
           <p><strong>Dimensions:</strong> {product.dimensions}</p>
           <p><strong>Weight:</strong> {product.weight} lbs</p>
-          <button className="add-to-cart-btn">Add to Cart</button>
+          <button className='add-to-cart-btn' onClick={() => props.onAdd(prod)}>Add To Cart</button>
         </div>
       </div>
       
