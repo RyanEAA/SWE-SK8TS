@@ -1,18 +1,23 @@
 /* Polaroid Style */
 .polaroid {
     background: white;
-    width: 200px;
+    width: 200px; /* Fixed width */
+    height: 350px; /* Fixed height for uniformity */
     padding: 10px;
     border: 2px solid #ddd; /* Outline */
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3); /* Shadow */
     text-align: center;
     transition: transform 0.3s ease-in-out;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out content */
 }
 
 .polaroid img {
-    width: 100%;
-    height: auto;
+    width: 100%; /* Make sure image width fits the container */
+    max-height: 200px; /* Set max height to avoid overflow */
+    object-fit: contain; /* Ensure the image fits within the container without cropping */
 }
 
 .polaroid:hover {
@@ -25,4 +30,15 @@
     font-family: 'Courier New', monospace;
     border-top: 2px solid #ddd;
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+/* Add a consistent margin and layout for product gallery */
+.product-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; /* Adds space between product boxes */
+    padding: 20px;
 }

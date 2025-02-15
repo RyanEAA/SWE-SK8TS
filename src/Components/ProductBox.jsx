@@ -3,7 +3,6 @@ import '../css/ProductBox.css'
 function ProductBox(props) {
 
   return (
-    <Link to={`/ProductInfo/${props.id}`}>
       <div className="polaroid">
       <img src={props.photo} className='profile-photo'/>
       <div className="caption">
@@ -11,7 +10,6 @@ function ProductBox(props) {
         <p>${props.price}</p>
       </div>
     </div>
-    </Link>
   )
 }
 
