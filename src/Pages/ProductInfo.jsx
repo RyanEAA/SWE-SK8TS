@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import '../css/ProductInfo.css'; // Make sure the CSS file is imported
 
-function ProductInfo() {
+function ProductInfo({ onAdd }) {
   const { id } = useParams(); // Get the product id from the URL
   const [products, setProducts] = useState([]); // State to hold all products
   const [product, setProduct] = useState(null); // State to hold the specific product
@@ -60,7 +60,7 @@ function ProductInfo() {
           <p><strong>Description:</strong> {product.description}</p>
           <p><strong>Dimensions:</strong> {product.dimensions}</p>
           <p><strong>Weight:</strong> {product.weight} lbs</p>
-          <button className='add-to-cart-btn' onClick={() => props.onAdd(prod)}>Add To Cart</button>
+          <button className='add-to-cart-btn' onClick={() => onAdd(product)}>Add To Cart</button>
         </div>
       </div>
       

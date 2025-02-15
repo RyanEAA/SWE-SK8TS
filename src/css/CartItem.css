@@ -1,22 +1,36 @@
-.container-container{
-    justify-items: center;
+.container-container {
+    display: flex;
+    justify-content: center;
     margin-bottom: 1%;
 }
-.item-container{
-    border-style: solid;
+
+.item-container {
+    border: 2px solid black;
     border-radius: 5px;
-    border-color: black;
-    border-width: 2px;
     width: 98%;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
+    align-items: center;  /* Centers content vertically */
+    padding: 10px;  /* Adds space inside the container */
 }
-.item-quantity{
-}
-.cart-item-image{
+
+.cart-item-image {
     max-height: 75px;
-    display: inline-block;
+    display: block;
+    margin: auto;  /* Centers image inside its grid cell */
 }
-.cart-item-info{
-    display: inline-block;
+
+.item-container div {
+    text-align: center;  /* Centers text horizontally */
+    display: flex;
+    align-items: center;  /* Centers text vertically */
+    justify-content: center;  /* Keeps content centered in grid cells */
+    height: 100%;
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;  /* Adds spacing between buttons and quantity number */
 }

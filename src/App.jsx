@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'; 
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import { Routes, Route } from "react-router-dom";
@@ -12,35 +12,47 @@ import Home from './Pages/Home.jsx'
 import ProductInfo from './Pages/ProductInfo.jsx'
 import Cart from './Pages/Cart.jsx'
 import { PRODUCTS } from './Products.js';
+
+
 // import './App.css'
 // import { CartObjectProvider } from './Components/CartObject.jsx';
 
 function App() {
-  const { products } = PRODUCTS
-  const [cartItems, setCartItems] = useState([])
+  const [cartItems, setCartItems] = useState([]);
+  const [products, setProducts] = useState([]); // Store fetched products
+
+  // Fetch products from API
+  useEffect(() => {
+    fetch('http://167.71.25.102:3636/products/')
+      .then((response) => response.json())
+      .then((data) => setProducts(data))
+      .catch((error) => console.error('Error fetching products:', error));
+  }, []);
+
   const onAdd = (product) => {
-    const exist = cartItems.find(x => x.id === product.id)
+    const exist = cartItems.find((x) => x.product_id === product.product_id);
     if (exist){
-      setCartItems(cartItems.map(x => x.id === product.id ? {...exist, qty: exist.qty + 1}: x))
+      setCartItems(cartItems.map((x) =>
+        x.product_id === product.product_id ? { ...exist, qty: exist.qty + 1 } : x));
     }
     else{
       setCartItems([...cartItems, {...product, qty:1}])
     }
   }
   const onRemove = (product) => {
-    const exist = cartItems.find(x => x.id === product.id)
+    const exist = cartItems.find((x) => x.product_id === product.product_id);
     if (exist.qty == 1) {
-      setCartItems(cartItems.filter(x => x.id != product.id))
+      setCartItems(cartItems.filter((x) => x.product_id !== product.product_id));
     } 
     else{
-      setCartItems(cartItems.map(x => x.id === product.id ? {...exist, qty: exist.qty - 1}: x))
+      setCartItems(cartItems.map((x) => x.product_id === product.product_id ? { ...exist, qty: exist.qty - 1 } : x));
     }
   }
 
   return (
     <>
       {/* <CartObjectProvider> */}
-        <NavBar countCartItems={cartItems.length}/>
+      <NavBar cartItems={cartItems} />
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/Shop' element={<Catelog onAdd={onAdd}/>}/>
