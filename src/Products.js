@@ -1,11 +1,11 @@
 
 const fetchData = async () => {
         const response = await fetch('http://167.71.25.102:3636/products')
-        const data = response.json()
+        const data = await response.json()
         return data
 }
 
-const data = await fetchData()
+const data = fetchData()
 console.log(data)
 
 export const PRODUCTS = {
