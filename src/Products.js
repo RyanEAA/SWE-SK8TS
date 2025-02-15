@@ -1,5 +1,5 @@
 
-const fetchData = async function() {
+const fetchData = async () => {
         const response = await fetch('http://167.71.25.102:3636/products')
         const data = response.json()
         return data
