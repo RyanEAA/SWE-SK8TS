@@ -28,13 +28,14 @@ function Catelog() {
   return (
     <div className='product-gallery'>
       {products.map((product) => (
-        <ProductBox
-          key={product.product_id} // Use product_id as the key
-          id={product.product_id} // Pass product_id as the id
-          name={product.name}
-          price={product.price}
-          photo={product.image_url} // Use image_url from the API
-        />
+        <Link key={product.product_id} to={`/products/${product.product_id}`}>
+          <ProductBox
+            id={product.product_id}
+            name={product.name}
+            price={product.price}
+            photo={product.image_url}
+          />
+        </Link>
       ))}
     </div>
   );
