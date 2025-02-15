@@ -5,8 +5,29 @@ const fetchData = async () => {
         return data
 }
 
-const data = fetchData()
-console.log(data)
+// const data = fetchData()
+// console.log(data)
+
+const storeData = async () => {
+    const data = await fetchData()
+    console.log(data)
+    return data
+}
+storeData()
+// async function getApi() {
+
+//     const response = await fetch("http://167.71.25.102:3636/products")
+      
+//     const obj = await response.json()
+    
+//     return obj;
+//   }
+
+// (async() => {
+//  let x = await getApi();
+//  console.log(x);
+//  var data = x
+// })()
 
 export const PRODUCTS = {
     products: [
