@@ -1,4 +1,21 @@
 
+async function fetchData(){
+    try{
+        const response = await fetch('http://167.71.25.102:3636/products')
+
+        if(!response.ok){
+            throw new Error('Could not fetch')
+        }
+        const data = await response.json()
+        return data
+    }
+    catch(error){
+        console.error(error)
+    }
+}
+
+const data = await fetchData()
+
 export const PRODUCTS = {
     products: [
         {
