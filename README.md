@@ -1,8 +1,40 @@
-# React + Vite
+# SK8TS Marketplace
+A modern dockerized marketplace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## How to Run App
+1. Install Docker on machine
+- https://www.docker.com/get-started/
 
-Currently, two official plugins are available:
+2. Git Clone repo
+```bash
+https://github.com/RyanEAA/SWE-SK8TS.git
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3. Move into the directory of the repo
+```bash
+cd SWE-SK8TS
+```
+
+4. Build Docker Image
+```bash
+docker build -t nginx-react-image:latest .
+```
+
+5.  Build Docker Container
+**FOR DEV/LOCAL MACHINE** 
+```bash
+docker run -p 8080:80 --name nginx-react-container nginx-react-image:latest
+```
+
+**FOR PROD**
+```bash
+docker run -p 80:80 --name nginx-react-container nginx-react-image:latest
+```
+
+6. Check App
+**RUNNING LOCAL**
+Open Docker and click on the port it's running on
+check port http://localhost:8080/
+
+**RUNNING ON SERVER**
+check server IP
