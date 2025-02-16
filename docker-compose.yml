@@ -30,11 +30,11 @@ services:
     expose:
       - '3306'
     volumes:
-      - my-db:/var/lib/mysql
+      - database:/var/lib/mysql
 volumes:
   npmdata:
   npmletsencrypt:
-  my-db:
+  database:
 
 
 
