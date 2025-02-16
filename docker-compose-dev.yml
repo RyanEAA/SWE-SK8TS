@@ -1,0 +1,39 @@
+services:
+  reactapp:
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3000:3000
+#   npm:
+#     image: 'jc21/nginx-proxy-manager:latest'
+#     restart: unless-stopped
+#     ports:
+#       - '80:80'
+#       - '81:81'
+#       - '443:443'
+#     volumes:
+#       - npmdata:/data
+#       - npmletsencrypt:/etc/letsencrypt
+#   db:
+#     image: mariadb:latest
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: uTBzZE3u2FxWHs
+#     ports:
+#       - '3306:3306'
+#     expose:
+#       - '3306'
+#     volumes:
+#       - database:/var/lib/mysql
+# volumes:
+#   npmdata:
+#   npmletsencrypt:
+#   database:
+
+
+
+
