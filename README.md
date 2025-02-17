@@ -5,7 +5,12 @@ A modern dockerized marketplace
 1. Install Docker on Personal Machine
 - https://www.docker.com/get-started/
 
+
 2. Clone Repo
+VS Code has an integrated git pull, simply select 'Clone Git Repository' in the Welcome menu, and paste: https://github.com/RyanEAA/SWE-SK8TS.git
+
+OR: 
+
 ```bash
 git clone https://github.com/RyanEAA/SWE-SK8TS.git
 ```
