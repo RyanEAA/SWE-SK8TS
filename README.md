@@ -7,7 +7,7 @@ A modern dockerized marketplace
 
 
 2. Clone Repo
-VS Code has an integrated git pull, simply select 'Clone Git Repository' in the Welcome menu, and paste: https://github.com/RyanEAA/SWE-SK8TS.git
+- VS Code has an integrated git pull, simply select 'Clone Git Repository' in the Welcome menu, and paste: https://github.com/RyanEAA/SWE-SK8TS.git
 
 OR: 
 
