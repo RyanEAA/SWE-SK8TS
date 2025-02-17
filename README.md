@@ -1,8 +1,31 @@
-# React + Vite
+# SK8TS Marketplace
+A modern dockerized marketplace
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## How to Run React App
+1. Install Docker on Personal Machine
+- https://www.docker.com/get-started/
 
-Currently, two official plugins are available:
+2. Clone Repo
+```bash
+git clone https://github.com/RyanEAA/SWE-SK8TS.git
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+3. Open cloned directory in VS Code
+
+4. Open terminal window in VS Code (Make sure it is in repo directory)
+
+5. To bring Development Stack Up, enter in terminal:
+```bash
+docker compose -f docker-compose-dev.yml up 
+```
+
+6. Terminal will provide link to react app in broswer
+
+7. React container will live update changes in your browser as you make them, no need to bring down stack every time a change is made
+
+8. To bring down stack after done developing:
+```bash
+docker compose down
+```
+
+**FOR PROD**
