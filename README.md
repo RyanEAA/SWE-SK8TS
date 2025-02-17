@@ -24,7 +24,7 @@ git clone https://github.com/RyanEAA/SWE-SK8TS.git
 docker compose -f docker-compose-dev.yml up 
 ```
 
-6. Terminal will provide link to react app in broswer
+6. Terminal will provide link to react app in broswer (should be http://localhost:3000)
 
 7. React container will live update changes in your browser as you make them, no need to bring down stack every time a change is made
 
