@@ -2,7 +2,7 @@
 A modern dockerized marketplace
 
 ## How to Run React App
-1. Install Docker on Personal Machine
+1. Install Docker on Personal Machine (Docker Desktop is best, it's easy and comes with Docker Compose)
 - https://www.docker.com/get-started/
 
 
