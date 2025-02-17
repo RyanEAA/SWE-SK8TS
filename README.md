@@ -30,7 +30,7 @@ docker compose -f docker-compose-dev.yml up
 
 8. To bring down stack after done developing:
 ```bash
-docker compose down
+ctrl+C in terminal
 ```
 
 **FOR PROD**
