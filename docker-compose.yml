@@ -27,7 +27,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     environment:
-      MYSQL_HOST: 167.71.25.102
+      MYSQL_HOST: db
       MYSQL_USER: root
       MYSQL_PASSWORD: uTBzZE3u2FxWHs
       MYSQL_DB: products
