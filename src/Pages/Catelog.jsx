@@ -9,7 +9,7 @@ function Catelog() {
 
   useEffect(() => {
     // Fetch all products from the API
-    fetch('http://167.71.25.102:3636/products')
+    fetch('https://sk8ts-shop.com/api/products')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
