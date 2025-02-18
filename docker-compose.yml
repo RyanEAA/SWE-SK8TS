@@ -22,6 +22,19 @@ services:
     volumes:
       - npmdata:/data
       - npmletsencrypt:/etc/letsencrypt
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_HOST: 167.71.25.102
+      MYSQL_USER: root
+      MYSQL_PASSWORD: uTBzZE3u2FxWHs
+      MYSQL_DB: products
+    ports:
+      - 3636:3636
+    depends_on:
+      - db
   db:
     image: mysql:5.7
     restart: always
