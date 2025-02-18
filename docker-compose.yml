@@ -10,6 +10,8 @@ services:
       NODE_ENV: production
     ports:
       - 3000:3000
+    env_file:
+      - stack.env
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
@@ -20,8 +22,10 @@ services:
     volumes:
       - npmdata:/data
       - npmletsencrypt:/etc/letsencrypt
+    env_file:
+      - stack.env
   db:
-    image: mysql:5.7
+    image: mariadb:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: uTBzZE3u2FxWHs
@@ -31,11 +35,12 @@ services:
       - '3306'
     volumes:
       - database:/var/lib/mysql
+    env_file:
+      - stack.env
 volumes:
   npmdata:
   npmletsencrypt:
   database:
-
 
 
 
