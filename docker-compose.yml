@@ -35,23 +35,6 @@ services:
       - database:/var/lib/mysql
     env_file:
       - stack.env
-  # Node.js backend service
-  backend:
-    image: node:16 # Use the official Node.js 16 image
-    container_name: node_backend
-    working_dir: /app
-    volumes:
-      - ./backend:/app # Map the backend folder to the container
-    ports:
-      - "5000:5000" # Expose backend port (adjust if necessary)
-    environment:
-      MYSQL_HOST: 167.71.25.102:3306
-      MYSQL_USER: root
-      MYSQL_PASSWORD: uTBzZE3u2FxWHs
-      MYSQL_DATABASE: products
-    depends_on:
-      - db
-    command: ["npm", "start"] # Run your backend's start command
 volumes:
   npmdata:
   npmletsencrypt:
