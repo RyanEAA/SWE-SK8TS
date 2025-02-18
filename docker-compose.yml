@@ -25,7 +25,7 @@ services:
     env_file:
       - stack.env
   db:
-    image: mariadb:latest
+    image: mysql:5.7
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: uTBzZE3u2FxWHs
