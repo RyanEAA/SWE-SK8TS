@@ -23,7 +23,7 @@ function App() {
 
   // Fetch products from API
   useEffect(() => {
-    fetch('http://167.71.25.102:3636/products/')
+    fetch('https://sk8ts-shop.com/api/products')
       .then((response) => response.json())
       .then((data) => setProducts(data))
       .catch((error) => console.error('Error fetching products:', error));
