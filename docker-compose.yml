@@ -41,6 +41,10 @@ volumes:
   npmdata:
   npmletsencrypt:
   database:
+networks:
+  default:
+    name: nginx
+    external: true
 
 
 
