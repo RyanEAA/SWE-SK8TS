@@ -1,18 +1,22 @@
-FROM node:18-alpine
+# stage 1: building react app
+FROM node:20-alpine AS build
 
+# sets working directory in container
 WORKDIR /app
 
-COPY package.json .
-
+# copies all .json packages
+COPY package*.json ./
 RUN npm install
 
-RUN npm i -g serve
-
+# copies all files in folder
 COPY . .
-
 RUN npm run build
 
-EXPOSE 3000
+# stage 2: serve built app with react
+FROM nginx:alpine
 
-CMD [ "serve", "-s", "dist" ]
+COPY --from=build /app/dist /usr/share/nginx/html
 
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

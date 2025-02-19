@@ -37,5 +37,3 @@ ctrl+C in terminal
 
 Refer to 'Steps for Updating Server' in Workflow doc [here](https://docs.google.com/document/d/1IojwFd1zUnN7TnXTdWqdtCXtd6bfBKNjaWSX3H5igA0/edit?tab=t.0#heading=h.z0azt38yo1a7
 )
-
-
