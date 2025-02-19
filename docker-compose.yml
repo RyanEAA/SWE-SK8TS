@@ -1,7 +1,7 @@
 # version: '3.4'
 
 services:
-  reactapp-prod:
+  reactapp:
     pull_policy: build
     build:
       context: .
