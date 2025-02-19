@@ -1,40 +1,39 @@
 # SK8TS Marketplace
 A modern dockerized marketplace
 
-## How to Run App
-1. Install Docker on machine
+## How to Run React App
+1. Install Docker on Personal Machine (Docker Desktop is best, it's easy and comes with Docker Compose)
 - https://www.docker.com/get-started/
 
-2. Git Clone repo
+
+2. Clone Repo
+- VS Code has an integrated git pull, simply select 'Clone Git Repository' in the Welcome menu, and paste: https://github.com/RyanEAA/SWE-SK8TS.git
+
+OR (in terminal with desired directory open): 
+
 ```bash
-https://github.com/RyanEAA/SWE-SK8TS.git
+git clone https://github.com/RyanEAA/SWE-SK8TS.git
 ```
 
-3. Move into the directory of the repo
+3. Open cloned directory in VS Code
+
+4. Open terminal window in VS Code (Make sure it is in repo directory)
+
+5. To bring Development Stack Up, enter in terminal:
 ```bash
-cd SWE-SK8TS
+docker compose -f docker-compose-dev.yml up 
 ```
 
-4. Build Docker Image
-```bash
-docker build -t nginx-react-image:latest .
-```
+6. Terminal will provide link to react app in broswer (should be http://localhost:3000)
 
-5.  Build Docker Container
-**FOR DEV/LOCAL MACHINE** 
+7. React container will live update changes in your browser as you make them, no need to bring down stack every time a change is made
+
+8. To bring down stack after done developing:
 ```bash
-docker run -p 8080:80 --name nginx-react-container nginx-react-image:latest
+ctrl+C in terminal
 ```
 
 **FOR PROD**
-```bash
-docker run -p 80:80 --name nginx-react-container nginx-react-image:latest
-```
 
-6. Check App
-**RUNNING LOCAL**
-Open Docker and click on the port it's running on
-check port http://localhost:8080/
-
-**RUNNING ON SERVER**
-check server IP
+Refer to 'Steps for Updating Server' in Workflow doc [here](https://docs.google.com/document/d/1IojwFd1zUnN7TnXTdWqdtCXtd6bfBKNjaWSX3H5igA0/edit?tab=t.0#heading=h.z0azt38yo1a7
+)

@@ -1,0 +1,26 @@
+# This is the development compose file, for use on local machine development.
+# When you run docker compose up with this file,
+# It only creates a container for your react app, and does not create containers for the database and npm
+# This should be fine, as neither of these services are necessary to run on your local machine.
+services:
+  reactapp-dev:
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev  # Use a separate Dockerfile for development
+    volumes:
+      - .:/app  # Mount the project into the container
+      - /app/node_modules  # Prevent overwriting node_modules from the host
+    environment:
+      NODE_ENV: development
+      WDS_SOCKET_HOST: 127.0.0.1 
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true 
+    command: npm run dev
+    ports:
+      - 3000:3000
+
+
+
+
+
