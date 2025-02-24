@@ -37,7 +37,7 @@ services:
     depends_on:
       - db
   db:
-    image: mysql:5.7
+    image: mariadb:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: uTBzZE3u2FxWHs
