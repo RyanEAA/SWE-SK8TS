@@ -8,6 +8,7 @@ import Catelog from './Pages/Catelog.jsx';
 import AboutUs from './Pages/AboutUs.jsx';
 import Footer from './Components/Footer.jsx';
 import AboutMe from './Pages/AboutMe.jsx'
+import NewAboutMe from './Pages/NewAboutMe.jsx'
 import Home from './Pages/Home.jsx'
 import ProductInfo from './Pages/ProductInfo.jsx'
 import Cart from './Pages/Cart.jsx'
@@ -76,16 +77,17 @@ function App() {
             interest2desc="I have always enjoyed learning about cars"
             interest2='Cars'
             />}/>
-          <Route path='AboutUs/ryan' element={<AboutMe 
+          <Route path='AboutUs/ryan' element={<NewAboutMe 
             location='Austin, TX'
             skills='Python, JS, SQL, AI'
             interests='AI, Video Games'
             github='https://github.com/RyanEAA'
+            linkedin="https://www.linkedin.com/in/ryan-aparicio-547586220/"
             webimage='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgPOjfOFnNZ3wKKpcza6PG_PEPgslvkrvXew&s'
             interest1image='/Images/ryan_interest.jpeg' 
             profileimage='/Images/ryan.jpeg' 
             name='Ryan Aparicio' 
-            text="CS Major at St. Ed's that loves data. Not only am I a First-Gen student, I am the VP of the AI Club, and the Treasurer of the First Gen Scholars. In my free time I skate, do some 3D modeling, and play video games. I hope to learn about frameworks in this class."
+            text="I'm a CS Major at St. Ed's that loves data. Not only am I a First-Gen student, I am the VP of the AI Club, and the Treasurer of the First Gen Scholars. In my free time I skate, do some 3D modeling, and play video games. I hope to learn about frameworks in this class."
             interest1desc="This is the classic 3D modeled donut. It represents the beginning of every modeler's journey."
             interest2desc="This is the classic 3D modeled donut. It represents the beginning of every modeler's journey."
 

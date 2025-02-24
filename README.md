@@ -26,9 +26,14 @@ docker compose -f docker-compose-dev.yml up
 
 6. Terminal will provide link to react app in broswer (should be http://localhost:3000)
 
+<<<<<<< HEAD
 7. React container will live update changes in your browser as you make them, no need to bring down stack every time a change is made
 
 8. To bring down stack after done developing:
+=======
+5.  Build Docker Container\n
+**FOR DEV/LOCAL MACHINE** 
+>>>>>>> profile-update
 ```bash
 ctrl+C in terminal
 ```
