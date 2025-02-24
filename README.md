@@ -20,7 +20,7 @@ cd SWE-SK8TS
 docker build -t nginx-react-image:latest .
 ```
 
-5.  Build Docker Container
+5.  Build Docker Container\n
 **FOR DEV/LOCAL MACHINE** 
 ```bash
 docker run -p 8080:80 --name nginx-react-container nginx-react-image:latest
