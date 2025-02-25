@@ -31,7 +31,8 @@ services:
       MYSQL_HOST: db
       MYSQL_USER: root
       MYSQL_PASSWORD: uTBzZE3u2FxWHs
-      MYSQL_DB: products
+      MYSQL_PRODUCTS_DB: products
+      MYSQL_USERS_DB: users
     ports:
       - 3636:3636
     depends_on:

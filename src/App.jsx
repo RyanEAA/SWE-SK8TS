@@ -12,6 +12,7 @@ import NewAboutMe from './Pages/NewAboutMe.jsx'
 import Home from './Pages/Home.jsx'
 import ProductInfo from './Pages/ProductInfo.jsx'
 import Cart from './Pages/Cart.jsx'
+import RegistrationPage from './Pages/RegistrationPage.jsx';
 import { PRODUCTS } from './Products.js';
 
 
@@ -61,6 +62,7 @@ function App() {
           <Route path='/AboutUs' element={<AboutUs />}/>
           <Route path='/Cart' element={<Cart cartItems={cartItems} onAdd={onAdd} onRemove={onRemove}/>}/>
           <Route path='/ProductInfo/:id' element={<ProductInfo onAdd={onAdd}/>}/>
+          <Route path='/Registration' element={<RegistrationPage />}/>
 
           <Route path='AboutUs/wilson' element={<AboutMe 
             location='Austin, TX'
