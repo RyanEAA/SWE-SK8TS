@@ -10,32 +10,51 @@ app.use(cors({
   origin: ['http://localhost:3000', 'https://sk8ts-shop.com']
 }));
 
-let connection;
+app.use(express.json()); // Middleware for parsing JSON requests
+
+let productDb, userDb;
 
 function handleDisconnect() {
-  connection = mysql.createConnection({
+  productDb = mysql.createConnection({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DB
   });
 
-  connection.connect(err => {
+  userDb = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_USERS_DB
+  });
+
+  productDb.connect(err => {
     if (err) {
-      console.error('Error connecting to MySQL:', err);
-      setTimeout(handleDisconnect, 2000); // Retry connection after 2 seconds
+      console.error('Error connecting to products DB:', err);
+      setTimeout(handleDisconnect, 2000);
     } else {
-      console.log('Connected to MySQL');
+      console.log('Connected to products DB');
     }
   });
 
-  connection.on('error', err => {
-    console.error('MySQL error:', err);
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-      handleDisconnect(); // Reconnect if connection is lost
+  userDb.connect(err => {
+    if (err) {
+      console.error('Error connecting to users DB:', err);
+      setTimeout(handleDisconnect, 2000);
     } else {
-      throw err;
+      console.log('Connected to users DB');
     }
+  });
+
+  productDb.on('error', err => {
+    console.error('MySQL product DB error:', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') handleDisconnect();
+  });
+
+  userDb.on('error', err => {
+    console.error('MySQL user DB error:', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') handleDisconnect();
   });
 }
 
@@ -43,13 +62,43 @@ handleDisconnect();
 
 // API endpoint to fetch products
 app.get('/products', (req, res) => {
-  connection.query('SELECT * FROM products', (err, results) => {
+  productDb.query('SELECT * FROM products', (err, results) => {
     if (err) {
       console.error('Error fetching products:', err);
       res.status(500).send('Error fetching products');
       return;
     }
     res.json(results);
+  });
+});
+
+// API endpoint to fetch users
+app.get('/users', (req, res) => {
+  userDb.query('SELECT * FROM users', (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      res.status(500).send('Error fetching users');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// API endpoint to add a user
+app.post('/users', (req, res) => {
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) {
+    return res.status(400).send('Missing required fields');
+  }
+
+  const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+  userDb.query(query, [username, email, password], (err, result) => {
+    if (err) {
+      console.error('Error adding user:', err);
+      res.status(500).send('Error adding user');
+      return;
+    }
+    res.status(201).json({ message: 'User added', userId: result.insertId });
   });
 });
 
