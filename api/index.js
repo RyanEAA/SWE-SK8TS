@@ -85,6 +85,7 @@ app.get('/users', (req, res) => {
 });
 
 // API endpoint to add a user
+// Wilson, this will probably need to change to match the layout of the users table
 app.post('/users', (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
