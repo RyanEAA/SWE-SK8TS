@@ -6,6 +6,12 @@
     border: 3px solid black; 
 }
 
+.interest-image{
+    max-height: 400px;
+    max-width: 400px;
+
+}
+
 .profile-image {
     width: 250px;
     height: 250px;
