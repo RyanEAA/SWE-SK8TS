@@ -1,3 +1,7 @@
+
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
@@ -16,25 +20,17 @@ let productDb, userDb;
 
 function handleDisconnect() {
   productDb = mysql.createConnection({
-    // host: process.env.MYSQL_HOST,
-    // user: process.env.MYSQL_USER,
-    // password: process.env.MYSQL_PASSWORD,
-    // database: process.env.MYSQL_PRODUCTS_DB
-    host: '167.71.25.102',
-    user: 'root',
-    password: 'uTBzZE3u2FxWHs',
-    database: 'products'
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_PRODUCTS_DB
   });
 
   userDb = mysql.createConnection({
-    // host: process.env.MYSQL_HOST,
-    // user: process.env.MYSQL_USER,
-    // password: process.env.MYSQL_PASSWORD,
-    // database: process.env.MYSQL_USERS_DB
-    host: '167.71.25.102',
-    user: 'root',
-    password: 'uTBzZE3u2FxWHs',
-    database: 'users'
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_USERS_DB
   });
 
   productDb.connect(err => {
@@ -93,7 +89,6 @@ app.get('/users', (req, res) => {
 });
 
 // API endpoint to add a user
-// Wilson, this will probably need to change to match the layout of the users table
 app.post('/users', (req, res) => {
   const { first_name, last_name, email, password, username } = req.body;
   if (!first_name || !last_name || !email || !password || !username) {
@@ -113,5 +108,4 @@ app.post('/users', (req, res) => {
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
-  // console.log(`API service is running on port idx`);
 });
