@@ -39,7 +39,7 @@ function Catelog() {
           id={product.product_id}
           name={product.name}
           price={product.price}
-          photo={product.image_url}
+          photo={`/Images/products/${product.image_path}`}
         />
       </Link>      
       ))}
