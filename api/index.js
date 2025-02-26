@@ -16,17 +16,25 @@ let productDb, userDb;
 
 function handleDisconnect() {
   productDb = mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_PRODUCTS_DB
+    // host: process.env.MYSQL_HOST,
+    // user: process.env.MYSQL_USER,
+    // password: process.env.MYSQL_PASSWORD,
+    // database: process.env.MYSQL_PRODUCTS_DB
+    host: '167.71.25.102',
+    user: 'root',
+    password: 'uTBzZE3u2FxWHs',
+    database: 'products'
   });
 
   userDb = mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_USERS_DB
+    // host: process.env.MYSQL_HOST,
+    // user: process.env.MYSQL_USER,
+    // password: process.env.MYSQL_PASSWORD,
+    // database: process.env.MYSQL_USERS_DB
+    host: '167.71.25.102',
+    user: 'root',
+    password: 'uTBzZE3u2FxWHs',
+    database: 'users'
   });
 
   productDb.connect(err => {
@@ -87,13 +95,13 @@ app.get('/users', (req, res) => {
 // API endpoint to add a user
 // Wilson, this will probably need to change to match the layout of the users table
 app.post('/users', (req, res) => {
-  const { username, email, password } = req.body;
-  if (!username || !email || !password) {
+  const { first_name, last_name, email, password, username } = req.body;
+  if (!first_name || !last_name || !email || !password || !username) {
     return res.status(400).send('Missing required fields');
   }
 
-  const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-  userDb.query(query, [username, email, password], (err, result) => {
+  const query = 'INSERT INTO users (first_name, last_name, email, password, username) VALUES (?, ?, ?, ?, ?)';
+  userDb.query(query, [first_name, last_name, email, password, username], (err, result) => {
     if (err) {
       console.error('Error adding user:', err);
       res.status(500).send('Error adding user');
@@ -105,4 +113,5 @@ app.post('/users', (req, res) => {
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
+  // console.log(`API service is running on port idx`);
 });
