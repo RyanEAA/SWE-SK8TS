@@ -14,6 +14,10 @@ import ProductInfo from './Pages/ProductInfo.jsx'
 import Cart from './Pages/Cart.jsx'
 import RegistrationPage from './Pages/RegistrationPage.jsx';
 import { PRODUCTS } from './Products.js';
+import ProfilePage from './Pages/ProfilePage.jsx';
+
+// apis
+//import { getProducts } from './services/api.js';
 
 
 // import './App.css'
@@ -31,6 +35,8 @@ function App() {
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
 
+
+  
   const onAdd = (product) => {
     const exist = cartItems.find((x) => x.product_id === product.product_id);
     if (exist){
@@ -142,6 +148,8 @@ function App() {
             interest2='Crochet'
 
             />}/>
+          <Route path='/ProfilePage' element={<ProfilePage />} />
+
           <Route path='*' element={<div>404 - Page Not Found</div>} />
         </Routes>
         <Footer />

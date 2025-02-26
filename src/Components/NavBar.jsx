@@ -15,6 +15,7 @@ function NavBar(props) {
         <Link to='/AboutUs'>About Us</Link>
         <Link to='/Cart'>Cart{' '}{cartItemCount}</Link>
         <Link to='/Login'>Login</Link>
+        <Link to='/ProfilePage'>Profile</Link>
       </nav>
     </header>
   );
