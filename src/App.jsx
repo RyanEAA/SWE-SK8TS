@@ -20,17 +20,12 @@ function App() {
       .then((data) => setProducts(data))
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
-<<<<<<< HEAD
-  
-  const onAdd = (product) => {
-=======
 
   useEffect(() => {
     console.log("Current cart state:", cartItems);
   }, [cartItems]);
 
   const onAdd = (product, qty = 1) => {
->>>>>>> popup
     const exist = cartItems.find((x) => x.product_id === product.product_id);
     if (exist) {
       setCartItems(cartItems.map((x) =>
