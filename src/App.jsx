@@ -3,17 +3,15 @@
 import React, { useState, useEffect } from 'react'; 
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+
 import { Routes, Route } from "react-router-dom";
-import NavBar from './Components/NavBar.jsx'
-import ProductBox from './Components/ProductBox.jsx'
+import NavBar from './Components/NavBar.jsx';
 import Catelog from './Pages/Catelog.jsx';
 import AboutUs from './Pages/AboutUs.jsx';
 import Footer from './Components/Footer.jsx';
-import AboutMe from './Pages/AboutMe.jsx'
-import NewAboutMe from './Pages/NewAboutMe.jsx'
-import Home from './Pages/Home.jsx'
-import ProductInfo from './Pages/ProductInfo.jsx'
-import Cart from './Pages/Cart.jsx'
+import Home from './Pages/Home.jsx';
+import ProductInfo from './Pages/ProductInfo.jsx';
+import Cart from './Pages/Cart.jsx';
 import RegistrationPage from './Pages/RegistrationPage.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
 import Profile from './Pages/Profile.jsx';
@@ -23,11 +21,11 @@ import { PRODUCTS } from './Products.js';
 // import './App.css'
 // import { CartObjectProvider } from './Components/CartObject.jsx';
 
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
-  const [products, setProducts] = useState([]); // Store fetched products
+  const [products, setProducts] = useState([]);
 
-  // Fetch products from API
   useEffect(() => {
     fetch('https://sk8ts-shop.com/api/products')
       .then((response) => response.json())
@@ -35,29 +33,35 @@ function App() {
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
 
-  const onAdd = (product) => {
+  useEffect(() => {
+    console.log("Current cart state:", cartItems);
+  }, [cartItems]);
+
+  const onAdd = (product, qty = 1) => {
     const exist = cartItems.find((x) => x.product_id === product.product_id);
-    if (exist){
+    if (exist) {
       setCartItems(cartItems.map((x) =>
-        x.product_id === product.product_id ? { ...exist, qty: exist.qty + 1 } : x));
+        x.product_id === product.product_id ? { ...exist, qty: exist.qty + qty } : x
+      ));
+    } else {
+      setCartItems([...cartItems, { ...product, qty }]);
     }
-    else{
-      setCartItems([...cartItems, {...product, qty:1}])
-    }
-  }
+  };
+
   const onRemove = (product) => {
     const exist = cartItems.find((x) => x.product_id === product.product_id);
-    if (exist.qty == 1) {
+    if (!exist) return; // Prevent errors if item isn’t found
+    if (exist.qty === 1) {
       setCartItems(cartItems.filter((x) => x.product_id !== product.product_id));
-    } 
-    else{
-      setCartItems(cartItems.map((x) => x.product_id === product.product_id ? { ...exist, qty: exist.qty - 1 } : x));
+    } else {
+      setCartItems(cartItems.map((x) =>
+        x.product_id === product.product_id ? { ...exist, qty: exist.qty - 1 } : x
+      ));
     }
-  }
+  };
 
   return (
     <>
-      {/* <CartObjectProvider> */}
       <NavBar cartItems={cartItems} />
         <Routes>
           <Route path='/' element={<Home />}/>
@@ -151,8 +155,10 @@ function App() {
         </Routes>
         <Footer />
       {/* </CartObjectProvider> */}
+
     </>
-  )
+  );
 }
 
 export default App
+

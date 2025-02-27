@@ -1,0 +1,80 @@
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+  }
+  
+  .popup-content {
+    background-color: white;
+    padding: 15px; /* Reduced from 20px for less internal space */
+    border-radius: 8px;
+    max-width: 400px; /* Reduced from 600px to make it smaller */
+    width: 90%; /* Ensures it adapts to smaller screens */
+    max-height: 90vh; /* Limits height to 90% of viewport height */
+    overflow-y: auto; /* Adds scrollbar if content overflows */
+    position: relative;
+    box-sizing: border-box; /* Ensures padding is included in max-width */
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 5px; /* Moved closer to edge */
+    right: 5px; /* Moved closer to edge */
+    background: none;
+    border: none;
+    font-size: 20px; /* Slightly smaller */
+    cursor: pointer;
+  }
+  
+  .popup-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 8px; /* Reduced from 10px */
+  }
+  
+  .quantity-input {
+    margin-top: 8px; /* Reduced from 10px */
+    display: flex; /* Aligns label and input horizontally */
+    align-items: center;
+  }
+  
+  .quantity-input h1 {
+    margin-right: 5px;
+    font-size: 16px; /* Smaller font size for "Quantity:" */
+    margin: 0; /* Remove default margin */
+  }
+  
+  .quantity-input input {
+    width: 60px; /* Fixed width for input to keep it compact */
+    padding: 4px; /* Smaller padding */
+  }
+  
+  .error-message {
+    color: red;
+    margin-top: 5px;
+    font-size: 14px; /* Smaller font size */
+  }
+  
+  .popup-content h2 {
+    font-size: 18px; /* Smaller title */
+    margin: 5px 0; /* Reduced spacing */
+  }
+  
+  .popup-content p {
+    font-size: 14px; /* Smaller text */
+    margin: 5px 0; /* Reduced spacing */
+  }
+  
+  .popup-content button:not(.close-button) {
+    margin-top: 8px; /* Reduced spacing */
+    padding: 6px 12px; /* Smaller button */
+    font-size: 14px; /* Smaller text */
+  }

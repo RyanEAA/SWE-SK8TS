@@ -25,6 +25,7 @@ const NavBar = (props) => {
         ) : (
           <Link to="/login">Login</Link>
         )}
+
       </nav>
     </header>
   );

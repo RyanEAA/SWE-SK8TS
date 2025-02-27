@@ -10,7 +10,6 @@ const fetchData = async () => {
 
 const storeData = async () => {
     const data = await fetchData()
-    console.log(data)
     return data
 }
 storeData()

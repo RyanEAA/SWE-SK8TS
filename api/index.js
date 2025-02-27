@@ -1,3 +1,7 @@
+
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
@@ -7,7 +11,7 @@ const port = process.env.PORT || 3636;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://sk8ts-shop.com']
+  origin: ['http://localhost:3000', 'https://sk8ts-shop.com', 'http://167.71.25.102:3000/', 'http://167.71.25.102' ]
 }));
 
 app.use(express.json()); // Middleware for parsing JSON requests
@@ -86,13 +90,13 @@ app.get('/users', (req, res) => {
 
 // API endpoint to add a user
 app.post('/users', (req, res) => {
-  const { username, email, password } = req.body;
-  if (!username || !email || !password) {
+  const { first_name, last_name, email, password, username } = req.body;
+  if (!first_name || !last_name || !email || !password || !username) {
     return res.status(400).send('Missing required fields');
   }
 
-  const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-  userDb.query(query, [username, email, password], (err, result) => {
+  const query = 'INSERT INTO users (first_name, last_name, email, password, username) VALUES (?, ?, ?, ?, ?)';
+  userDb.query(query, [first_name, last_name, email, password, username], (err, result) => {
     if (err) {
       console.error('Error adding user:', err);
       res.status(500).send('Error adding user');
