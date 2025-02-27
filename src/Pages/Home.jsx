@@ -1,4 +1,6 @@
-import React from 'react';
+// Home.jsx
+
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
 
@@ -12,6 +14,16 @@ const LoopingVideo = () => {
 };
 
 function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check session status from local storage or API
+    const session = localStorage.getItem('session');
+    if (session) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
     <div className="home-container">
       <div>
@@ -63,7 +75,7 @@ function Home() {
       <footer>
         Check out the team! <Link to="/AboutUs">About Us</Link>
         <p>
-          Haven't joined the family? <Link to="/Login">Login!</Link>
+          Haven't joined the family? {isLoggedIn ? <Link to="/profile">Profile</Link> : <Link to="/LoginPage">Login!</Link>}
         </p>
       </footer>
     </div>
