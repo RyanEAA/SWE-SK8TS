@@ -165,6 +165,26 @@ app.post('/users', (req, res) => {
   });
 });
 
+
+// 🔹 Add orders API
+app.post('/order', (req, res) => {
+  const { user_id, order_date, total_amount, shipping_address, order_status} = req.body;
+  if (!user_id, !order_date, !total_amount, !shipping_address || !order_status) {
+    return res.status(400).send('Missing required fields');
+  }
+
+  
+  const query = 'INSERT INTO order (user_id, order_date, total_amount, shipping_address, order_status) VALUES (?, ?, ?, ?, ?)';
+  userDb.query(query, [first_name, last_name, email, hashedPassword, username, user_type], (err, result) => {
+    if (err) {
+      console.error('Error adding order:', err);
+      res.status(500).send('Error adding order');
+      return;
+    }
+    res.status(201).json({ message: 'Order added', userId: result.insertId });
+  });
+});
+
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
 });
