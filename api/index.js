@@ -12,7 +12,7 @@ const port = process.env.PORT || 3636;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://sk8ts-shop.com', 'http://167.71.25.102:3000/', 'http://167.71.25.102']
+  origin: ['http://localhost:3000', 'https://sk8ts-shop.com', 'http://167.71.25.102:3000', 'http://167.71.25.102']
 }));
 
 app.use(express.json()); // Middleware for JSON parsing
