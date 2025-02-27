@@ -1,20 +1,21 @@
-
 const dotenv = require('dotenv');
 dotenv.config();
 
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const crypto = require('crypto');  // SHA-256 for hashing
+const { body, validationResult } = require('express-validator');
 
 const app = express();
 const port = process.env.PORT || 3636;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://sk8ts-shop.com', 'http://167.71.25.102:3000/', 'http://167.71.25.102' ]
+  origin: ['http://localhost:3000', 'https://sk8ts-shop.com', 'http://167.71.25.102:3000/', 'http://167.71.25.102']
 }));
 
-app.use(express.json()); // Middleware for parsing JSON requests
+app.use(express.json()); // Middleware for JSON parsing
 
 let productDb, userDb;
 
@@ -64,7 +65,62 @@ function handleDisconnect() {
 
 handleDisconnect();
 
-// API endpoint to fetch products
+// 🔹 User Registration API (Only for Customers)
+app.post('/register',
+  [
+    body('username').notEmpty().trim().escape().withMessage('Username is required'),
+    body('email')
+      .isEmail().withMessage('Invalid email format')
+      .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      .withMessage('Email must contain @ and a valid domain (e.g., .com, .org, .edu)'),
+    body('password')
+      .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+      .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
+      .matches(/[a-z]/).withMessage('Password must contain at least one lowercase letter')
+      .matches(/\d/).withMessage('Password must contain at least one number')
+      .matches(/[\W]/).withMessage('Password must contain at least one special character (e.g., !, @, #)'),
+    body('first_name').notEmpty().trim().escape().withMessage('First name is required'),
+    body('last_name').notEmpty().trim().escape().withMessage('Last name is required'),
+    body('user_type').equals('customer').withMessage('Only customers can register via this form')
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { username, email, password, first_name, last_name, user_type } = req.body;
+
+    // Check for duplicate username or email
+    const checkQuery = 'SELECT * FROM users WHERE email = ? OR username = ?';
+    userDb.query(checkQuery, [email, username], (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).send('Internal server error');
+      }
+
+      if (results.length > 0) {
+        return res.status(400).json({ error: 'Username or email already exists' });
+      }
+
+      // Hash password using SHA-256 (not as secure as bcrypt)
+      const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+      // Insert user into the database
+      const insertQuery = 'INSERT INTO users (username, email, password, first_name, last_name, user_type) VALUES (?, ?, ?, ?, ?, ?)';
+      userDb.query(insertQuery, [username, email, hashedPassword, first_name, last_name, user_type], (err, result) => {
+        if (err) {
+          console.error('Error adding user:', err);
+          return res.status(500).send('Error adding user');
+        }
+
+        res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
+      });
+    });
+  }
+);
+
+// 🔹 Fetch Products API
 app.get('/products', (req, res) => {
   productDb.query('SELECT * FROM products', (err, results) => {
     if (err) {
@@ -76,7 +132,7 @@ app.get('/products', (req, res) => {
   });
 });
 
-// API endpoint to fetch users
+// 🔹 Fetch Users API
 app.get('/users', (req, res) => {
   userDb.query('SELECT * FROM users', (err, results) => {
     if (err) {
@@ -88,15 +144,18 @@ app.get('/users', (req, res) => {
   });
 });
 
-// API endpoint to add a user
+// 🔹 Add User API (for Admins)
 app.post('/users', (req, res) => {
-  const { first_name, last_name, email, password, username } = req.body;
-  if (!first_name || !last_name || !email || !password || !username) {
+  const { first_name, last_name, email, password, username, user_type } = req.body;
+  if (!first_name || !last_name || !email || !password || !username || !user_type) {
     return res.status(400).send('Missing required fields');
   }
 
-  const query = 'INSERT INTO users (first_name, last_name, email, password, username) VALUES (?, ?, ?, ?, ?)';
-  userDb.query(query, [first_name, last_name, email, password, username], (err, result) => {
+  // Hash password using SHA-256
+  const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+  const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_type) VALUES (?, ?, ?, ?, ?, ?)';
+  userDb.query(query, [first_name, last_name, email, hashedPassword, username, user_type], (err, result) => {
     if (err) {
       console.error('Error adding user:', err);
       res.status(500).send('Error adding user');
