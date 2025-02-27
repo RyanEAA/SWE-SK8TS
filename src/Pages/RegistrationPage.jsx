@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// RegistrationPage.jsx
+
+import React, { useState, useEffect } from 'react';
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState('');
@@ -6,6 +8,14 @@ const RegistrationPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [existingUsers, setExistingUsers] = useState([]);
+
+  useEffect(() => {
+    fetch('https://sk8ts-shop.com/api/users')
+      .then((response) => response.json())
+      .then((data) => setExistingUsers(data))
+      .catch((error) => console.error('Error fetching users:', error));
+  }, []);
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,10 +36,17 @@ const RegistrationPage = () => {
     if (!password || !validatePassword(password)) validationErrors.password = 'Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, and a number';
     if (password !== confirmPassword) validationErrors.confirmPassword = 'Passwords do not match';
 
+    // Check if username or email already exists
+    if (existingUsers.some(user => user.username === username)) {
+      validationErrors.username = 'Username already exists';
+    }
+    if (existingUsers.some(user => user.email === email)) {
+      validationErrors.email = 'Email already exists';
+    }
+
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      // Submit the form (e.g., make an API call)
       console.log('Form submitted');
     }
   };
