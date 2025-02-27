@@ -155,7 +155,7 @@ app.post('/users', (req, res) => {
   const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
   const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_role) VALUES (?, ?, ?, ?, ?, ?)';
-  userDb.query(query, [first_name, last_name, email, hashedPassword, username, user_role], (err, result) => {
+  userDb.query(query, [first_name, last_name, email, password, username, user_role], (err, result) => {
     if (err) {
       console.error('Error adding user:', err);
       res.status(500).send('Error adding user');
