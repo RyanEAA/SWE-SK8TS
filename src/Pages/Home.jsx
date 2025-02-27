@@ -47,9 +47,9 @@ function Home() {
         {/* IMAGE */}
         <div className="image-highlight-container">
           <Link to="/ProductInfo/6">
-            <img src="/Images/shoe_photo.jpg" className="image-highlight" alt="Shoe" />
+            <img src="/Images/products/mini-cruiser-board.jpeg" className="image-highlight" alt="Cruiser" />
           </Link>
-          <p className='desc-container'>Check out our latest skate shoes!</p>
+          <p className='desc-container'>Check out our latest cruiser complete!</p>
         </div>
 
         {/* VIDEO */}
