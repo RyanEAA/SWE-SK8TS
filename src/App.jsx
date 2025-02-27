@@ -34,8 +34,6 @@ function App() {
       .then((data) => setProducts(data))
       .catch((error) => console.error('Error fetching products:', error));
   }, []);
-
-
   
   const onAdd = (product) => {
     const exist = cartItems.find((x) => x.product_id === product.product_id);
