@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import CryptoJS from 'crypto-js'; // Import crypto-js for hashing
 
 const RegistrationPage = () => {
   const [username, setUsername] = useState('');
@@ -41,9 +40,6 @@ const RegistrationPage = () => {
       return;
     }
 
-    // Hash the password using SHA-256 before sending it to the backend
-    const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Base64);
-
     try {
       const response = await fetch('https://sk8ts-shop.com/api/register', {
         method: 'POST',
@@ -51,7 +47,7 @@ const RegistrationPage = () => {
         body: JSON.stringify({
           username,
           email,
-          password: hashedPassword, // Send the hashed password
+          password, // Send the plain text password
           first_name: firstName,
           last_name: lastName,
           user_role: 'customer'
