@@ -1,5 +1,3 @@
-// RegistrationPage.jsx
-
 import React, { useState, useEffect } from 'react';
 
 const RegistrationPage = () => {
@@ -7,15 +5,10 @@ const RegistrationPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [errors, setErrors] = useState({});
-  const [existingUsers, setExistingUsers] = useState([]);
-
-  useEffect(() => {
-    fetch('https://sk8ts-shop.com/api/users')
-      .then((response) => response.json())
-      .then((data) => setExistingUsers(data))
-      .catch((error) => console.error('Error fetching users:', error));
-  }, []);
+  const [message, setMessage] = useState('');
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,76 +16,98 @@ const RegistrationPage = () => {
   };
 
   const validatePassword = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W]).{8,}$/;
     return re.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
+    setMessage('');
     let validationErrors = {};
 
     if (!username) validationErrors.username = 'Username is required';
     if (!email || !validateEmail(email)) validationErrors.email = 'Valid email is required';
-    if (!password || !validatePassword(password)) validationErrors.password = 'Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, and a number';
+    if (!password || !validatePassword(password)) {
+      validationErrors.password = 'Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character';
+    }
     if (password !== confirmPassword) validationErrors.confirmPassword = 'Passwords do not match';
+    if (!firstName) validationErrors.firstName = 'First name is required';
+    if (!lastName) validationErrors.lastName = 'Last name is required';
 
-    // Check if username or email already exists
-    if (existingUsers.some(user => user.username === username)) {
-      validationErrors.username = 'Username already exists';
-    }
-    if (existingUsers.some(user => user.email === email)) {
-      validationErrors.email = 'Email already exists';
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
 
-    setErrors(validationErrors);
+    try {
+      const response = await fetch('https://sk8ts-shop.com/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          first_name: firstName,
+          last_name: lastName,
+          user_role: 'customer' // Add this line
+        })
+      });
 
-    if (Object.keys(validationErrors).length === 0) {
-      console.log('Form submitted');
+      const data = await response.json();
+      if (!response.ok) {
+        if (data.errors) {
+          const apiErrors = {};
+          data.errors.forEach((err) => {
+            apiErrors[err.param] = err.msg;
+          });
+          setErrors(apiErrors);
+        } else {
+          setMessage(data.error || 'Registration failed');
+        }
+      } else {
+        setMessage('User registered successfully!');
+      }
+    } catch (error) {
+      setMessage('Error registering user');
+      console.error('Registration error:', error);
     }
+    
   };
 
   return (
     <div className="registration-page">
       <h2>Register</h2>
+      {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+          <label>First Name:</label>
+          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          {errors.firstName && <p>{errors.firstName}</p>}
+        </div>
+        <div>
+          <label>Last Name:</label>
+          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          {errors.lastName && <p>{errors.lastName}</p>}
+        </div>
+        <div>
+          <label>Username:</label>
+          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
           {errors.username && <p>{errors.username}</p>}
         </div>
         <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <label>Email:</label>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           {errors.email && <p>{errors.email}</p>}
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <label>Password:</label>
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           {errors.password && <p>{errors.password}</p>}
         </div>
         <div>
-          <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          <label>Confirm Password:</label>
+          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
         </div>
         <button type="submit">Register</button>
