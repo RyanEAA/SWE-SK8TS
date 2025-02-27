@@ -51,9 +51,9 @@ function ProfilePage() {
 
     return (
         <div className='profile-container'>
-            <h1 className='profile-role'>{'Profile'}</h1>
+            {/* <h1 className='profile-role'>{'Profile'}</h1> */}
             <div className='profile-header'>
-                {/* <img src="../assets/profile.jpg" alt="Profile" className='profile-image' /> */}
+                <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" alt="Profile" className='profile-image' />
                 <div className='profile-header-text'>
                     <h1 className='profile-name'>{userData.firstName} {userData.lastName}</h1>
                 </div>
