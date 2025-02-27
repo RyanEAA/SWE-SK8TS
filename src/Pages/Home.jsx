@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
+import axios from 'axios';
 
 const LoopingVideo = () => {
   return (
@@ -14,7 +15,7 @@ const LoopingVideo = () => {
 };
 
 function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [randomProduct, setRandomProduct, isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Check session status from local storage or API
@@ -23,6 +24,29 @@ function Home() {
       setIsLoggedIn(true);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchRandomProduct = async () => {
+      try {
+        const response = await axios.get('https://sk8ts-shop.com/api/products');
+        if (response.status === 200 && Array.isArray(response.data)) {
+          const products = response.data;
+          const randomIndex = Math.floor(Math.random() * products.length);
+          setRandomProduct(products[randomIndex]);
+        } else {
+          console.error('Error fetching products');
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchRandomProduct();
+  }, []);
+
+  if (!randomProduct) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="home-container">
@@ -46,10 +70,11 @@ function Home() {
       <div className="media-container">
         {/* IMAGE */}
         <div className="image-highlight-container">
-          <Link to="/ProductInfo/6">
-            <img src="/Images/shoe_photo.jpg" className="image-highlight" alt="Shoe" />
-          </Link>
-          <p className='desc-container'>Check out our latest skate shoes!</p>
+          <h2>Featured Product</h2>
+        <Link to={`/productInfo/${randomProduct.product_id}`}>
+          <img src={`/Images/products/${randomProduct.image_path}`} alt={randomProduct.name} className="image-highlight"/>
+          <p>{randomProduct.name}</p>
+        </Link>
         </div>
 
         {/* VIDEO */}
