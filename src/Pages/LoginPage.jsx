@@ -34,6 +34,9 @@ const LoginPage = () => {
         if (user) {
           Cookies.set('user', username, { expires: 7 });
           navigate('/'); // Redirect to Home.jsx
+          setTimeout(() => {
+            window.location.reload(); // Force reload
+          }, 100);
         } else {
           alert('Login failed: Invalid username or password.');
         }
@@ -45,6 +48,7 @@ const LoginPage = () => {
       alert('An error occurred. Please try again.');
     }
   };
+  
   
   
 
