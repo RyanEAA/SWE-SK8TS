@@ -33,6 +33,7 @@ services:
       MYSQL_PASSWORD: uTBzZE3u2FxWHs
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
+      MYSQL_ORDER_DB: order
     ports:
       - 3636:3636
     depends_on:
