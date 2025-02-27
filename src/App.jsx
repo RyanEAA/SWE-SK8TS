@@ -14,7 +14,9 @@ import ProductInfo from './Pages/ProductInfo.jsx';
 import Cart from './Pages/Cart.jsx';
 import RegistrationPage from './Pages/RegistrationPage.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
-import Profile from './Pages/Profile.jsx';
+import ProfilePage from './Pages/ProfilePage.jsx';
+import AboutMe from './Pages/AboutMe.jsx';
+import NewAboutMe from './Pages/NewAboutMe.jsx';
 import { PRODUCTS } from './Products.js';
 
 
@@ -72,7 +74,7 @@ function App() {
           <Route path='/ProductInfo/:id' element={<ProductInfo onAdd={onAdd}/>}/>
           <Route path='/Registration' element={<RegistrationPage />}/>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path='AboutUs/wilson' element={<AboutMe 
             location='Austin, TX'
             skills='Python, SQL'
