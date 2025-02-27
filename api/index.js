@@ -4,7 +4,6 @@ dotenv.config();
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
-const crypto = require('crypto');  // SHA-256 for hashing
 const { body, validationResult } = require('express-validator');
 
 const app = express();
@@ -103,12 +102,10 @@ app.post('/register',
         return res.status(400).json({ error: 'Username or email already exists' });
       }
 
-      // Hash password using SHA-256 (not as secure as bcrypt)
-      const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
       // Insert user into the database
       const insertQuery = 'INSERT INTO users (username, email, password, first_name, last_name, user_role) VALUES (?, ?, ?, ?, ?, ?)';
-      userDb.query(insertQuery, [username, email, hashedPassword, first_name, last_name, user_role], (err, result) => {
+      userDb.query(insertQuery, [username, email, password, first_name, last_name, user_role], (err, result) => {
         if (err) {
           console.error('Error adding user:', err);
           return res.status(500).send('Error adding user');
@@ -150,9 +147,6 @@ app.post('/users', (req, res) => {
   if (!first_name || !last_name || !email || !password || !username || !user_role) {
     return res.status(400).send('Missing required fields');
   }
-
-  // Hash password using SHA-256
-  const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
   const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_role) VALUES (?, ?, ?, ?, ?, ?)';
   userDb.query(query, [first_name, last_name, email, password, username, user_role], (err, result) => {
