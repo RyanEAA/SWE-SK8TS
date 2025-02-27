@@ -81,7 +81,7 @@ app.post('/register',
       .matches(/[\W]/).withMessage('Password must contain at least one special character (e.g., !, @, #)'),
     body('first_name').notEmpty().trim().escape().withMessage('First name is required'),
     body('last_name').notEmpty().trim().escape().withMessage('Last name is required'),
-    body('user_type').equals('customer').withMessage('Only customers can register via this form')
+    body('user_role').equals('customer').withMessage('Only customers can register via this form')
   ],
   (req, res) => {
     const errors = validationResult(req);
@@ -89,7 +89,7 @@ app.post('/register',
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password, first_name, last_name, user_type } = req.body;
+    const { username, email, password, first_name, last_name, user_role } = req.body;
 
     // Check for duplicate username or email
     const checkQuery = 'SELECT * FROM users WHERE email = ? OR username = ?';
@@ -107,8 +107,8 @@ app.post('/register',
       const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
       // Insert user into the database
-      const insertQuery = 'INSERT INTO users (username, email, password, first_name, last_name, user_type) VALUES (?, ?, ?, ?, ?, ?)';
-      userDb.query(insertQuery, [username, email, hashedPassword, first_name, last_name, user_type], (err, result) => {
+      const insertQuery = 'INSERT INTO users (username, email, password, first_name, last_name, user_role) VALUES (?, ?, ?, ?, ?, ?)';
+      userDb.query(insertQuery, [username, email, hashedPassword, first_name, last_name, user_role], (err, result) => {
         if (err) {
           console.error('Error adding user:', err);
           return res.status(500).send('Error adding user');
@@ -146,16 +146,16 @@ app.get('/users', (req, res) => {
 
 // 🔹 Add User API (for Admins)
 app.post('/users', (req, res) => {
-  const { first_name, last_name, email, password, username, user_type } = req.body;
-  if (!first_name || !last_name || !email || !password || !username || !user_type) {
+  const { first_name, last_name, email, password, username, user_role } = req.body;
+  if (!first_name || !last_name || !email || !password || !username || !user_role) {
     return res.status(400).send('Missing required fields');
   }
 
   // Hash password using SHA-256
   const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
-  const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_type) VALUES (?, ?, ?, ?, ?, ?)';
-  userDb.query(query, [first_name, last_name, email, hashedPassword, username, user_type], (err, result) => {
+  const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_role) VALUES (?, ?, ?, ?, ?, ?)';
+  userDb.query(query, [first_name, last_name, email, hashedPassword, username, user_role], (err, result) => {
     if (err) {
       console.error('Error adding user:', err);
       res.status(500).send('Error adding user');
