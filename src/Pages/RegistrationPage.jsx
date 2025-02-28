@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RegistrationPage = () => {
+  // for navigating to other pages
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,7 +70,10 @@ const RegistrationPage = () => {
           setMessage(data.error || 'Registration failed');
         }
       } else {
+        // user succesfully registered
         setMessage('User registered successfully!');
+        // nagigate to profile page
+        navigate('/profile'); // Replace '/profile' with your desired route
       }
     } catch (error) {
       setMessage('Error registering user');
