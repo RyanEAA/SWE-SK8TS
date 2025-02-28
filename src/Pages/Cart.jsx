@@ -1,9 +1,6 @@
+import React from 'react';
 import CartItem from "../Components/CartItem.jsx";
 import '../css/Cart.css';
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 
 function Cart({ cartItems, onAdd, onRemove }) {
   const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0);
