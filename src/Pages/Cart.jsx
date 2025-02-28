@@ -122,7 +122,9 @@ if (!userData) {
           </>
         )}
         <hr />
-        <button>Check Out</button>
+        <form onSubmit={handleSubmit}>
+          <button>Check Out</button>
+        </form>
       </div>
     </>
   );
