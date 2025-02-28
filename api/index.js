@@ -191,7 +191,7 @@ app.get('/orders', (req, res) => {
 // get Ordered Items from order
 app.get('/orders/:order_id', (req, res) => {
   const orderId = req.params.order_id;
-  orderDb.query('SELECT * FROM order natural join orderedItems WHERE order_id = ?', [orderId], (err, results) => {
+  orderDb.query('SELECT * FROM orders natural join orderedItems WHERE order_id = ?', [orderId], (err, results) => {
     if (err) {
       console.error('Error fetching ordered items:', err);
       res.status(500).send('Error fetching ordered items');
