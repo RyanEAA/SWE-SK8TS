@@ -4,7 +4,6 @@ dotenv.config();
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
-const crypto = require('crypto');  // SHA-256 for hashing
 const { body, validationResult } = require('express-validator');
 
 const app = express();
@@ -12,13 +11,14 @@ const port = process.env.PORT || 3636;
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://sk8ts-shop.com', 'http://167.71.25.102:3000', 'http://167.71.25.102']
+  origin: '*'
 }));
 
 app.use(express.json()); // Middleware for JSON parsing
 
-let productDb, userDb;
+let productDb, userDb, orderDb;
 
+// handles disconnection
 function handleDisconnect() {
   productDb = mysql.createConnection({
     host: process.env.MYSQL_HOST,
@@ -27,6 +27,7 @@ function handleDisconnect() {
     database: process.env.MYSQL_PRODUCTS_DB
   });
 
+  // creates connection to User DB
   userDb = mysql.createConnection({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
@@ -34,6 +35,16 @@ function handleDisconnect() {
     database: process.env.MYSQL_USERS_DB
   });
 
+  // creates connection to Order DB
+  orderDb = mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_ORDER_DB
+  });
+
+  // CONNECTIONS
+  // creates connection to Product DB
   productDb.connect(err => {
     if (err) {
       console.error('Error connecting to products DB:', err);
@@ -43,6 +54,8 @@ function handleDisconnect() {
     }
   });
 
+
+  // creates connection to User DB
   userDb.connect(err => {
     if (err) {
       console.error('Error connecting to users DB:', err);
@@ -52,15 +65,36 @@ function handleDisconnect() {
     }
   });
 
+  // creates connection to order DB
+  orderDb.connect(err =>{
+    if (err) {
+      console.error('Error connecting to order DB:', err);
+      setTimeout(handleDisconnect, 2000);
+    } else {
+      console.log('Connected to users DB');
+    }
+  });
+
+
+  // ERRORS
+  // handles errors for productDB
   productDb.on('error', err => {
     console.error('MySQL product DB error:', err);
     if (err.code === 'PROTOCOL_CONNECTION_LOST') handleDisconnect();
   });
 
+  // handles errors for userDB
   userDb.on('error', err => {
     console.error('MySQL user DB error:', err);
     if (err.code === 'PROTOCOL_CONNECTION_LOST') handleDisconnect();
   });
+
+  // handles errors for orderDB
+  orderDb.on('error', err => {
+    console.error('MySQL order DB error:', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') handleDisconnect();
+  });
+  
 }
 
 handleDisconnect();
@@ -103,12 +137,10 @@ app.post('/register',
         return res.status(400).json({ error: 'Username or email already exists' });
       }
 
-      // Hash password using SHA-256 (not as secure as bcrypt)
-      const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
       // Insert user into the database
       const insertQuery = 'INSERT INTO users (username, email, password, first_name, last_name, user_role) VALUES (?, ?, ?, ?, ?, ?)';
-      userDb.query(insertQuery, [username, email, hashedPassword, first_name, last_name, user_role], (err, result) => {
+      userDb.query(insertQuery, [username, email, password, first_name, last_name, user_role], (err, result) => {
         if (err) {
           console.error('Error adding user:', err);
           return res.status(500).send('Error adding user');
@@ -144,24 +176,41 @@ app.get('/users', (req, res) => {
   });
 });
 
-// 🔹 Add User API (for Admins)
-app.post('/users', (req, res) => {
-  const { first_name, last_name, email, password, username, user_role } = req.body;
-  if (!first_name || !last_name || !email || !password || !username || !user_role) {
-    return res.status(400).send('Missing required fields');
-  }
-
-  // Hash password using SHA-256
-  const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-
-  const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_role) VALUES (?, ?, ?, ?, ?, ?)';
-  userDb.query(query, [first_name, last_name, email, password, username, user_role], (err, result) => {
+// 🔹 Fetch Orders API
+app.get('/orders', (req, res) => {
+  orderDb.query('SELECT * FROM orders', (err, results) => {
     if (err) {
-      console.error('Error adding user:', err);
-      res.status(500).send('Error adding user');
+      console.error('Error fetching orders:', err);
+      res.status(500).send('Error fetching orders');
       return;
     }
-    res.status(201).json({ message: 'User added', userId: result.insertId });
+    res.json(results);
+  });
+});
+
+// // get Ordered Items from order
+// app.get('/orders/:order_id', (req, res) => {
+//   const orderId = req.params.order_id;
+//   orderDb.query('SELECT * FROM orders natural join orderedItems WHERE order_id = ?', [orderId], (err, results) => {
+//     if (err) {
+//       console.error('Error fetching ordered items:', err);
+//       res.status(500).send('Error fetching ordered items');
+//       return;
+//     }
+//     res.json(results);
+//   });
+// });
+
+// get Ordered Items from order
+app.get('/orders/:user_id', (req, res) => {
+  const userId = req.params.user_id;
+  orderDb.query('SELECT * FROM orders natural join orderedItems WHERE user_id = ?', [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching ordered items:', err);
+      res.status(500).send('Error fetching ordered items');
+      return;
+    }
+    res.json(results);
   });
 });
 

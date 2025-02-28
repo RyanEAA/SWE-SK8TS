@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import CryptoJS from 'crypto-js'; // Import crypto-js for hashing
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 
 const RegistrationPage = () => {
+  // for navigating to other pages
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,9 +46,6 @@ const RegistrationPage = () => {
       return;
     }
 
-    // Hash the password using SHA-256 before sending it to the backend
-    const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Base64);
-
     try {
       const response = await fetch('https://sk8ts-shop.com/api/register', {
         method: 'POST',
@@ -51,7 +53,7 @@ const RegistrationPage = () => {
         body: JSON.stringify({
           username,
           email,
-          password: hashedPassword, // Send the hashed password
+          password, // Send the plain text password
           first_name: firstName,
           last_name: lastName,
           user_role: 'customer'
@@ -70,7 +72,15 @@ const RegistrationPage = () => {
           setMessage(data.error || 'Registration failed');
         }
       } else {
+        // user succesfully registered
         setMessage('User registered successfully!');
+        // sets cookie
+
+        Cookies.set('user', username, { expires: 7 }); // this is not working
+        navigate('/profile'); // Replace '/profile' with your desired route
+        setTimeout(() => {
+          window.location.reload(); // Force reload
+        }, 100);
       }
     } catch (error) {
       setMessage('Error registering user');
