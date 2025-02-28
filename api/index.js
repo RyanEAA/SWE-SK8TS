@@ -188,10 +188,23 @@ app.get('/orders', (req, res) => {
   });
 });
 
+// // get Ordered Items from order
+// app.get('/orders/:order_id', (req, res) => {
+//   const orderId = req.params.order_id;
+//   orderDb.query('SELECT * FROM orders natural join orderedItems WHERE order_id = ?', [orderId], (err, results) => {
+//     if (err) {
+//       console.error('Error fetching ordered items:', err);
+//       res.status(500).send('Error fetching ordered items');
+//       return;
+//     }
+//     res.json(results);
+//   });
+// });
+
 // get Ordered Items from order
-app.get('/orders/:order_id', (req, res) => {
-  const orderId = req.params.order_id;
-  orderDb.query('SELECT * FROM orders natural join orderedItems WHERE order_id = ?', [orderId], (err, results) => {
+app.get('/orders/:user_id', (req, res) => {
+  const userId = req.params.order_id;
+  orderDb.query('SELECT * FROM orders natural join orderedItems WHERE user_id = ?', [userId], (err, results) => {
     if (err) {
       console.error('Error fetching ordered items:', err);
       res.status(500).send('Error fetching ordered items');
@@ -201,68 +214,6 @@ app.get('/orders/:order_id', (req, res) => {
   });
 });
 
-// API Route to Add an Order
-app.post('/addorder',(req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  const { user_id, total_amount, shipping_address, order_status } = req.body;
-
-  if (!user_id || !total_amount || !shipping_address || !order_status) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
-
-  const query = 'INSERT INTO orders (user_id, total_amount, shipping_address, order_status) VALUES (?, ?, ?, ?)';
-
-  orderDb.query(query, [user_id, total_amount, shipping_address, order_status], (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.status(201).json({ message: "Order added successfully", orderId: result.insertId });
-  });
-});
-
-// API Route to Add Items
-app.post('/additems',(req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  const { order_id, quantity, price, product_id } = req.body;
-
-  if (!order_id || !quantity || !price || !product_id) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
-
-  const queryItems = 'INSERT INTO orderedItems (order_id, quantity, price, product_id) VALUES (?, ?, ?, ?)'
-
-  orderDb.query(queryItems, [order_id, quantity, price, product_id], (err, result) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.status(201).json({ orderId: result.insertId });
-  });
-
-});
-
-// // 🔹 Add User API (for Admins)
-// app.post('/users', (req, res) => {
-//   const { first_name, last_name, email, password, username, user_role } = req.body;
-//   if (!first_name || !last_name || !email || !password || !username || !user_role) {
-//     return res.status(400).send('Missing required fields');
-//   }
-
-//   const query = 'INSERT INTO users (first_name, last_name, email, password, username, user_role) VALUES (?, ?, ?, ?, ?, ?)';
-//   userDb.query(query, [first_name, last_name, email, password, username, user_role], (err, result) => {
-//     if (err) {
-//       console.error('Error adding user:', err);
-//       res.status(500).send('Error adding user');
-//       return;
-//     }
-//     res.status(201).json({ message: 'User added', userId: result.insertId });
-//   });
-// });
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
