@@ -13,45 +13,56 @@ function Cart({ cartItems, onAdd, onRemove }) {
   const totalPrice = itemsPrice + taxPrice;
 
   const handleCheckout = async () => {
-    // Check if user is logged in
     const user = Cookies.get('user');
     if (!user) {
       alert('You must be logged in to check out.');
-      navigate('/login'); // Redirect to login page
+      navigate('/login');
       return;
     }
-
-    // Check if shipping address is provided
+  
     if (!shippingAddress) {
       alert('Please enter a shipping address.');
       return;
     }
-
-    // Prepare order data
+  
     const orderData = {
-      user_id: user.id, // Assuming the user object has an `id` field
+      user_id: "usertest",
+      order_date: new Date().toISOString(),
       total_amount: totalPrice,
       shipping_address: shippingAddress,
     };
-
+  
     try {
-      // Send POST request to the API
-      const response = await fetch('https://sk8ts-shop.com/api/order', {
+      const response = await fetch('https://sk8ts-shop.com/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData),
       });
-
+  
+      // Read the response body only once
+      const responseText = await response.text(); // Get raw response text
+      console.log('Raw response:', responseText); // Log raw response
+  
       if (!response.ok) {
-        throw new Error('Failed to place order');
+        // If the response is not OK, try to parse it as JSON (if it's JSON)
+        let errorMessage = `Failed to place order: ${response.status} ${response.statusText}`;
+        try {
+          const errorData = JSON.parse(responseText); // Try to parse as JSON
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch (e) {
+          // If it's not JSON, use the raw text as the error message
+          errorMessage = responseText;
+        }
+        throw new Error(errorMessage);
       }
-
-      // Handle success
+  
+      // If the response is OK, parse it as JSON
+      const responseData = JSON.parse(responseText); // Parse JSON
       alert('Order placed successfully!');
-      // Optionally, clear the cart or redirect to a confirmation page
+      console.log('Order ID:', responseData.orderId); // Log order ID
     } catch (error) {
       console.error('Error placing order:', error);
-      alert('Failed to place order. Please try again.');
+      alert(error.message || 'Failed to place order. Please try again.');
     }
   };
 
