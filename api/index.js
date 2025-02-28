@@ -223,6 +223,28 @@ app.post('/addorder',(req, res) => {
   });
 });
 
+// API Route to Add Items
+app.post('/additems',(req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { order_id, quantity, price, product_id } = req.body;
+
+  if (!order_id || !quantity || !price || !product_id) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const queryItems = 'INSERT INTO orderedItems (order_id, quantity, price, product_id) VALUES (?, ?, ?, ?)'
+
+  orderDb.query(queryItems, [order_id, quantity, price, product_id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(201).json({ orderId: result.insertId });
+  });
+
+});
 
 // // 🔹 Add User API (for Admins)
 // app.post('/users', (req, res) => {
