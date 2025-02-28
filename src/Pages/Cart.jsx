@@ -11,6 +11,93 @@ function Cart({ cartItems, onAdd, onRemove }) {
   const taxPrice = itemsPrice * 0.08;
   const totalPrice = itemsPrice + taxPrice;
 
+  const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
+
+  const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState('');
+  
+  function MakeCartList(){
+    const l = []
+    for (let i = 0; i < cartItems.length; i++) {
+      l.push([cartItems[i].qty, cartItems[i].price, cartItems[i].product_id])
+    }
+    return l
+  }
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+        const username = Cookies.get('user');
+        if (!username) {
+            alert('No user logged in. Redirecting to login.');
+            window.location.href = '/login';
+            return;
+        }
+        try {
+            const response = await axios.get('https://sk8ts-shop.com/api/users');
+            if (response.status === 200 && Array.isArray(response.data)) {
+                const user = response.data.find((u) => u.username === username);
+                if (user) {
+                    setUserData(user);
+                } else {
+                    alert('User not found. Redirecting to login.');
+                    window.location.href = '/login';
+                }
+            } else {
+                alert('Error retrieving user data.');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            alert('An error occurred while fetching user data.');
+        }
+    };
+    
+    fetchUserData();
+}, [navigate]);
+
+if (!userData) {
+  return <div>Loading user data...</div>;
+}
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setMessage('');
+
+    try {
+      const response = await fetch('https://sk8ts-shop.com/api/addorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userData.user_id,
+          total_amount: totalPrice,
+          shipping_address: 'testing',
+          order_status: 'In Progress'
+        })
+      });
+      const data = await response.json();
+      const listToAdd = MakeCartList()
+      for (let i = 0; i < listToAdd.length; i++) {
+        const response2 = await fetch('https://sk8ts-shop.com/api/additems', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            order_id: data.orderId,
+            quantity: listToAdd[i][0],
+            price: listToAdd[i][1]*listToAdd[i][0],
+            product_id: listToAdd[i][2]
+          })
+        });
+      }
+    } catch (error) {
+        setMessage('Order Failed');
+        console.error('Order Error:', error);
+    }
+
+
+
+  };
+
   return (
     <>
       <div className="cart-labels-container">
