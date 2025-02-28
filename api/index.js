@@ -16,7 +16,7 @@ app.use(cors({
 
 app.use(express.json()); // Middleware for JSON parsing
 
-let productDb, userDb;
+let productDb, userDb, orderDb;
 
 // handles disconnection
 function handleDisconnect() {
@@ -200,6 +200,29 @@ app.get('/orders/:order_id', (req, res) => {
     res.json(results);
   });
 });
+
+// API Route to Add an Order
+app.post('/addorder',(req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  const { user_id, total_amount, shipping_address, order_status } = req.body;
+
+  if (!user_id || !total_amount || !shipping_address || !order_status) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const query = 'INSERT INTO orders (user_id, total_amount, shipping_address, order_status) VALUES (?, ?, ?, ?)';
+
+  orderDb.query(query, [user_id, total_amount, shipping_address, order_status], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.status(201).json({ message: "Order added successfully", orderId: result.insertId });
+  });
+});
+
 
 // // 🔹 Add User API (for Admins)
 // app.post('/users', (req, res) => {
