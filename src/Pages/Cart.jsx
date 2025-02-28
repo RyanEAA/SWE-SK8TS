@@ -1,11 +1,59 @@
-import React from 'react';
-import CartItem from "../Components/CartItem.jsx";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // For redirecting
+import Cookies from 'js-cookie'; // For checking login status
+import CartItem from '../Components/CartItem.jsx';
 import '../css/Cart.css';
 
 function Cart({ cartItems, onAdd, onRemove }) {
+  const [shippingAddress, setShippingAddress] = useState('');
+  const navigate = useNavigate();
+
   const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0);
   const taxPrice = itemsPrice * 0.08;
   const totalPrice = itemsPrice + taxPrice;
+
+  const handleCheckout = async () => {
+    // Check if user is logged in
+    const user = Cookies.get('user');
+    if (!user) {
+      alert('You must be logged in to check out.');
+      navigate('/login'); // Redirect to login page
+      return;
+    }
+
+    // Check if shipping address is provided
+    if (!shippingAddress) {
+      alert('Please enter a shipping address.');
+      return;
+    }
+
+    // Prepare order data
+    const orderData = {
+      user_id: user.id, // Assuming the user object has an `id` field
+      total_amount: totalPrice,
+      shipping_address: shippingAddress,
+    };
+
+    try {
+      // Send POST request to the API
+      const response = await fetch('https://sk8ts-shop.com/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to place order');
+      }
+
+      // Handle success
+      alert('Order placed successfully!');
+      // Optionally, clear the cart or redirect to a confirmation page
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('Failed to place order. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -31,7 +79,15 @@ function Cart({ cartItems, onAdd, onRemove }) {
           </>
         )}
         <hr />
-        <button>Check Out</button>
+        {/* Add shipping address input */}
+        <input
+          type="text"
+          value={shippingAddress}
+          onChange={(e) => setShippingAddress(e.target.value)}
+          placeholder="Shipping Address"
+          required
+        />
+        <button onClick={handleCheckout}>Check Out</button>
       </div>
     </>
   );
