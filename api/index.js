@@ -40,7 +40,7 @@ function handleDisconnect() {
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_ORDERS_DB
+    database: process.env.MYSQL_ORDER_DB
   });
 
   // CONNECTIONS
