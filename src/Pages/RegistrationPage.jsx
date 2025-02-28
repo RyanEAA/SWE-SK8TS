@@ -73,7 +73,7 @@ const RegistrationPage = () => {
         // user succesfully registered
         setMessage('User registered successfully!');
         // nagigate to profile page
-        navigate('/profile'); // Replace '/profile' with your desired route
+        navigate('/ProfilePage'); // Replace '/profile' with your desired route
       }
     } catch (error) {
       setMessage('Error registering user');
