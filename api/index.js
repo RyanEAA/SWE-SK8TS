@@ -203,7 +203,7 @@ app.get('/orders', (req, res) => {
 
 // get Ordered Items from order
 app.get('/orders/:user_id', (req, res) => {
-  const userId = req.params.order_id;
+  const userId = req.params.user_id;
   orderDb.query('SELECT * FROM orders natural join orderedItems WHERE user_id = ?', [userId], (err, results) => {
     if (err) {
       console.error('Error fetching ordered items:', err);
