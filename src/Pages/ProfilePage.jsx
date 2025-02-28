@@ -45,6 +45,7 @@ function ProfilePage() {
         return;
     };
 
+
     if (!userData) {
         return <div>Loading user data...</div>;
     }
