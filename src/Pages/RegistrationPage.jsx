@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 
 const RegistrationPage = () => {
   // for navigating to other pages
@@ -73,7 +75,8 @@ const RegistrationPage = () => {
         // user succesfully registered
         setMessage('User registered successfully!');
         // sets cookie
-        Cookies.set('user', username, { expires: 7 });
+
+        Cookies.set('user', username, { expires: 7 }); // this is not working
         navigate('/profile'); // Replace '/profile' with your desired route
         setTimeout(() => {
           window.location.reload(); // Force reload

@@ -40,7 +40,7 @@ function ProfilePage() {
 
     const handleLogout = () => {
         Cookies.remove('user');
-        alert('Logged out.');
+        //alert('Logged out.');
         window.location.href = '/';
         return;
     };
