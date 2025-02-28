@@ -72,8 +72,12 @@ const RegistrationPage = () => {
       } else {
         // user succesfully registered
         setMessage('User registered successfully!');
-        // nagigate to profile page
-        navigate('/ProfilePage'); // Replace '/profile' with your desired route
+        // sets cookie
+        Cookies.set('user', username, { expires: 7 });
+        navigate('/profile'); // Replace '/profile' with your desired route
+        setTimeout(() => {
+          window.location.reload(); // Force reload
+        }, 100);
       }
     } catch (error) {
       setMessage('Error registering user');
