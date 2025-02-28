@@ -16,6 +16,7 @@ function Cart({ cartItems, onAdd, onRemove }) {
 
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
+  const [address, setAddress] = useState('')
   
   function MakeCartList(){
     const l = []
@@ -64,6 +65,16 @@ if (!userData) {
     setErrors({});
     setMessage('');
 
+    if (MakeCartList().length == 0) {
+      alert('Cart Empty')
+      return
+    }
+
+    if (address == ''){
+      alert('Enter Shipping Address')
+      return
+    }
+
     try {
       const response = await fetch('https://sk8ts-shop.com/api/addorder', {
         method: 'POST',
@@ -71,7 +82,7 @@ if (!userData) {
         body: JSON.stringify({
           user_id: userData.user_id,
           total_amount: totalPrice,
-          shipping_address: 'testing',
+          shipping_address: address,
           order_status: 'In Progress'
         })
       });
@@ -114,6 +125,14 @@ if (!userData) {
         ))}
       </div>
       <div>
+        <div>
+          <input 
+            type="text"
+            value={address} 
+            onChange={(e) => setAddress(e.target.value)} 
+            placeholder="Shipping Address" 
+          />
+        </div>
         {cartItems.length !== 0 && (
           <>
             <hr />
