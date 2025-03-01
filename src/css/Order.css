@@ -10,7 +10,7 @@
 
   
   /* Styling for headers */
-  .ordered-items-container h1 {
+  .ordered-items-header h1 {
     font-size: 14px; /* Smaller font to fit 250px width */
     margin: 5px 0; /* Reduced spacing */
     color: #333; /* Darker text for readability */

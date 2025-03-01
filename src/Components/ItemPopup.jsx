@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import '../css/AboutMe.css';
 import '../css/ItemPopup.css';
 
 function ItemPopup({ isOpen, onClose, product, onAdd }) {
   const [quantity, setQuantity] = React.useState(1);
   const [error, setError] = React.useState('');
+  const popupContentRef = useRef(null);
+  
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // Only run this if the popup is open
+      if (isOpen && popupContentRef.current && !popupContentRef.current.contains(event.target)) {
+        handleClose();
+      }
+    }
+    
+    // Add event listener when the popup is open
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen || !product) return null;
 
@@ -34,7 +55,7 @@ function ItemPopup({ isOpen, onClose, product, onAdd }) {
 
   return (
     <div className="popup-overlay">
-      <div className="popup-content">
+      <div className="popup-content" ref={popupContentRef}>
         <button className="close-button" onClick={handleClose}>×</button>
         <img
           src={product.image_url || `/Images/products/${product.image_path}`}
