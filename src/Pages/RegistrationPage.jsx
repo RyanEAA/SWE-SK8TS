@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
+import '../css/RegistrationPage.css';
 
 const RegistrationPage = () => {
   // for navigating to other pages
