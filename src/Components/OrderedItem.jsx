@@ -1,8 +1,6 @@
-import React, {useEffect, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 
 function OrderedItem({item}){
-
-    const [item, setItem] = useState(null);
     
     return(
         <div className='ordered-item-container'>
