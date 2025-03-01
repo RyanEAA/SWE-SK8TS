@@ -214,6 +214,38 @@ app.get('/orders/:user_id', (req, res) => {
   });
 });
 
+// 🔹 Fetch Orders API
+app.get('/orders', (req, res) => {
+  orderDb.query('SELECT * FROM orders', (err, results) => {
+    if (err) {
+      console.error('Error fetching orders:', err);
+      res.status(500).send('Error fetching orders');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// 🔹 Add orders API
+app.post('/orders', (req, res) => {
+  console.log('Received request at /orders'); // Log to verify the endpoint is hit
+  const { user_id, order_date, total_amount, shipping_address } = req.body;
+
+  if (!user_id || !order_date || !total_amount || !shipping_address) {
+    console.log('Missing required fields'); // Log missing fields
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const query = 'INSERT INTO orders (user_id, order_date, total_amount, shipping_address) VALUES (?, ?, ?, ?)';
+  userDb.query(query, [user_id, order_date, total_amount, shipping_address], (err, result) => {
+    if (err) {
+      console.error('Error adding order:', err); // Log database error
+      return res.status(500).json({ error: 'Error adding order', details: err.message });
+    }
+    console.log('Order added successfully'); // Log success
+    res.status(201).json({ message: 'Order added', orderId: result.insertId });
+  });
+});
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);

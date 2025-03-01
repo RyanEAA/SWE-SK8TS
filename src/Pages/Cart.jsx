@@ -1,114 +1,139 @@
-import React from 'react';
-import CartItem from "../Components/CartItem.jsx";
-import '../css/Cart.css';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Cookies from 'js-cookie';
+import CartItem from '../Components/CartItem.jsx';
+import '../css/Cart.css';
+import axios from 'axios';
 
 function Cart({ cartItems, onAdd, onRemove }) {
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [address, setAddress] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  // Price calculations
   const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0);
   const taxPrice = itemsPrice * 0.08;
   const totalPrice = itemsPrice + taxPrice;
 
-  const [userData, setUserData] = useState(null);
-  const navigate = useNavigate();
-
-  const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState('');
-  const [address, setAddress] = useState('')
-  
-  function MakeCartList(){
-    const l = []
-    for (let i = 0; i < cartItems.length; i++) {
-      l.push([cartItems[i].qty, cartItems[i].price, cartItems[i].product_id])
-    }
-    return l
-  }
-
   useEffect(() => {
     const fetchUserData = async () => {
-        const username = Cookies.get('user');
-        if (!username) {
-            alert('No user logged in. Redirecting to login.');
-            window.location.href = '/login';
-            return;
+      const username = Cookies.get('user');
+      if (!username) {
+        alert('You must be logged in to check out.');
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const response = await axios.get('https://sk8ts-shop.com/api/users');
+        if (response.status === 200 && Array.isArray(response.data)) {
+          const user = response.data.find((u) => u.username === username);
+          if (user) {
+            setUserData(user);
+          } else {
+            alert('User not found. Redirecting to login.');
+            navigate('/login');
+          }
         }
-        try {
-            const response = await axios.get('https://sk8ts-shop.com/api/users');
-            if (response.status === 200 && Array.isArray(response.data)) {
-                const user = response.data.find((u) => u.username === username);
-                if (user) {
-                    setUserData(user);
-                } else {
-                    alert('User not found. Redirecting to login.');
-                    window.location.href = '/login';
-                }
-            } else {
-                alert('Error retrieving user data.');
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            alert('An error occurred while fetching user data.');
-        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        alert('An error occurred while fetching user data.');
+      } finally {
+        setLoading(false);
+      }
     };
-    
+
     fetchUserData();
-}, [navigate]);
+  }, [navigate]);
 
-if (!userData) {
-  return <div>Loading user data...</div>;
-}
+  const makeCartList = () => {
+    return cartItems.map(item => ({
+      quantity: item.qty,
+      price: item.price,
+      product_id: item.product_id
+    }));
+  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrors({});
-    setMessage('');
-
-    if (MakeCartList().length == 0) {
-      alert('Cart Empty')
-      return
+  const handleCheckout = async () => {
+    if (!userData) {
+      alert('You must be logged in to check out.');
+      return;
     }
 
-    if (address == ''){
-      alert('Enter Shipping Address')
-      return
+    if (cartItems.length === 0) {
+      alert('Cart is empty');
+      return;
+    }
+
+    if (!address) {
+      alert('Please enter a shipping address');
+      return;
     }
 
     try {
-      const response = await fetch('https://sk8ts-shop.com/api/addorder', {
+      // Create main order
+      const orderResponse = await fetch('https://sk8ts-shop.com/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           user_id: userData.user_id,
+          order_date: new Date().toISOString(),
           total_amount: totalPrice,
           shipping_address: address,
           order_status: 'In Progress'
         })
       });
-      const data = await response.json();
-      const listToAdd = MakeCartList()
-      for (let i = 0; i < listToAdd.length; i++) {
-        const response2 = await fetch('https://sk8ts-shop.com/api/additems', {
+
+      // Handle order response
+      const responseText = await orderResponse.text();
+      console.log('Raw response:', responseText);
+
+      if (!orderResponse.ok) {
+        let errorMessage = `Failed to place order: ${orderResponse.status} ${orderResponse.statusText}`;
+        try {
+          const errorData = JSON.parse(responseText);
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch (e) {
+          errorMessage = responseText;
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Parse successful order response
+      const orderData = JSON.parse(responseText);
+      
+      // Add order items
+      const cartItemsList = makeCartList();
+      for (const item of cartItemsList) {
+        const itemResponse = await fetch('https://sk8ts-shop.com/api/additems', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            order_id: data.orderId,
-            quantity: listToAdd[i][0],
-            price: listToAdd[i][1]*listToAdd[i][0],
-            product_id: listToAdd[i][2]
+            order_id: orderData.orderId,
+            quantity: item.quantity,
+            price: item.price * item.quantity,
+            product_id: item.product_id
           })
         });
+
+        if (!itemResponse.ok) {
+          throw new Error('Failed to add order items');
+        }
       }
+
+      alert('Order placed successfully!');
+      console.log('Order ID:', orderData.orderId);
+      
     } catch (error) {
-        setMessage('Order Failed');
-        console.error('Order Error:', error);
+      console.error('Error placing order:', error);
+      alert(error.message || 'Failed to place order. Please try again.');
     }
-    alert('Order Submited')
-
-
-
   };
+
+  if (loading) {
+    return <div>Loading user data...</div>;
+  }
 
   return (
     <>
@@ -121,7 +146,12 @@ if (!userData) {
       <div id="cart-item-container">
         {cartItems.length === 0 && <div>Cart Is Empty</div>}
         {cartItems.map((item) => (
-          <CartItem key={item.product_id} item={item} onAdd={onAdd} onRemove={onRemove} />
+          <CartItem 
+            key={item.product_id} 
+            item={item} 
+            onAdd={onAdd} 
+            onRemove={onRemove} 
+          />
         ))}
       </div>
       <div>
@@ -131,6 +161,7 @@ if (!userData) {
             value={address} 
             onChange={(e) => setAddress(e.target.value)} 
             placeholder="Shipping Address" 
+            required
           />
         </div>
         {cartItems.length !== 0 && (
@@ -142,9 +173,7 @@ if (!userData) {
           </>
         )}
         <hr />
-        <form onSubmit={handleSubmit}>
-          <button>Check Out</button>
-        </form>
+        <button onClick={handleCheckout}>Check Out</button>
       </div>
     </>
   );
