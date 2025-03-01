@@ -21,6 +21,7 @@ function ItemPopup({ isOpen, onClose, product, onAdd }) {
 
   const handleClose = () => {
     setError('');
+    setQuantity(1);
     onClose();
   };
 

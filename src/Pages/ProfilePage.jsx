@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
+import OrderedItems from '../Components/OrderedItems';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
@@ -51,7 +52,8 @@ function ProfilePage() {
     }
 
     return (
-        <div className='profile-container'>
+        <div>
+            <div className='profile-container'>
             {/* <h1 className='profile-role'>{'Profile'}</h1> */}
             <div className='profile-header'>
                 <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" alt="Profile" className='profile-image' />
@@ -87,6 +89,9 @@ function ProfilePage() {
             </div>
             <button onClick={handleLogout}>Logout</button>
         </div>
+        <OrderedItems userData={userData}/>
+        </div>
+        
     );
 }
 

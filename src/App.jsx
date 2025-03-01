@@ -39,8 +39,11 @@ function App() {
     console.log("Current cart state:", cartItems);
   }, [cartItems]);
 
-  const onAdd = (product, qty = 1) => {
+  const onAdd = (product, qty = 0) => {
+    // Check if the product is already in the cart
     const exist = cartItems.find((x) => x.product_id === product.product_id);
+
+    // check amount in db 
     if (exist) {
       setCartItems(cartItems.map((x) =>
         x.product_id === product.product_id ? { ...exist, qty: exist.qty + qty } : x
