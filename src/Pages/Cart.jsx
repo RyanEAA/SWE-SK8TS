@@ -4,17 +4,23 @@ import Cookies from 'js-cookie';
 import CartItem from '../Components/CartItem.jsx';
 import '../css/Cart.css';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
-function Cart({ cartItems, onAdd, onRemove }) {
+
+function Cart() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(true);
 
+  // Get cart items from redux
+  const cartItems = useSelector((state) => state.cart.items);
+  console.log('cart items in cart:', cartItems);
   // Price calculations
-  const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0);
+  const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
   const taxPrice = itemsPrice * 0.08;
   const totalPrice = itemsPrice + taxPrice;
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -47,88 +53,24 @@ function Cart({ cartItems, onAdd, onRemove }) {
     fetchUserData();
   }, [navigate]);
 
-  const makeCartList = () => {
-    return cartItems.map(item => ({
-      quantity: item.qty,
-      price: item.price,
-      product_id: item.product_id
-    }));
-  };
 
+  // 
   const handleCheckout = async () => {
-    if (!userData) {
+    if (!userData) { // if user isn't logged in 
       alert('You must be logged in to check out.');
       return;
     }
-
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0) { // if users cart is empty
       alert('Cart is empty');
       return;
     }
-
     if (!address) {
       alert('Please enter a shipping address');
       return;
     }
+    // if all checks pass, place order
+    console.log('placing checkout');
 
-    try {
-      // Create main order
-      const orderResponse = await fetch('https://sk8ts-shop.com/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: userData.user_id,
-          order_date: new Date().toISOString(),
-          total_amount: totalPrice,
-          shipping_address: address,
-          order_status: 'In Progress'
-        })
-      });
-
-      // Handle order response
-      const responseText = await orderResponse.text();
-      console.log('Raw response:', responseText);
-
-      if (!orderResponse.ok) {
-        let errorMessage = `Failed to place order: ${orderResponse.status} ${orderResponse.statusText}`;
-        try {
-          const errorData = JSON.parse(responseText);
-          errorMessage = errorData.error || errorData.message || errorMessage;
-        } catch (e) {
-          errorMessage = responseText;
-        }
-        throw new Error(errorMessage);
-      }
-
-      // Parse successful order response
-      const orderData = JSON.parse(responseText);
-      
-      // Add order items
-      const cartItemsList = makeCartList();
-      for (const item of cartItemsList) {
-        const itemResponse = await fetch('https://sk8ts-shop.com/api/additems', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            order_id: orderData.orderId,
-            quantity: item.quantity,
-            price: item.price * item.quantity,
-            product_id: item.product_id
-          })
-        });
-
-        if (!itemResponse.ok) {
-          throw new Error('Failed to add order items');
-        }
-      }
-
-      alert('Order placed successfully!');
-      console.log('Order ID:', orderData.orderId);
-      
-    } catch (error) {
-      console.error('Error placing order:', error);
-      alert(error.message || 'Failed to place order. Please try again.');
-    }
   };
 
   if (loading) {
@@ -146,11 +88,10 @@ function Cart({ cartItems, onAdd, onRemove }) {
       <div id="cart-item-container">
         {cartItems.length === 0 && <div>Cart Is Empty</div>}
         {cartItems.map((item) => (
+          console.log('item price:', item.price ),
           <CartItem 
             key={item.product_id} 
             item={item} 
-            onAdd={onAdd} 
-            onRemove={onRemove} 
           />
         ))}
       </div>

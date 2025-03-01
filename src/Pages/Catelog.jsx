@@ -5,10 +5,18 @@ import ProductBox from '../Components/ProductBox';
 import '../css/Catelog.css';
 import ItemPopup from '../Components/ItemPopup';
 
+import { useSelector } from 'react-redux';
+
+
 function Catelog({onAdd}) { // function is obtained from App.js
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
+
+  // Access the cart items from the Redux store
+  const cartItems = useSelector((state) => state.cart.items);
+
+  // console.log('cart in popup:', cartItems); // Log the cart items
 
 
   /* handles the api call to get the products */
@@ -22,7 +30,7 @@ function Catelog({onAdd}) { // function is obtained from App.js
         return response.json();
       })
       .then((data) => {
-        console.log('Fetched products:', data); // Log the fetched data
+        //console.log('Fetched products:', data); // Log the fetched data
         setProducts(data);
       })
       .catch((error) => {

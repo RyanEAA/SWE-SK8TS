@@ -1,18 +1,42 @@
 import '../css/CartItem.css';
 import React from 'react';
-
+import { useDispatch } from 'react-redux';
+import { addItem, removeItem } from '../CartSlice.js';
 function CartItem(props) {
+
+    // import dispatch
+    const dispatch = useDispatch();
+
+    const handleDecrement = () => {
+        const productToRemove = props.item.product_id; // Send only the product_id
+      
+        if (props.item.quantity > 0) {
+          dispatch(removeItem(productToRemove));
+        }
+      };
+    
+      const handleIncrement = () => {
+        const productToAdd = {
+          product_id: props.item.product_id,
+          quantity: 1, // Or the appropriate quantity to add
+          price: props.item.price,
+          maxQuantity: props.item.maxQuantity, // Or rename to match your reducer
+        };
+        if (props.item.quantity < props.item.maxQuantity) {
+          dispatch(addItem(productToAdd));
+        }
+      };
 
     return (
         <div className='container-container'>
             <div className="item-container">
-                <img className='cart-item-image' src={`/Images/products/${props.image_path}`} alt={props.item.name} />
-                <div>{props.item.name}</div>
-                <div>${(props.item.price * props.item.qty).toFixed(2)}</div>
+                <img className='cart-item-image' src={`/Images/products/${props.item.image_path}`} alt={props.item.name} />
+                <div>{props.item.product_name}</div>
+                <div>${(props.item.price * props.item.quantity).toFixed(2)}</div>
                 <div>
-                    <button onClick={() => props.onRemove(props.item)}>dec</button> 
-                    {props.item.qty} 
-                    <button onClick={() => props.onAdd(props.item)}>inc</button>
+                    <button onClick={ handleDecrement }>dec</button> 
+                    {props.item.quantity} 
+                    <button onClick={ handleIncrement }>inc</button>
                 </div>
             </div>
         </div>

@@ -1,8 +1,7 @@
 // App. jsx
 
 import React, { useState, useEffect } from 'react'; 
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 
 import { Routes, Route } from "react-router-dom";
 import NavBar from './Components/NavBar.jsx';
@@ -17,64 +16,22 @@ import LoginPage from './Pages/LoginPage.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
 import NewAboutMe from './Pages/NewAboutMe.jsx';
-import { PRODUCTS } from './Products.js';
-
-
-// import './App.css'
-// import { CartObjectProvider } from './Components/CartObject.jsx';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 function App() {
-  const [cartItems, setCartItems] = useState([]);
-  const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    fetch('https://sk8ts-shop.com/api/products')
-      .then((response) => response.json())
-      .then((data) => setProducts(data))
-      .catch((error) => console.error('Error fetching products:', error));
-  }, []);
-
-  useEffect(() => {
-    console.log("Current cart state:", cartItems);
-  }, [cartItems]);
-
-  const onAdd = (product, qty = 0) => {
-    // Check if the product is already in the cart
-    const exist = cartItems.find((x) => x.product_id === product.product_id);
-
-    // check amount in db 
-    if (exist) {
-      setCartItems(cartItems.map((x) =>
-        x.product_id === product.product_id ? { ...exist, qty: exist.qty + qty } : x
-      ));
-    } else {
-      setCartItems([...cartItems, { ...product, qty }]);
-    }
-  };
-
-  const onRemove = (product) => {
-    const exist = cartItems.find((x) => x.product_id === product.product_id);
-    if (!exist) return; // Prevent errors if item isn’t found
-    if (exist.qty === 1) {
-      setCartItems(cartItems.filter((x) => x.product_id !== product.product_id));
-    } else {
-      setCartItems(cartItems.map((x) =>
-        x.product_id === product.product_id ? { ...exist, qty: exist.qty - 1 } : x
-      ));
-    }
-  };
 
   return (
     <>
-      <NavBar cartItems={cartItems} />
+      <NavBar />
         <Routes>
           <Route path='/' element={<Home />}/>
-          <Route path='/Shop' element={<Catelog onAdd={onAdd}/>}/>
+          <Route path='/Shop' element={<Catelog/>}/>
           <Route path='/Contact'/>
           <Route path='/AboutUs' element={<AboutUs />}/>
-          <Route path='/Cart' element={<Cart cartItems={cartItems} onAdd={onAdd} onRemove={onRemove}/>}/>
-          <Route path='/ProductInfo/:id' element={<ProductInfo onAdd={onAdd}/>}/>
+          <Route path='/Cart' element={<Cart/>}/>
+          <Route path='/ProductInfo/:id' element={<ProductInfo/>}/>
           <Route path='/Registration' element={<RegistrationPage />}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
@@ -160,7 +117,6 @@ function App() {
         </Routes>
         <Footer />
       {/* </CartObjectProvider> */}
-
     </>
   );
 }

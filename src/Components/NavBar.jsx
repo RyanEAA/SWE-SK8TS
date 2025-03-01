@@ -5,10 +5,13 @@ import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import '../css/NavBar.css';
 
-  // Ensure props.cartItems is an array, and if it's not, default it to an empty array
+// get redux store
+import { useSelector } from 'react-redux';
 
 const NavBar = (props) => {
-  const cartItemCount = props.cartItems ? props.cartItems.reduce((total, item) => total + item.qty, 0) : 0;
+  const cart = useSelector((state) => state.cart);
+
+  const cartItemCount = cart.items.reduce((acc, item) => acc + item.quantity, 0);
   const user = Cookies.get('user');
 
   return (
