@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 import React, {useEffect, useEffect} from 'react';
 
 function OrderedItem({item}){
 
     const [item, setItem] = useState(null);
+=======
+import React, {useEffect, useState} from 'react';
+
+function OrderedItem({item}){
+>>>>>>> cart-cookie
     
     return(
         <div className='ordered-item-container'>
