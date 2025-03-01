@@ -33,12 +33,14 @@ function Order({ orderItems }) {
 
     const orderId = orderItems[0].order_id;
     const totalAmount = orderItems[0].total_amount;
+    const deliveryStatus = orderItems[0].order_status;
 
     return (
         <div className='order'>
             <div className='ordered-items-header'>
                 <h1>Order ID: {orderId}</h1>
                 <h1>${totalAmount.toFixed(2)}</h1>
+                <h1>{deliveryStatus}</h1>
             </div>
             <div className='ordered-items-list'>
                 {orderItems.map((item) => (
