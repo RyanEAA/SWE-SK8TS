@@ -1,20 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
+import '../css/OrderedItem.css';
 
-function OrderedItem({item}){
-    
-    return(
-        <div className='ordered-item-container'>
-            <div className='item-container'>
-                <img className='ordered-item-image' src={`/Images/products/${props.item.image_path}`} alt={props.item.name} />
-                <div>{item.name}</div>
-                <div>${(props.item.price * item.qty).toFixed(2)}</div>
-                <div>
-                    <button onClick={() => props.onRemove(props.item)}>dec</button> 
-                    {props.item.qty} 
-                    <button onClick={() => props.onAdd(props.item)}>inc</button>
-                </div>
+function OrderedItem({ item, productName }) {
+    return (
+            <div className='ordered-item'>
+                <div className='item-name'>{productName || `Product ID: ${item.product_id}`}</div>
+                <div className='item-price'>{item.quantity}</div>
             </div>
-        </div>
     );
 }
 

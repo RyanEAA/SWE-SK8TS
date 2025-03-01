@@ -1,0 +1,25 @@
+/* Container for each order */
+.order {
+    width: 250px; /* Fixed width as specified */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;  
+}
+
+  
+  /* Styling for headers */
+  .ordered-items-container h1 {
+    font-size: 14px; /* Smaller font to fit 250px width */
+    margin: 5px 0; /* Reduced spacing */
+    color: #333; /* Darker text for readability */
+    font-weight: bold;
+  }
+  
+  /* Container for the list of ordered items */
+  .ordered-items-list {
+    max-height: 200px; /* Cap height to prevent overflow */
+    overflow-y: auto; /* Scroll if items exceed height */
+  }
+  

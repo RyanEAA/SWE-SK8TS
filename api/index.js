@@ -152,6 +152,10 @@ app.post('/register',
   }
 );
 
+app.post('/makeOrder',
+  //
+)
+
 // 🔹 Fetch Products API
 app.get('/products', (req, res) => {
   productDb.query('SELECT * FROM products', (err, results) => {
@@ -192,7 +196,7 @@ app.get('/orders', (req, res) => {
 // get Ordered Items from order
 app.get('/orders/:user_id', (req, res) => {
   const userId = req.params.user_id;
-  orderDb.query('SELECT * FROM orders natural join orderedItems WHERE user_id = ?', [userId], (err, results) => {
+  orderDb.query('SELECT * FROM orders natural join orderedItems WHERE user_id = ? ORDER BY order_id DESC', [userId], (err, results) => {
     if (err) {
       console.error('Error fetching ordered items:', err);
       res.status(500).send('Error fetching ordered items');

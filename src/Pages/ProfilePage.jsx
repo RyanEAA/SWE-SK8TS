@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
-import OrderedItems from '../Components/OrderedItems';
+import Order from '../Components/Order';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
+    const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,6 +24,8 @@ function ProfilePage() {
                     const user = response.data.find((u) => u.username === username);
                     if (user) {
                         setUserData(user);
+                        // Fetch the orders right after getting user data
+                        fetchOrders(user.user_id);
                     } else {
                         alert('User not found. Redirecting to login.');
                         window.location.href = '/login';
@@ -35,29 +38,50 @@ function ProfilePage() {
                 alert('An error occurred while fetching user data.');
             }
         };
-        
+
+        const fetchOrders = async (userId) => {
+            try {
+                const response = await axios.get(`https://sk8ts-shop.com/api/orders/${userId}`);
+                if (response.status === 200 && Array.isArray(response.data)) {
+                    setOrders(response.data);
+                } else {
+                    alert('Error retrieving orders.');
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+                alert('An error occurred while fetching orders.');
+            }
+        };
+
         fetchUserData();
     }, [navigate]);
 
     const handleLogout = () => {
         Cookies.remove('user');
-        //alert('Logged out.');
         window.location.href = '/';
         return;
     };
-
 
     if (!userData) {
         return <div>Loading user data...</div>;
     }
 
+    // Group orders by order_id
+    const groupedOrders = orders.reduce((acc, order) => {
+        if (!acc[order.order_id]) {
+            acc[order.order_id] = [];
+        }
+        acc[order.order_id].push(order);
+        return acc;
+    }, {});
+
     return (
         <div>
             <div className='profile-container'>
             {/* <h1 className='profile-role'>{'Profile'}</h1> */}
-            <div className='profile-header'>
-                <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" alt="Profile" className='profile-image' />
-                <div className='profile-header-text'>
+                <div className='profile-header'>
+                    <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" alt="Profile" className='profile-image' />
+                    <div className='profile-header-text'>
                     <h1 className='profile-name'>{userData.firstName} {userData.lastName}</h1>
                 </div>
             </div>
@@ -87,10 +111,16 @@ function ProfilePage() {
                     </tbody>
                 </table>
             </div>
+
             <button onClick={handleLogout}>Logout</button>
+            </div>
+            <div className='order-container'>
+                {Object.entries(groupedOrders).map(([orderId, orderItems]) => (
+                    <Order key={orderId} orderItems={orderItems} />
+                ))}
+            </div>
         </div>
-        <OrderedItems userData={userData}/>
-        </div>
+    
         
     );
 }

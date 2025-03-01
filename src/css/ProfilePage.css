@@ -57,3 +57,10 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+.order-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent items from wrapping */
+    padding: 20px;
+}
