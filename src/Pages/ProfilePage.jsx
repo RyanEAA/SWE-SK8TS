@@ -24,7 +24,6 @@ function ProfilePage() {
                     const user = response.data.find((u) => u.username === username);
                     if (user) {
                         setUserData(user);
-                        // Fetch the orders right after getting user data
                         fetchOrders(user.user_id);
                     } else {
                         alert('User not found. Redirecting to login.');
@@ -75,53 +74,52 @@ function ProfilePage() {
         return acc;
     }, {});
 
+    // Reverse the order of the grouped orders
+    const reversedOrderIds = Object.keys(groupedOrders).sort((a, b) => b - a);
+
     return (
         <div>
             <div className='profile-container'>
-            {/* <h1 className='profile-role'>{'Profile'}</h1> */}
                 <div className='profile-header'>
                     <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" alt="Profile" className='profile-image' />
                     <div className='profile-header-text'>
-                    <h1 className='profile-name'>{userData.firstName} {userData.lastName}</h1>
+                        <h1 className='profile-name'>{userData.firstName} {userData.lastName}</h1>
+                    </div>
                 </div>
-            </div>
-            <div className='profile-details'>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td className='profile-details'>Username</td>
-                            <td>{userData.username}</td>
-                        </tr>
-                        <tr>
-                            <td className='profile-details'>First Name</td>
-                            <td>{userData.first_name}</td>
-                        </tr>
-                        <tr>
-                            <td className='profile-details'>Last Name</td>
-                            <td>{userData.last_name}</td>
-                        </tr>
-                        <tr>
-                            <td className='profile-details'>Email</td>
-                            <td>{userData.email}</td>
-                        </tr>
-                        <tr>
-                            <td className='profile-details'>Shipping Address</td>
-                            <td>{userData.shipping_address}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <button onClick={handleLogout}>Logout</button>
+                <div className='profile-details'>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td className='profile-details'>Username</td>
+                                <td>{userData.username}</td>
+                            </tr>
+                            <tr>
+                                <td className='profile-details'>First Name</td>
+                                <td>{userData.first_name}</td>
+                            </tr>
+                            <tr>
+                                <td className='profile-details'>Last Name</td>
+                                <td>{userData.last_name}</td>
+                            </tr>
+                            <tr>
+                                <td className='profile-details'>Email</td>
+                                <td>{userData.email}</td>
+                            </tr>
+                            <tr>
+                                <td className='profile-details'>Shipping Address</td>
+                                <td>{userData.shipping_address}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button onClick={handleLogout}>Logout</button>
             </div>
             <div className='order-container'>
-                {Object.entries(groupedOrders).map(([orderId, orderItems]) => (
-                    <Order key={orderId} orderItems={orderItems} />
+                {reversedOrderIds.map((orderId) => (
+                    <Order key={orderId} orderItems={groupedOrders[orderId]} />
                 ))}
             </div>
         </div>
-    
-        
     );
 }
 
