@@ -218,61 +218,78 @@ app.post('/placeOrder', [
   }
 
   const { user_id, total_amount, shipping_address, items } = req.body;
+  console.log('Received request:', { user_id, total_amount, shipping_address, items });
 
-  orderDb.beginTransaction((err) => {
+  // Verify database connection
+  orderDb.query('SELECT DATABASE()', (err, result) => {
     if (err) {
-      console.error('Error starting transaction:', err.stack);
-      return res.status(500).send('Error processing order');
+      console.error('Error checking database:', err.stack);
+      return res.status(500).json({ error: 'Database connection failed' });
     }
+    console.log('Connected to database:', result[0]['DATABASE()']);
 
-    // Include all NOT NULL columns
-    const insertOrderQuery = `
-      INSERT INTO orders (user_id, order_date, total_amount, shipping_address, order_status)
-      VALUES (?, NOW(), ?, ?, 'pending')
-    `;
-    orderDb.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
+    orderDb.beginTransaction((err) => {
       if (err) {
-        console.error('Error adding order:', err.stack);
-        return orderDb.rollback(() => res.status(500).send('Error adding order'));
+        console.error('Error starting transaction:', err.stack);
+        return res.status(500).json({ error: 'Error processing order' });
       }
+      console.log('Transaction started');
 
-      const order_id = orderResult.insertId;
+      const insertOrderQuery = `
+        INSERT INTO orders (user_id, order_date, total_amount, shipping_address, order_status)
+        VALUES (?, NOW(), ?, ?, 'pending')
+      `;
+      console.log('Executing order query with params:', [user_id, total_amount, shipping_address]);
+      orderDb.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
+        if (err) {
+          console.error('Error adding order:', err.stack);
+          return orderDb.rollback(() => res.status(500).json({ error: 'Error adding order' }));
+        }
+        const order_id = orderResult.insertId;
+        console.log('Order inserted with ID:', order_id);
 
-      const insertItemPromises = items.map(item => {
-        return new Promise((resolve, reject) => {
-          const { product_id, quantity, price } = item;
-          const insertItemQuery = 'INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)';
-          orderDb.query(insertItemQuery, [order_id, product_id, quantity, price], (err, result) => {
-            if (err) {
-              console.error('Error inserting item:', { product_id, quantity, price, error: err.stack });
-              reject(err);
-            } else {
-              resolve(result);
-            }
-          });
-        });
-      });
-
-      Promise.all(insertItemPromises)
-        .then(() => {
-          orderDb.commit(err => {
-            if (err) {
-              console.error('Error committing transaction:', err.stack);
-              return orderDb.rollback(() => res.status(500).send('Error finalizing order'));
-            }
-            res.status(201).json({
-              message: 'Order added successfully',
-              orderId: order_id,
-              itemCount: items.length
+        const insertItemPromises = items.map(item => {
+          return new Promise((resolve, reject) => {
+            const { product_id, quantity, price } = item;
+            const insertItemQuery = 'INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)';
+            console.log('Executing item query with params:', [order_id, product_id, quantity, price]);
+            orderDb.query(insertItemQuery, [order_id, product_id, quantity, price], (err, result) => {
+              if (err) {
+                console.error('Error inserting item:', { product_id, quantity, price, error: err.stack });
+                reject(err);
+              } else {
+                console.log('Item inserted for order_id:', order_id);
+                resolve(result);
+              }
             });
           });
-        })
-        .catch(err => {
-          orderDb.rollback(() => res.status(500).send('Error adding ordered items'));
         });
+
+        Promise.all(insertItemPromises)
+          .then(() => {
+            console.log('All items inserted, committing transaction');
+            orderDb.commit(err => {
+              if (err) {
+                console.error('Error committing transaction:', err.stack);
+                return orderDb.rollback(() => res.status(500).json({ error: 'Error finalizing order' }));
+              }
+              console.log('Transaction committed successfully');
+              res.status(201).json({
+                message: 'Order added successfully',
+                orderId: order_id,
+                itemCount: items.length
+              });
+            });
+          })
+          .catch(err => {
+            console.error('Error during item insertion, rolling back:', err);
+            orderDb.rollback(() => res.status(500).json({ error: 'Error adding ordered items' }));
+          });
+      });
     });
   });
 });
+
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
