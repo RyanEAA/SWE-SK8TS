@@ -227,8 +227,8 @@ app.post('/placeOrder', [
 
     // Include all NOT NULL columns
     const insertOrderQuery = `
-      INSERT INTO orders (user_id, created_at, order_date, total_amount, shipping_address, order_status)
-      VALUES (?, NOW(), NOW(), ?, ?, 'pending')
+      INSERT INTO orders (user_id, order_date, total_amount, shipping_address, order_status)
+      VALUES (?, NOW(), ?, ?, 'pending')
     `;
     orderDb.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
       if (err) {
