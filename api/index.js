@@ -202,9 +202,22 @@ app.get('/orders/:user_id', (req, res) => {
   });
 });
 
-// POST APi to place order into Order table and ordered items into orderedItems table
-app.post('/placeOrder', (req, res) => {
-  const { userId, totalPrice, shippingAddress, items } = req.body;
+// POST API to place order into Order table and ordered items into orderedItems table
+app.post('/placeOrder', [
+  body('user_id').isInt({ min: 1 }).withMessage('Valid user_id is required'),
+  body('total_amount').isFloat({ min: 0 }).withMessage('Total amount must be a non-negative number'),
+  body('shipping_address').notEmpty().trim().withMessage('Shipping address is required'),
+  body('items').isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
+  body('items.*.product_id').isInt({ min: 1 }).withMessage('Valid product_id is required for each item'),
+  body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be a positive integer'),
+  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { user_id, total_amount, shipping_address, items } = req.body;
 
   // Start a transaction
   orderDb.beginTransaction((err) => {
@@ -214,8 +227,8 @@ app.post('/placeOrder', (req, res) => {
     }
 
     // Step 1: Insert the main order with automatic order_date using NOW()
-    const insertOrderQuery = 'INSERT INTO orders (user_id, order_date, total_amount, shipping_address) VALUES (?, NOW(), ?, ?)';
-    orderDb.query(insertOrderQuery, [userId, totalPrice, shippingAddress], (err, orderResult) => {
+    const insertOrderQuery = 'INSERT INTO orders (user_id, created_at, total_amount, shipping_address) VALUES (?, NOW(), ?, ?)';
+    orderDb.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
       if (err) {
         return orderDb.rollback(() => {
           console.error('Error adding order:', err);
@@ -223,14 +236,14 @@ app.post('/placeOrder', (req, res) => {
         });
       }
 
-      const orderId = orderResult.insertId;
+      const order_id = orderResult.insertId;
 
       // Step 2: Insert all ordered items
       const insertItemPromises = items.map(item => {
         return new Promise((resolve, reject) => {
-          const { productId, quantity, price } = item;
+          const { product_id, quantity, price } = item;
           const insertItemQuery = 'INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)';
-          orderDb.query(insertItemQuery, [orderId, productId, quantity, price], (err, result) => {
+          orderDb.query(insertItemQuery, [order_id, product_id, quantity, price], (err, result) => {
             if (err) {
               reject(err);
             } else {
@@ -254,7 +267,7 @@ app.post('/placeOrder', (req, res) => {
             // Send successful response
             res.status(201).json({
               message: 'Order added successfully',
-              orderId: orderId,
+              orderId: order_id,
               itemCount: items.length
             });
           });
