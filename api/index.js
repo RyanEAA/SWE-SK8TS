@@ -152,10 +152,6 @@ app.post('/register',
   }
 );
 
-app.post('/makeOrder',
-  //
-)
-
 // 🔹 Fetch Products API
 app.get('/products', (req, res) => {
   productDb.query('SELECT * FROM products', (err, results) => {
@@ -206,8 +202,8 @@ app.get('/orders/:user_id', (req, res) => {
   });
 });
 
-// used to place order into Order table and ordered items into orderedItems table
-app.post('/placeOrder', (req, res) => {
+// POST APi to place order into Order table and ordered items into orderedItems table
+app.post('/placeOrder/', (req, res) => {
   const { userId, orderDate, totalPrice, shippingAddress, items } = req.body;
   
   // Start a transaction
