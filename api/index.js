@@ -219,32 +219,32 @@ app.post('/placeOrder', [
 
   const { user_id, total_amount, shipping_address, items } = req.body;
 
-  // Start a transaction
   orderDb.beginTransaction((err) => {
     if (err) {
-      console.error('Error starting transaction:', err);
+      console.error('Error starting transaction:', err.stack);
       return res.status(500).send('Error processing order');
     }
 
-    // Step 1: Insert the main order with automatic order_date using NOW()
-    const insertOrderQuery = 'INSERT INTO orders (user_id, created_at, total_amount, shipping_address) VALUES (?, NOW(), ?, ?)';
+    // Include all NOT NULL columns
+    const insertOrderQuery = `
+      INSERT INTO orders (user_id, created_at, order_date, total_amount, shipping_address, order_status)
+      VALUES (?, NOW(), NOW(), ?, ?, 'pending')
+    `;
     orderDb.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
       if (err) {
-        return orderDb.rollback(() => {
-          console.error('Error adding order:', err);
-          res.status(500).send('Error adding order');
-        });
+        console.error('Error adding order:', err.stack);
+        return orderDb.rollback(() => res.status(500).send('Error adding order'));
       }
 
       const order_id = orderResult.insertId;
 
-      // Step 2: Insert all ordered items
       const insertItemPromises = items.map(item => {
         return new Promise((resolve, reject) => {
           const { product_id, quantity, price } = item;
           const insertItemQuery = 'INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)';
           orderDb.query(insertItemQuery, [order_id, product_id, quantity, price], (err, result) => {
             if (err) {
+              console.error('Error inserting item:', { product_id, quantity, price, error: err.stack });
               reject(err);
             } else {
               resolve(result);
@@ -253,18 +253,13 @@ app.post('/placeOrder', [
         });
       });
 
-      // Execute all item insertions
       Promise.all(insertItemPromises)
         .then(() => {
-          // Commit the transaction if all insertions successful
           orderDb.commit(err => {
             if (err) {
-              return orderDb.rollback(() => {
-                console.error('Error committing transaction:', err);
-                res.status(500).send('Error finalizing order');
-              });
+              console.error('Error committing transaction:', err.stack);
+              return orderDb.rollback(() => res.status(500).send('Error finalizing order'));
             }
-            // Send successful response
             res.status(201).json({
               message: 'Order added successfully',
               orderId: order_id,
@@ -273,16 +268,11 @@ app.post('/placeOrder', [
           });
         })
         .catch(err => {
-          // Rollback if any item insertion fails
-          orderDb.rollback(() => {
-            console.error('Error adding ordered items:', err);
-            res.status(500).send('Error adding ordered items');
-          });
+          orderDb.rollback(() => res.status(500).send('Error adding ordered items'));
         });
     });
   });
 });
-
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
