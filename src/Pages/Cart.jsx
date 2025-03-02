@@ -4,11 +4,12 @@ import Cookies from 'js-cookie';
 import CartItem from '../Components/CartItem.jsx';
 import '../css/Cart.css';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { clearCart } from '../CartSlice.js' // Import the clearCart action;
 
 function Cart() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [userData, setUserData] = useState(null);
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(true);
@@ -16,11 +17,11 @@ function Cart() {
   // Get cart items from redux
   const cartItems = useSelector((state) => state.cart.items);
   console.log('cart items in cart:', cartItems);
+
   // Price calculations
   const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.quantity, 0);
   const taxPrice = itemsPrice * 0.08;
   const totalPrice = itemsPrice + taxPrice;
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -53,14 +54,12 @@ function Cart() {
     fetchUserData();
   }, [navigate]);
 
-
-  // 
   const handleCheckout = async () => {
-    if (!userData) { // if user isn't logged in 
+    if (!userData) {
       alert('You must be logged in to check out.');
       return;
     }
-    if (cartItems.length === 0) { // if users cart is empty
+    if (cartItems.length === 0) {
       alert('Cart is empty');
       return;
     }
@@ -68,9 +67,34 @@ function Cart() {
       alert('Please enter a shipping address');
       return;
     }
-    // if all checks pass, place order
-    console.log('placing checkout');
 
+    try {
+      const orderData = {
+        user_id: userData.user_id,
+        total_amount: totalPrice,
+        shipping_address: address,
+        items: cartItems.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      };
+
+      const response = await axios.post('https://sk8ts-shop.com/api/placeOrder', orderData, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (response.status === 201) {
+        alert('Order placed successfully!');
+        dispatch(clearCart()); // Clear the cart after successful order
+        navigate('/');
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      alert('An error occurred while placing your order.');
+    }
   };
 
   if (loading) {
@@ -88,7 +112,7 @@ function Cart() {
       <div id="cart-item-container">
         {cartItems.length === 0 && <div>Cart Is Empty</div>}
         {cartItems.map((item) => (
-          console.log('item price:', item.price ),
+          console.log('item price:', item.price),
           <CartItem 
             key={item.product_id} 
             item={item} 
