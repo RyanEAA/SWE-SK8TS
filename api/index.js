@@ -203,9 +203,9 @@ app.get('/orders/:user_id', (req, res) => {
 });
 
 // POST APi to place order into Order table and ordered items into orderedItems table
-app.post('/placeOrder/', (req, res) => {
-  const { userId, orderDate, totalPrice, shippingAddress, items } = req.body;
-  
+app.post('/placeOrder', (req, res) => {
+  const { userId, totalPrice, shippingAddress, items } = req.body;
+
   // Start a transaction
   orderDb.beginTransaction((err) => {
     if (err) {
@@ -213,18 +213,18 @@ app.post('/placeOrder/', (req, res) => {
       return res.status(500).send('Error processing order');
     }
 
-    // Step 1: Insert the main order
-    const insertOrderQuery = 'INSERT INTO orders (user_id, order_date, total_amount, shipping_address) VALUES (?, ?, ?, ?)';
-    orderDb.query(insertOrderQuery, [userId, orderDate, totalPrice, shippingAddress], (err, orderResult) => {
+    // Step 1: Insert the main order with automatic order_date using NOW()
+    const insertOrderQuery = 'INSERT INTO orders (user_id, order_date, total_amount, shipping_address) VALUES (?, NOW(), ?, ?)';
+    orderDb.query(insertOrderQuery, [userId, totalPrice, shippingAddress], (err, orderResult) => {
       if (err) {
         return orderDb.rollback(() => {
           console.error('Error adding order:', err);
           res.status(500).send('Error adding order');
         });
       }
-      
+
       const orderId = orderResult.insertId;
-      
+
       // Step 2: Insert all ordered items
       const insertItemPromises = items.map(item => {
         return new Promise((resolve, reject) => {
@@ -239,7 +239,7 @@ app.post('/placeOrder/', (req, res) => {
           });
         });
       });
-      
+
       // Execute all item insertions
       Promise.all(insertItemPromises)
         .then(() => {
@@ -252,8 +252,8 @@ app.post('/placeOrder/', (req, res) => {
               });
             }
             // Send successful response
-            res.status(201).json({ 
-              message: 'Order added successfully', 
+            res.status(201).json({
+              message: 'Order added successfully',
               orderId: orderId,
               itemCount: items.length
             });
