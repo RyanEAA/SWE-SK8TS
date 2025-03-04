@@ -15,7 +15,6 @@ import RegistrationPage from './Pages/RegistrationPage.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
-import NewAboutMe from './Pages/NewAboutMe.jsx';
 import { useSelector, useDispatch } from 'react-redux';
 
 
@@ -50,7 +49,7 @@ function App() {
             interest2desc="I have always enjoyed learning about cars"
             interest2='Cars'
             />}/>
-          <Route path='AboutUs/ryan' element={<NewAboutMe 
+          <Route path='AboutUs/ryan' element={<AboutMe 
             location='Austin, TX'
             skills='Python, JS, SQL, AI'
             interests='AI, Video Games'

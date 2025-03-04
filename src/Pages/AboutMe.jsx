@@ -1,55 +1,70 @@
-import {Link} from 'react-router-dom'
-import '../css/AboutMe.css'
-function AboutMe(props) {
+import { Link } from 'react-router-dom';
+import '../css/NewAboutMe.css';
 
+function NewAboutMe(props) {
   return (
-    <div className="container mt-5">
-        <h1 className="about-me-text">About Me</h1>
+    <main className="individual-page">
+      <h1 className="about-me-text">About Me</h1>
 
-        <div class="card-and-profile-image">
-            <div className="headshot-container">
-                <img src={props.profileimage} class="profile-image" alt="Wilson Flores"/>
-            </div>
-            <div className="card-container">
-                    <h2 className="card-title">{props.name}</h2>
-                    <p class="card-text lead">
-                        {props.text}
-                    </p>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Location:</strong> {props.location}</li>
-                        <li class="list-group-item"><strong>Skills:</strong> {props.skills}</li>
-                        <li class="list-group-item"><strong>Interests:</strong> {props.interests}</li>
-                    </ul>
-                    <a href={props.github} className="github-button">My GitHub Page</a>
-            </div>
+      {/* this is where the profile picture and the about me info is at */}
+      <div className="profile-container">
+        {/* profile pic and social media */}
+        <div className="polaroid">
+          <img src={props.profileimage} alt="Profile" />
+
+          {/* social media parts inside polaroid */}
+          <div className="social-media">
+            <a className="github-button" href={props.github}>
+              Github
+            </a>
+
+            <a
+              className="linkedin-button"
+              href="https://www.linkedin.com/in/ryan-aparicio-547586220/"
+            >
+              LinkedIn
+            </a>
+          </div>
         </div>
 
+        <div className="card">
+          <h2 className="card-title">I'm {props.name}</h2>
+          <p className="card-text">{props.text}</p>
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item">
+              <strong>Location:</strong> {props.location}
+            </li>
+            <li className="list-group-item">
+              <strong>Skills:</strong> {props.skills}
+            </li>
+            <li className="list-group-item">
+              <strong>Interests:</strong> {props.interests}
+            </li>
+          </ul>
+        </div>
+      </div>
 
-        <div class="two-intrest-image-container">
-            <div class="col-md-6 mb-5 text-center">
-                <img src={props.interest1image} 
-                     class="interest-image" alt="Wilson fishing"/>
-                <div class="card w-75 mx-auto mt-4">
-                    <div class="interest-card">
-                        <h5 class="card-title">{props.interest1}</h5>
-                        <p class="intrests-desc">{props.interest1desc}</p>
-                    </div>
-                </div>            
-            </div>
-            <div class="col-md-6 mb-5 text-center">
-                <img src={props.webimage}
-                     class="interest-image" alt="Web Image"/>
-                <div class="card w-75 mx-auto mt-4">
-                    <div class="interest-card">
-                        <h5 class="card-title">{props.interest2}</h5>
-                        <p class="interests-desc">{props.interest2desc}</p>
-                    </div>
-                </div>            
-            </div>
+      {/* this is where photos are going to be shown OUTSIDE of the profile container*/}
+      <div className="image-gallery">
+        <div className="polaroid">
+          <img className="interest-image" src={props.interest1image} alt="Interest 1" />
+          <p>{props.interest1desc}</p>
         </div>
 
-    </div>
-  )
+        <div className="polaroid">
+          <img className="interest-image" src={props.webimage} alt="Interest 2" />
+          <p>{props.interest2desc}</p>
+        </div>
+
+      </div>
+
+      <div className="back-to-home">
+        <Link to="/" className="back-to-home-text">
+          Back to Home
+        </Link>
+      </div>
+    </main>
+  );
 }
 
-export default AboutMe
+export default NewAboutMe;
