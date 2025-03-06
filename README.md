@@ -20,6 +20,7 @@ git clone https://github.com/RyanEAA/SWE-SK8TS.git
 4. Open terminal window in VS Code (Make sure it is in repo directory)
 
 5. To bring Development Stack Up, enter in terminal:
+5.1. **if you have to install new package make sure to delete old container**
 ```bash
 docker compose -f docker-compose-dev.yml up 
 ```
