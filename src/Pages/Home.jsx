@@ -90,20 +90,21 @@ function Home() {
         </div>
 
         {/* EXTRA IMAGE FOR SYMMETRY */}
-        <div className="extra-image-container">
+        <div className="image-highlight-container">
+        <h2 className='desc-container'>New Gear Coming Soon!</h2>
           <Link to="/Shop">
             <img src="/Images/newGearComingSoon.jpg" className="extra-image" alt="New Skate Gear" />
           </Link>
-          <p className='desc-container'>New Gear Coming Soon!</p>
+          
         </div>
       </div>
 
-      <footer>
+      {/* <footer>
         Check out the team! <Link to="/AboutUs">About Us</Link>
         <p>
           Haven't joined the family? {isLoggedIn ? <Link to="/profile">Profile</Link> : <Link to="/LoginPage">Login!</Link>}
         </p>
-      </footer>
+      </footer> */}
     </div>
   );
 }

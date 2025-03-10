@@ -17,9 +17,7 @@ import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
 import { useSelector, useDispatch } from 'react-redux';
 
-
 function App() {
-
 
   return (
     <>
