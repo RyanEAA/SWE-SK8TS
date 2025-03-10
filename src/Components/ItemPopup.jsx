@@ -3,8 +3,13 @@ import '../css/AboutMe.css';
 import '../css/ItemPopup.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from '../CartSlice.js';
+import Cookies from 'js-cookie';
+
 
 function ItemPopup({ isOpen, onClose, product }) {
+
+
+
   const [quantity, setQuantity] = React.useState(1);
   const [error, setError] = React.useState('');
   const popupContentRef = useRef(null);
@@ -75,6 +80,14 @@ function ItemPopup({ isOpen, onClose, product }) {
   };
 
   const handleAddToCart = () => {
+
+    const username = Cookies.get('user');
+    if (!username) {
+      alert('You must be logged in to check out.');
+      navigate('/shop');
+      return;
+    }
+
     if (!error || error === `Total limit for item is ${product.stock_quantity}`) {
       // add to redux using dispath
       // create product obj
