@@ -236,7 +236,7 @@ app.put('/orders/:order_id/status', [
 });
 
 // Get Unclaimed Orders API
-app.get('/unclaimed', (req, res) => {
+app.get('/unclaimed_orders', (req, res) => {
   orderDb.query(
     "SELECT * FROM orders WHERE order_status = 'Unclaimed'",
     (err, results) => {
