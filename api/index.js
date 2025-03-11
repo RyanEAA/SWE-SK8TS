@@ -198,6 +198,48 @@ app.post('/placeOrder', [
   });
 });
 
+// Update Order Status API
+app.put('/orders/:order_id/status', [
+  body('order_status').isIn(['Unclaimed', 'In Progress', 'Sent']).withMessage('Invalid order status')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const orderId = req.params.order_id;
+  const { order_status } = req.body;
+
+  orderDb.query(
+    'UPDATE orders SET order_status = ? WHERE order_id = ?',
+    [order_status, orderId],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating order status:', err);
+        return res.status(500).send('Error updating order status');
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Order not found' });
+      }
+      res.json({ message: 'Order status updated successfully' });
+    }
+  );
+});
+
+// Get Unclaimed Orders API
+app.get('/orders/unclaimed', (req, res) => {
+  orderDb.query(
+    "SELECT * FROM orders WHERE order_status = 'Unclaimed'",
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching unclaimed orders:', err);
+        return res.status(500).send('Error fetching unclaimed orders');
+      }
+      res.json(results);
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
 });
