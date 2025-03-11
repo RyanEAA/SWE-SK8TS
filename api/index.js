@@ -9,8 +9,17 @@ const { body, validationResult } = require('express-validator');
 const app = express();
 const port = process.env.PORT || 3636;
 
-// Enable CORS for all routes
-app.use(cors({ origin: '*' }));
+// Enable CORS for specific origins
+const corsOptions = {
+  origin: [
+    'https://sk8ts-shop.com',
+    /http:\/\/localhost:\d+/
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
 app.use(express.json()); // Middleware for JSON parsing
 
 // Database pool configuration
