@@ -21,6 +21,21 @@ services:
       - 3000:3000
     env_file:
       - stack.env
+  
+  api-dev:
+    pull_policy: build
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_HOST: 167.71.25.102
+      MYSQL_USER: root
+      MYSQL_PASSWORD: uTBzZE3u2FxWHs
+      MYSQL_PRODUCTS_DB: products
+      MYSQL_USERS_DB: users
+      MYSQL_ORDER_DB: order
+    ports:
+      - 3636:3636
 
 
 
