@@ -15,12 +15,15 @@ import RegistrationPage from './Pages/RegistrationPage.jsx';
 import LoginPage from './Pages/LoginPage.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
-import { useSelector, useDispatch } from 'react-redux';
+import ChatBot from "react-chatbotify";
+import { flow, settings, styles } from "./Components/Chatbot/chatbotConfig.js";
+import OllieChatBot from './Components/Chatbot/OllieChatBot.jsx';
 
 function App() {
 
   return (
     <>
+    <OllieChatBot />
       <NavBar />
         <Routes>
           <Route path='/' element={<Home />}/>
