@@ -1,0 +1,27 @@
+/* OllieChatBot.module.css */
+:root {
+    --skate-primary-blue: #00BFFF;
+    --skate-secondary-dark: #333333;
+}
+
+.container {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--skate-secondary-dark);
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.message {
+    background-color: var(--skate-primary-blue);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.userInput {
+    border: 2px solid var(--skate-primary-blue);
+    padding: 10px;
+    border-radius: 8px;
+    width: 80%;
+}
