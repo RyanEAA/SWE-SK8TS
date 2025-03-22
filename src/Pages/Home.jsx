@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const LoopingVideo = () => {
   return (

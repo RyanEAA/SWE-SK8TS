@@ -57,6 +57,7 @@ function ProfilePage() {
 
     const handleLogout = () => {
         Cookies.remove('user');
+        Cookies.remove('employee');
         window.location.href = '/';
         return;
     };

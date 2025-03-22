@@ -1,0 +1,31 @@
+.unclaimed-order-container{
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 5px;
+    margin-bottom: 1%;
+    align-items: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+.unclaimed-orders-headers{
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    padding-bottom: 2%;
+    padding-top: 1%;
+    font-weight: bolder;
+}
+/* .unclaimed-order-id{
+    
+} */
+/* .unclaimed-order-user-id{
+    vertical-align: middle;
+} */
+.unclaimed-order-claim-button{
+    margin: 0;
+    padding-left: 1%;
+    padding-right: 1%;
+}
