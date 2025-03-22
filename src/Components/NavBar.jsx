@@ -13,6 +13,7 @@ const NavBar = (props) => {
 
   const cartItemCount = cart.items.reduce((acc, item) => acc + item.quantity, 0);
   const user = Cookies.get('user');
+  const employee = Cookies.get('employee');
 
   return (
     <header>
@@ -27,6 +28,11 @@ const NavBar = (props) => {
         <Link to="/profile">Profile</Link>
         ) : (
           <Link to="/login">Login</Link>
+        )}
+        {employee ? (
+        <Link to="/OrderDashboard">Order Dashboard</Link>
+        ) : (
+          ''
         )}
 
       </nav>

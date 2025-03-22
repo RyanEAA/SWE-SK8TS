@@ -16,6 +16,7 @@ import LoginPage from './Pages/LoginPage.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
 import ChatBot from "react-chatbotify";
+import OrderDashboard from './Pages/OrderDashboard.jsx';
 import { flow, settings, styles } from "./Components/Chatbot/chatbotConfig.js";
 import OllieChatBot from './Components/Chatbot/OllieChatBot.jsx';
 
@@ -35,6 +36,7 @@ function App() {
           <Route path='/Registration' element={<RegistrationPage />}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/OrderDashboard" element={<OrderDashboard />} />
           <Route path='AboutUs/wilson' element={<AboutMe 
             location='Austin, TX'
             skills='Python, SQL'
