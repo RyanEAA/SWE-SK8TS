@@ -40,7 +40,7 @@ const LoginPage = () => {
           
           // Setting cookies based on if the logged in user is an employee or not
           if (user.user_role == 'admin'){
-            Cookies.set('employee', user.user_role, { expires: 7 });
+            Cookies.set('employee', user.user_id, { expires: 7 });
           }
 
         } else {
