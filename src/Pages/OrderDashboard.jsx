@@ -7,6 +7,28 @@ function OrderDashboard() {
 
     const [unclaimedOrders, setUnclaimedOrders] = useState(null);
 
+    const handleClaimOrder = async (order_id) => {
+        console.log('Claiming order:', order_id);
+        console.log('Employee:', Cookies.get('employee'));
+
+        try {
+            const response = await axios.put(`https://sk8ts-shop.com/api/orders/${order_id}/status`, {
+                order_status: 'In Progress',
+                order_id: order_id
+            });
+
+            if (response.status === 200) {
+                alert('Order claimed successfully.');
+            } else {
+                alert('Error claiming order.');
+            }
+        }
+        catch (error) {
+            console.error('Error claiming order:', error);
+            alert('An error occurred while claiming order.');
+        }
+    }
+
     useEffect(() => {
 
         const fetchUnclaimedOrders = async () => {
@@ -19,7 +41,7 @@ function OrderDashboard() {
                 }
             } catch (error) {
                 console.error('Error fetching unclaimed orders:', error);
-                alert('An error occurred while fetching unclaimed orders.');
+                // alert('An error occurred while fetching unclaimed orders.');
             }
         };
 
@@ -43,7 +65,7 @@ function OrderDashboard() {
                     <div className='unclaimed-order-id'>{order.order_id} </div>
                     <div className='unclaimed-order-user-id'>{order.user_id}</div>
                     <div className='unclaimed-order-price'>{order.order_date}</div>
-                    <div className='unclaimed-order-claim'><button className='unclaimed-order-claim-button'>claim</button></div>
+                    <div className='unclaimed-order-claim'><button onClick={() => handleClaimOrder(order.order_id)} className='unclaimed-order-claim-button'>claim</button></div>
                 </div>
             ))}
         </>
