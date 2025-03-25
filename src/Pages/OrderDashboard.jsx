@@ -13,7 +13,7 @@ function OrderDashboard() {
 
         try {
             const response = await axios.put(`https://sk8ts-shop.com/api/orders/${order_id}/status`, {
-                order_status: 'In Progress',
+                order_status: 'claimed',
                 order_id: order_id
             });
 
