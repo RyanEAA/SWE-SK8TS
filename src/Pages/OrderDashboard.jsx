@@ -31,6 +31,8 @@ function OrderDashboard() {
           }
           alert('An error occurred while claiming order.');
         }
+        // refresh the page
+        window.location.reload();
       };
       
 
