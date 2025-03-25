@@ -46,7 +46,7 @@ function OrderDashboard() {
         };
 
         fetchUnclaimedOrders();
-    });
+    }, []);
 
     if (!unclaimedOrders) {
         return <div>Loading Unclaimed Orders...</div>;
