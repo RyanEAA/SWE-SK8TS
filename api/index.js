@@ -207,33 +207,48 @@ app.post('/placeOrder', [
   });
 });
 
-// Update Order Status API
-app.put('/orders/:order_id/status', [
-  body('order_status').isIn(['unclaimed', 'claimed', 'sent']).withMessage('Invalid order status')
-], (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+// update orders
+app.put(
+  '/update-orders/:order_id/:status/:employee_id',
+  (req, res) => {
+    // 1. Extract Data from URL Parameters
+    const orderId = req.params.order_id;
+    const orderStatus = req.params.status;
+    const employeeId = req.params.employee_id;
 
-  const orderId = req.params.order_id;
-  const { order_status } = req.body;
+    // 2. Validation (Optional, but recommended)
+    // You might still want to validate orderStatus and employeeId
+    // to ensure they are in the expected format.
+    if (!['unclaimed', 'claimed', 'sent'].includes(orderStatus)) {
+      return res.status(400).json({ error: 'Invalid order status' });
+    }
 
-  orderDb.query(
-    'UPDATE orders SET order_status = ? WHERE order_id = ?',
-    [order_status, orderId],
-    (err, result) => {
+    if (!/^\d+$/.test(employeeId)) { // basic number check.
+      return res.status(400).json({ error: 'Invalid employee ID' });
+    }
+
+    // 3. Construct SQL Update Query
+    let query = 'UPDATE orders SET order_status = ?, employee_id = ? WHERE order_id = ?';
+    let params = [orderStatus, employeeId, orderId];
+
+    // 4. Execute Database Query
+    orderDb.query(query, params, (err, result) => {
+      // 5. Database Error Handling
       if (err) {
         console.error('Error updating order status:', err);
         return res.status(500).send('Error updating order status');
       }
+
+      // 6. Order Not Found Handling
       if (result.affectedRows === 0) {
         return res.status(404).json({ error: 'Order not found' });
       }
+
+      // 7. Success Response
       res.json({ message: 'Order status updated successfully' });
-    }
-  );
-});
+    });
+  }
+);
 
 // Get Unclaimed Orders API
 app.get('/unclaimed_orders', (req, res) => {
