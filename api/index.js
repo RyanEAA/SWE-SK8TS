@@ -209,7 +209,7 @@ app.post('/placeOrder', [
 
 // Update Order Status API
 app.put('/orders/:order_id/status', [
-  body('order_status').isIn(['Unclaimed', 'In Progress', 'Sent']).withMessage('Invalid order status')
+  body('order_status').isIn(['unclaimed', 'claimed', 'sent']).withMessage('Invalid order status')
 ], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
