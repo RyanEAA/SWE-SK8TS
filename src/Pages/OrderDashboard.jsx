@@ -8,26 +8,31 @@ function OrderDashboard() {
     const [unclaimedOrders, setUnclaimedOrders] = useState(null);
 
     const handleClaimOrder = async (order_id) => {
+        const employeeId = Cookies.get('employee'); // Get employee ID from cookies
+        const orderStatus = 'claimed'; // Order status is always 'claimed' in this function
+      
         console.log('Claiming order:', order_id);
-        console.log('Employee:', Cookies.get('employee'));
-
+        console.log('Employee:', employeeId);
+      
         try {
-            const response = await axios.put(`https://sk8ts-shop.com/api/orders/${order_id}/status`, {
-                order_status: 'claimed',
-                order_id: order_id
-            });
-
-            if (response.status === 200) {
-                alert('Order claimed successfully.');
-            } else {
-                alert('Error claiming order.');
-            }
+          const response = await axios.put(
+            `https://sk8ts-shop.com/api/update-orders/${order_id}/${orderStatus}/${employeeId}`
+          );
+      
+          if (response.status === 200) {
+            alert('Order claimed successfully.');
+          } else {
+            alert('Error claiming order. Server returned a non 200 status.');
+          }
+        } catch (error) {
+          console.error('Error claiming order:', error);
+          if (error.response && error.response.data) {
+            console.error('Server response:', error.response.data);
+          }
+          alert('An error occurred while claiming order.');
         }
-        catch (error) {
-            console.error('Error claiming order:', error);
-            alert('An error occurred while claiming order.');
-        }
-    }
+      };
+      
 
     useEffect(() => {
 
