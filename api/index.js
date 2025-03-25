@@ -177,7 +177,7 @@ app.post('/placeOrder', [
 
       const insertOrderQuery = `
         INSERT INTO orders (user_id, order_date, total_amount, shipping_address, order_status)
-        VALUES (?, NOW(), ?, ?, 'pending')
+        VALUES (?, NOW(), ?, ?, 'unclaimed')
       `;
       
       connection.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
