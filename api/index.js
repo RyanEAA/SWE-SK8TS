@@ -267,3 +267,24 @@ app.get('/unclaimed_orders', (req, res) => {
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
 });
+
+// Get Claimed orders by Employee
+app.get('/claimed_orders/:employee_id', (req, res) => {
+  const employeeId = req.params.employee_id;
+  
+  // num validation
+  if (!/^\d+$/.test(employeeId)) {
+    return res.status(400).json({ error: 'Invalid employee ID' });
+  }
+  orderDb.query(
+    "SELECT * FROM orders WHERE employee_id = ?  AND order_status = 'claimed' ORDER BY order_date DESC",
+    (err, results) => {
+      if (err) {
+      console.error('Error fetching claimed orders:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    res.json(results);
+    }
+  );
+});
