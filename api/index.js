@@ -268,22 +268,25 @@ app.get('/unclaimed_orders', (req, res) => {
 app.get('/claimed_orders/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
   
-  // num validation
+  // Validate employeeId to ensure it's a number
   if (!/^\d+$/.test(employeeId)) {
     return res.status(400).json({ error: 'Invalid employee ID' });
   }
-  orderDb.query(
-    "SELECT * FROM orders WHERE employee_id = ?  AND order_status = 'claimed' ORDER BY order_date DESC",
-    (err, results) => {
-      if (err) {
+
+  // Use placeholders properly to avoid syntax errors
+  const sqlQuery = "SELECT * FROM orders WHERE employee_id = ? AND order_status = 'claimed' ORDER BY order_date DESC";
+  
+  orderDb.query(sqlQuery, [employeeId], (err, results) => {
+    if (err) {
       console.error('Error fetching claimed orders:', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
+    // Return the result
     res.json(results);
-    }
-  );
+  });
 });
+
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
