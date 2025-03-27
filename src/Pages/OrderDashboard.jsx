@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import '../css/OrderDashboard.css';
+import '../css/buttons.css'
 
 function OrderDashboard() {
 
@@ -72,7 +73,7 @@ function OrderDashboard() {
                     <div className='unclaimed-order-id'>{order.order_id} </div>
                     <div className='unclaimed-order-user-id'>{order.user_id}</div>
                     <div className='unclaimed-order-price'>{order.order_date}</div>
-                    <div className='unclaimed-order-claim'><button onClick={() => handleClaimOrder(order.order_id)} className='unclaimed-order-claim-button'>claim</button></div>
+                    <div className='unclaimed-btn-claim'><button onClick={() => handleClaimOrder(order.order_id)} className="btn btn-green" >claim</button></div>
                 </div>
             ))}
         </>

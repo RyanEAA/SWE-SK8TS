@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
+import '../css/buttons.css'
 import Order from '../Components/Order';
 import Popup from 'reactjs-popup';
 
@@ -193,7 +194,7 @@ function ProfilePage() {
                     reversedClaimedOrderIds.map((orderId) => (
                         <button
                         key={orderId}
-                        className="order-button"
+                        className="btn btn-green" 
                         onClick={() => handleOrderClick(orderId)}
                         >
                         <Order orderItems={groupedClaimedOrders[orderId]} />

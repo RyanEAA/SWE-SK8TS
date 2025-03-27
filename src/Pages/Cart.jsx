@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import CartItem from '../Components/CartItem.jsx';
 import '../css/Cart.css';
+import '../css/buttons.css'
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart } from '../CartSlice.js' // Import the clearCart action;
@@ -138,7 +139,7 @@ function Cart() {
           </>
         )}
         <hr />
-        <button className="btn btn-green" onClick={handleCheckout}>Check Out</button>
+        <button className="btn btn-green btn-checkout" onClick={handleCheckout}>Check Out</button>
       </div>
     </>
   );

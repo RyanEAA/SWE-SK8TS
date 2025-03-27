@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/LoginPage.css';
-import '../css/button';
+import '../css/buttons.css';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -87,9 +87,9 @@ const LoginPage = () => {
             required
           />
         </div>
-        <button className="btn btn-green" type="submit">Login</button>
+        <button className="btn btn-green btn-login" type="submit">Login</button>
       </form>
-      <button onClick={handleRegistration}>Register</button>
+      <button className="btn btn-green btn-login" onClick={handleRegistration}>Register</button>
     </div>
   );
 };

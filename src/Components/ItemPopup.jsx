@@ -129,7 +129,7 @@ function ItemPopup({ isOpen, onClose, product }) {
           />
         </div>
         <div className="error-message">{error}</div>
-        <button onClick={handleAddToCart}>Add to Cart</button>
+        <button className="btn btn-green" onClick={handleAddToCart}>Add to Cart</button>
       </div>
     </div>
   );

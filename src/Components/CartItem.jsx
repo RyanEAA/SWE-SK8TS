@@ -2,7 +2,9 @@ import '../css/CartItem.css';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { addItem, removeItem } from '../CartSlice.js';
+import '../css/buttons.css'
 function CartItem(props) {
+
 
     // import dispatch
     const dispatch = useDispatch();

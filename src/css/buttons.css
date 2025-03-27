@@ -8,6 +8,7 @@
     transition: all 0.2s ease;
     text-align: center;
     display: inline-block;
+    margin: 0px;
   }
   
   /* Green buttons (default for most buttons) */
@@ -15,11 +16,19 @@
     background-color: #4CAF50;
     color: white;
   }
-  
   .btn-green:hover {
     background-color: #3e8e41;
   }
-  
+  /* For checkout button */
+  .btn-checkout{
+    display: block;
+    width: 100%;
+    margin-top: 0%;
+  }
+  /* For login and register button */
+  .btn-login{
+    width: 100px;
+  }  
   /* Red button (only for logout) */
   .btn-red {
     background-color: #dc3545;
