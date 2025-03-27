@@ -21,17 +21,18 @@
     box-sizing: border-box;
   }
   
+  /* CAUSING BACKGROUND DEPENDENCY ISSUE */
   button {
-    width: 100%;
+    /* width: 100%;
     padding: 10px;
     background-color: #4CAF50;
-    color: white;
+    color: black; /* text color*/
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 10px; */
   }
   
   button:hover {
-    background-color: #45a049;
+    /* background-color: #3b853d; */
   }

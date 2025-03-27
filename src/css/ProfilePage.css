@@ -186,34 +186,4 @@
     margin: 0;
     font-size: 24px;
 }
-/* Order button styling *//* Order button styling */
-.order-button {
-    width: 100%;
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: left;
-    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
-    margin-bottom: 15px; /* Add some spacing between buttons */
-  }
-  
-  .order-button:hover {
-    transform: translateY(-2px);
-    background-color: green; /* Light grey background */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
-  }
-  
-  .order-button:active {
-    transform: translateY(0);
-  }
-  
-  /* This ensures the Order component inside doesn't inherit hover styles */
-  .order-button:hover .order {
-    color: inherit; /* Keep original text color */
-  }
-  
-  /* This prevents text color changes in child elements */
-  .order-button:hover * {
-    color: inherit !important;
-  }
+

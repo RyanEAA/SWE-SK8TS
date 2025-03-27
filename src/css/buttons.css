@@ -1,0 +1,44 @@
+/* Base button styles for ALL buttons */
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: inline-block;
+  }
+  
+  /* Green buttons (default for most buttons) */
+  .btn-green {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .btn-green:hover {
+    background-color: #3e8e41;
+  }
+  
+  /* Red button (only for logout) */
+  .btn-red {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .btn-red:hover {
+    background-color: #c82333;
+  }
+  
+  /* White buttons (for tabs and order details) */
+  .btn-white {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .btn-white:hover {
+    background-color: #989898;
+    color: white;
+    border-color: #4CAF50;
+  }

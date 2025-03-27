@@ -61,7 +61,7 @@ function ProfilePage() {
 
         const fetchClaimedOrders = async (employeeId) => {
             try {
-                const response = await axios.get(`https://sk8ts-shop.com/api/claimed_orders/${employeeId}`);
+                const response = await axios.get(`https://sk8ts-shop.com/api/orders/employee/${employeeId}`);
                 if (response.status === 200 && Array.isArray(response.data)) {
                     setClaimedOrders(response.data);
                 }
@@ -74,7 +74,7 @@ function ProfilePage() {
     }, [navigate]);
 
     const handleOrderClick = (orderId) => {
-        setSelectedOrder(orderId); // This will trigger the popup
+        setSelectedOrder(orderId);
       };
 
     const handleLogout = () => {

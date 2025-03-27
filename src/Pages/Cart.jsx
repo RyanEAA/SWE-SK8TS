@@ -138,7 +138,7 @@ function Cart() {
           </>
         )}
         <hr />
-        <button onClick={handleCheckout}>Check Out</button>
+        <button className="btn btn-green" onClick={handleCheckout}>Check Out</button>
       </div>
     </>
   );

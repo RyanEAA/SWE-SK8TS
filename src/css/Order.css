@@ -1,12 +1,22 @@
-/* Container for each order */
 .order {
-     /* Fixed width as specified */
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;  
+     
+  /* CAUSING BACKGROUND DEPENDENCY ISSUE */
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: #fff; /* Set default background here */
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  margin-bottom: 15px;
+  border-radius: 4px; /* Match your design */
 }
+.order:hover{
+  transform: translateY(-2px);
+  background-color: green !important; /* Force green background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
   
   /* Styling for headers */
@@ -22,4 +32,3 @@
     max-height: 200px; /* Cap height to prevent overflow */
     overflow-y: auto; /* Scroll if items exceed height */
   }
-  
