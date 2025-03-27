@@ -264,10 +264,6 @@ app.get('/unclaimed_orders', (req, res) => {
   );
 });
 
-app.listen(port, () => {
-  console.log(`API service is running on port ${port}`);
-});
-
 // Get Claimed orders by Employee
 app.get('/claimed_orders/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
@@ -288,3 +284,9 @@ app.get('/claimed_orders/:employee_id', (req, res) => {
     }
   );
 });
+
+app.listen(port, () => {
+  console.log(`API service is running on port ${port}`);
+});
+
+
