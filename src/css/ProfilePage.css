@@ -64,3 +64,156 @@
     white-space: nowrap; /* Prevent items from wrapping */
     padding: 20px;
 }
+.profile-page-container {
+    display: flex;
+    min-height: 100vh;
+    padding: 20px;
+    gap: 20px;
+}
+
+.profile-section {
+    width: 350px;
+    height: 450px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.orders-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.orders-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 0 20px;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    position: relative;
+}
+
+.tab-button.active {
+    color: #000;
+    font-weight: 600;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #007bff;
+}
+
+.orders-container {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(100vh - 180px);
+}
+
+.no-orders {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.profile-details table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.profile-details td {
+    padding: 8px 0;
+    vertical-align: top;
+}
+
+.profile-details td:first-child {
+    font-weight: 600;
+    color: #555;
+    width: 150px;
+}
+
+.logout-button {
+    margin-top: auto;
+    padding: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.logout-button:hover {
+    background: #c82333;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 24px;
+}
+/* Order button styling *//* Order button styling */
+.order-button {
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    margin-bottom: 15px; /* Add some spacing between buttons */
+  }
+  
+  .order-button:hover {
+    transform: translateY(-2px);
+    background-color: green; /* Light grey background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+  }
+  
+  .order-button:active {
+    transform: translateY(0);
+  }
+  
+  /* This ensures the Order component inside doesn't inherit hover styles */
+  .order-button:hover .order {
+    color: inherit; /* Keep original text color */
+  }
+  
+  /* This prevents text color changes in child elements */
+  .order-button:hover * {
+    color: inherit !important;
+  }

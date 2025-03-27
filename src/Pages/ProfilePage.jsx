@@ -4,11 +4,15 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
 import Order from '../Components/Order';
+import Popup from 'reactjs-popup';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
     const [orders, setOrders] = useState([]);
+    const [claimedOrders, setClaimedOrders] = useState([]);
+    const [activeTab, setActiveTab] = useState('placed');
     const navigate = useNavigate();
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -25,6 +29,9 @@ function ProfilePage() {
                     if (user) {
                         setUserData(user);
                         fetchOrders(user.user_id);
+                        if (user.user_role === 'admin' || user.user_role === 'employee') {
+                            fetchClaimedOrders(user.user_id);
+                        }
                     } else {
                         alert('User not found. Redirecting to login.');
                         window.location.href = '/login';
@@ -52,8 +59,23 @@ function ProfilePage() {
             }
         };
 
+        const fetchClaimedOrders = async (employeeId) => {
+            try {
+                const response = await axios.get(`https://sk8ts-shop.com/api/claimed_orders/${employeeId}`);
+                if (response.status === 200 && Array.isArray(response.data)) {
+                    setClaimedOrders(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching claimed orders:', error);
+            }
+        };
+
         fetchUserData();
     }, [navigate]);
+
+    const handleOrderClick = (orderId) => {
+        setSelectedOrder(orderId); // This will trigger the popup
+      };
 
     const handleLogout = () => {
         Cookies.remove('user');
@@ -75,16 +97,29 @@ function ProfilePage() {
         return acc;
     }, {});
 
+    const groupedClaimedOrders = claimedOrders.reduce((acc, order) => {
+        if (!acc[order.order_id]) {
+            acc[order.order_id] = [];
+        }
+        acc[order.order_id].push(order);
+        return acc;
+    }, {});
+
     // Reverse the order of the grouped orders
     const reversedOrderIds = Object.keys(groupedOrders).sort((a, b) => b - a);
+    const reversedClaimedOrderIds = Object.keys(groupedClaimedOrders).sort((a, b) => b - a);
+
+    const isEmployee = userData.user_role === 'admin' || userData.user_role === 'employee';
 
     return (
-        <div>
-            <div className='profile-container'>
+        <div className="profile-page-container">
+            <div className="profile-section">
                 <div className='profile-header'>
-                    <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" alt="Profile" className='profile-image' />
+                    <img src="https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid" 
+                         alt="Profile" 
+                         className='profile-image' />
                     <div className='profile-header-text'>
-                        <h1 className='profile-name'>{userData.firstName} {userData.lastName}</h1>
+                        <h1 className='profile-name'>{userData.first_name} {userData.last_name}</h1>
                     </div>
                 </div>
                 <div className='profile-details'>
@@ -110,16 +145,77 @@ function ProfilePage() {
                                 <td className='profile-details'>Shipping Address</td>
                                 <td>{userData.shipping_address}</td>
                             </tr>
+                            <tr>
+                                <td className='profile-details'>Role</td>
+                                <td>{userData.user_role}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <button onClick={handleLogout}>Logout</button>
+                <button onClick={handleLogout} className="logout-button">Logout</button>
             </div>
-            <div className='order-container'>
-                {reversedOrderIds.map((orderId) => (
-                    <Order key={orderId} orderItems={groupedOrders[orderId]} />
-                ))}
+
+            <div className="orders-section">
+                <div className="orders-tabs">
+                    <button 
+                        className={`tab-button ${activeTab === 'placed' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('placed')}
+                    >
+                        My Orders
+                    </button>
+                    {isEmployee && (
+                        <button 
+                            className={`tab-button ${activeTab === 'claimed' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('claimed')}
+                        >
+                            Claimed Orders
+                        </button>
+                    )}
+                </div>
+                
+                <div className="orders-container">
+                {activeTab === 'placed' ? (
+                    reversedOrderIds.length > 0 ? (
+                    reversedOrderIds.map((orderId) => (
+                        <button 
+                        key={orderId}
+                        className="order-button" 
+                        onClick={() => handleOrderClick(orderId)}
+                        >
+                        <Order orderItems={groupedOrders[orderId]} />
+                        </button>
+                    ))
+                    ) : (
+                    <p className="no-orders">No orders placed yet</p>
+                    )
+                ) : (
+                    reversedClaimedOrderIds.length > 0 ? (
+                    reversedClaimedOrderIds.map((orderId) => (
+                        <button
+                        key={orderId}
+                        className="order-button"
+                        onClick={() => handleOrderClick(orderId)}
+                        >
+                        <Order orderItems={groupedClaimedOrders[orderId]} />
+                        </button>
+                    ))
+                    ) : (
+                    <p className="no-orders">No orders claimed yet</p>
+                    )
+                )}
+                </div>
             </div>
+            <Popup
+  open={selectedOrder !== null}
+  onClose={() => setSelectedOrder(null)}
+>
+  <div className="order-popup">
+    {/* Your popup content will go here */}
+    <h3>Order Details for #{selectedOrder}</h3>
+    {/* You can display order details here */}
+    <button onClick={() => setSelectedOrder(null)}>Close</button>
+  </div>
+</Popup>
         </div>
     );
 }
