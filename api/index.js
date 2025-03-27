@@ -264,29 +264,29 @@ app.get('/unclaimed_orders', (req, res) => {
   );
 });
 
-// Get Claimed orders by Employee
-app.get('/claimed_orders/:employee_id', (req, res) => {
+// Fetch Orders by Employee ID API
+app.get('/orders/employee/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
-  
-  // Validate employeeId to ensure it's a number
-  if (!/^\d+$/.test(employeeId)) {
+
+  // Check if employee_id is valid
+  if (!/^\d+$/.test(employeeId)) { // basic number check.
     return res.status(400).json({ error: 'Invalid employee ID' });
   }
 
-  // Use placeholders properly to avoid syntax errors
-  const sqlQuery = "SELECT * FROM orders WHERE employee_id = ? AND order_status = 'claimed' ORDER BY order_date DESC";
-  
-  orderDb.query(sqlQuery, [employeeId], (err, results) => {
+  // Query to fetch orders assigned to the employee
+  orderDb.query('SELECT * FROM orders WHERE employee_id = ?', [employeeId], (err, results) => {
     if (err) {
-      console.error('Error fetching claimed orders:', err);
-      return res.status(500).json({ error: 'Database error' });
+      console.error('Error fetching orders for employee:', err);
+      return res.status(500).send('Error fetching orders for employee');
     }
 
-    // Return the result
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No orders found for this employee' });
+    }
+
     res.json(results);
   });
 });
-
 
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
