@@ -67,7 +67,7 @@ function OrderDashboard() {
                 <div className='unclaimed-order-price'>Order Date</div>
                 <div></div>
             </div>
-            {[...unclaimedOrders].reverse().map(order => (
+            {[...unclaimedOrders].map(order => (
                 <div className='unclaimed-order-container'>
                     <div className='unclaimed-order-id'>{order.order_id} </div>
                     <div className='unclaimed-order-user-id'>{order.user_id}</div>
