@@ -81,7 +81,7 @@ function OrderDashboard() {
                     <div className='unclaimed-order-id'>{order.order_id} </div>
                     <div className='unclaimed-order-user-id'>{order.user_id}</div>
                     <div className='unclaimed-order-price'>{formatDate(order.order_date)}</div>
-                    <div className='unclaimed-btn-claim'><button onClick={() => handleClaimOrder(order.order_id)} className="btn btn-green" >claim</button></div>
+                    <div className='unclaimed-btn-claim'><button onClick={() => handleClaimOrder(order.order_id)} className="btn btn-green" >Claim Order</button></div>
                 </div>
             ))}
         </>

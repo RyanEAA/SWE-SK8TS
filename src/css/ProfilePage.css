@@ -89,7 +89,7 @@
 .tab-button {
     width: 50%;
     padding: 12px 24px;
-    background: #e6e6e6;
+    background: rgb(230, 230, 230);
     border: 1px solid #ddd;
     border-bottom: none;
     cursor: pointer;
