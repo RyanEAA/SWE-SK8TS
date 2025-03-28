@@ -253,6 +253,19 @@ app.get('/unclaimed_orders', (req, res) => {
   );
 });
 
+// 🔹 Fetch Ordered Items API
+app.get('/orders/user/:user_id', (req, res) => {
+  const userId = req.params.user_id;
+  orderDb.query('SELECT * FROM orders NATURAL JOIN orderedItems WHERE user_id = ? ORDER BY order_id DESC', [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching ordered items:', err);
+      return res.status(500).send('Error fetching ordered items');
+    }
+    res.json(results);
+  });
+});
+
+
 // Fetch Orders by Employee ID API
 app.get('/orders/employee/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
