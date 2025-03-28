@@ -182,7 +182,7 @@ function ProfilePage() {
                         <button 
                         key={orderId}
                         className="btn btn-white" 
-                        onClick={() => handleOrderClick(orderId)}
+                        // onClick={() => handleOrderClick(orderId)}
                         >
                         <Order orderItems={groupedOrders[orderId]} />
                         </button>

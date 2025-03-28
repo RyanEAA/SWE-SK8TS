@@ -264,7 +264,7 @@ app.get('/unclaimed_orders', (req, res) => {
   );
 });
 
-// Fetch Orders by Employee ID API
+// Fetch Orders by Employee ID API (basically fetches orders and order details employee has claimed)
 app.get('/orders/employee/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
 
@@ -274,7 +274,7 @@ app.get('/orders/employee/:employee_id', (req, res) => {
   }
 
   // Query to fetch orders assigned to the employee
-  orderDb.query('SELECT * FROM orders WHERE employee_id = ?', [employeeId], (err, results) => {
+  orderDb.query('SELECT * FROM orders NATURAL JOIN orderedItems WHERE employee_id = ?', [employeeId], (err, results) => {
     if (err) {
       console.error('Error fetching orders for employee:', err);
       return res.status(500).send('Error fetching orders for employee');
