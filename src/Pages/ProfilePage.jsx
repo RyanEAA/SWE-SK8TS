@@ -49,7 +49,7 @@ function ProfilePage() {
 
         const fetchOrders = async (userId) => {
             try {
-                const response = await axios.get(`https://sk8ts-shop.com/api/orders/${userId}`);
+                const response = await axios.get(`https://sk8ts-shop.com/api/orders/user/${userId}`);
                 if (response.status === 200 && Array.isArray(response.data)) {
                     setOrders(response.data);
                 } else {
