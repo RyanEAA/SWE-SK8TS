@@ -1,29 +1,40 @@
 .order {
-     
   width: 100%;
   padding: 0;
   border: none;
   background: transparent; /* Set background to transparent for*/
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   transition: all 0.2s ease;
   margin-bottom: 15px;
   border-radius: 4px; /* Match your design */
 }
-
-
-
   
-  /* Styling for headers */
-  .ordered-items-header h1 {
-    font-size: 14px; /* Smaller font to fit 250px width */
-    margin: 5px 0; /* Reduced spacing */
-    color: #333; /* Darker text for readability */
-    font-weight: bold;
-  }
-  
-  /* Container for the list of ordered items */
-  .ordered-items-list {
-    max-height: 200px; /* Cap height to prevent overflow */
-    overflow-y: auto; /* Scroll if items exceed height */
-  }
+/* Styling for headers */
+.ordered-items-header h1 {
+  font-size: 14px; /* Smaller font to fit 250px width */
+  margin: 5px 0; /* Reduced spacing */
+  color: #333; /* Darker text for readability */
+  font-weight: bold;
+}
+
+/* Container for the list of ordered items */
+.ordered-items-list {
+  max-height: 200px; /* Cap height to prevent overflow */
+  text-align: left;
+  overflow-y: auto; /* Scroll if items exceed height */
+}
+
+.order-dropdown {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  margin: 5px;
+}
+
+
+
+

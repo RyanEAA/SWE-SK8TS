@@ -134,17 +134,6 @@ app.get('/orders', (req, res) => {
   });
 });
 
-// 🔹 Fetch Ordered Items API
-app.get('/orders/:user_id', (req, res) => {
-  const userId = req.params.user_id;
-  orderDb.query('SELECT * FROM orders NATURAL JOIN orderedItems WHERE user_id = ? ORDER BY order_id DESC', [userId], (err, results) => {
-    if (err) {
-      console.error('Error fetching ordered items:', err);
-      return res.status(500).send('Error fetching ordered items');
-    }
-    res.json(results);
-  });
-});
 
 // 🔹 Place Order API
 app.post('/placeOrder', [
@@ -274,7 +263,7 @@ app.get('/orders/employee/:employee_id', (req, res) => {
   }
 
   // Query to fetch orders assigned to the employee
-  orderDb.query('SELECT * FROM orders WHERE employee_id = ?', [employeeId], (err, results) => {
+  orderDb.query('SELECT * FROM orders NATURAL JOIN orderedItems WHERE employee_id = ? AND order_status = "unclaimed"', [employeeId], (err, results) => {
     if (err) {
       console.error('Error fetching orders for employee:', err);
       return res.status(500).send('Error fetching orders for employee');
