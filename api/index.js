@@ -253,9 +253,6 @@ app.get('/unclaimed_orders', (req, res) => {
   );
 });
 
-<<<<<<< HEAD
-// Fetch Orders by Employee ID API (basically fetches orders and order details employee has claimed)
-=======
 // 🔹 Fetch Ordered Items API
 app.get('/orders/user/:user_id', (req, res) => {
   const userId = req.params.user_id;
@@ -270,7 +267,6 @@ app.get('/orders/user/:user_id', (req, res) => {
 
 
 // Fetch Orders by Employee ID API
->>>>>>> status-change
 app.get('/orders/employee/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
 
