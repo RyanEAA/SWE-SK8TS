@@ -6,6 +6,7 @@ import '../css/ProfilePage.css';
 import '../css/buttons.css'
 import Order from '../Components/Order';
 import Popup from 'reactjs-popup';
+import OrderPopup from '../Components/OrderPopup';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
@@ -206,17 +207,11 @@ function ProfilePage() {
                 )}
                 </div>
             </div>
-            <Popup
-  open={selectedOrder !== null}
-  onClose={() => setSelectedOrder(null)}
->
-  <div className="order-popup">
-    {/* Your popup content will go here */}
-    <h3>Order Details for #{selectedOrder}</h3>
-    {/* You can display order details here */}
-    <button onClick={() => setSelectedOrder(null)}>Close</button>
-  </div>
-</Popup>
+            <OrderPopup 
+                orderId={selectedOrder}
+                orderItems={[]} // Pass your order items array here
+                onClose={() => setSelectedOrder(null)}
+                />
         </div>
     );
 }
