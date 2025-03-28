@@ -1,21 +1,16 @@
 .order {
      
-  /* CAUSING BACKGROUND DEPENDENCY ISSUE */
   width: 100%;
   padding: 0;
   border: none;
-  background: #fff; /* Set default background here */
+  background: transparent; /* Set background to transparent for*/
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
   margin-bottom: 15px;
   border-radius: 4px; /* Match your design */
 }
-.order:hover{
-  transform: translateY(-2px);
-  background-color: green !important; /* Force green background */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+
 
 
   

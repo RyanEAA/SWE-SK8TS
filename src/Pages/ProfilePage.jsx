@@ -153,25 +153,25 @@ function ProfilePage() {
                         </tbody>
                     </table>
                 </div>
-                <button onClick={handleLogout} className="logout-button">Logout</button>
+                <button onClick={handleLogout} className="btn-logout">Logout</button>
             </div>
 
             <div className="orders-section">
-                <div className="orders-tabs">
+            <div className="orders-tabs">
+                <button 
+                    className={`tab-button ${activeTab === 'placed' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('placed')}
+                >
+                    Order History
+                </button>
+                {isEmployee && (
                     <button 
-                        className={`tab-button ${activeTab === 'placed' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('placed')}
+                    className={`tab-button ${activeTab === 'claimed' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('claimed')}
                     >
-                        My Orders
+                    Claimed Orders
                     </button>
-                    {isEmployee && (
-                        <button 
-                            className={`tab-button ${activeTab === 'claimed' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('claimed')}
-                        >
-                            Claimed Orders
-                        </button>
-                    )}
+                )}
                 </div>
                 
                 <div className="orders-container">
@@ -180,7 +180,7 @@ function ProfilePage() {
                     reversedOrderIds.map((orderId) => (
                         <button 
                         key={orderId}
-                        className="order-button" 
+                        className="btn btn-white" 
                         onClick={() => handleOrderClick(orderId)}
                         >
                         <Order orderItems={groupedOrders[orderId]} />
@@ -194,7 +194,7 @@ function ProfilePage() {
                     reversedClaimedOrderIds.map((orderId) => (
                         <button
                         key={orderId}
-                        className="btn btn-green" 
+                        className="btn btn-white" 
                         onClick={() => handleOrderClick(orderId)}
                         >
                         <Order orderItems={groupedClaimedOrders[orderId]} />

@@ -28,14 +28,24 @@
   /* For login and register button */
   .btn-login{
     width: 100px;
+    margin: 5px;
   }  
   /* Red button (only for logout) */
-  .btn-red {
-    background-color: #dc3545;
+  .btn-logout {
+    margin-top: auto;
+    padding: 10px;
+    background: #dc3545;
     color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
   }
+  /* tab buttons for profile page */
   
-  .btn-red:hover {
+  
+  .btn-logout:hover {
     background-color: #c82333;
   }
   
@@ -44,10 +54,10 @@
     background-color: white;
     color: #333;
     border: 1px solid #ddd;
+    width: 50%;
   }
   
   .btn-white:hover {
-    background-color: #989898;
-    color: white;
-    border-color: #4CAF50;
+    background-color: #e6e6e6;
+    
   }
