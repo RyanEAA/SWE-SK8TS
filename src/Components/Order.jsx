@@ -44,6 +44,7 @@ function Order({ orderItems, editable = false}) {
             //axios.put(`http://localhost:3636/update-orders/${orderId}/${newStatus}/${employeeID}`)
                 .then(response => {
                     console.log('Delivery status updated:', response);
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.error('Error updating delivery status:', error);
