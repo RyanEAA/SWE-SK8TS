@@ -1,11 +1,49 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/OrderDashboard.css';
 import '../css/buttons.css'
 
 function OrderDashboard() {
     const [unclaimedOrders, setUnclaimedOrders] = useState(null);
+    const navigate = useNavigate();
+    
+    // only allow employees and admins to access this page
+      useEffect(() => {
+        const fetchUserData = async () => {
+          const username = Cookies.get('user');
+          if (!username) {
+            alert('You must be a logged in employee to check out.');
+            window.location.href = '/login';
+            return;
+          }
+    
+          try {
+            const response = await axios.get('https://sk8ts-shop.com/api/users');
+            if (response.status === 200 && Array.isArray(response.data)) {
+              const user = response.data.find((u) => u.username === username);
+              if (user.user_role !== 'employee' || user.user_role !== 'admin') {
+                alert('You must be an employee or admin to access this page.');
+                window.location.href = '/login';
+              }
+              if (user) {
+                setUserData(user);
+              } else {
+                alert('User not found. Redirecting to login.');
+                window.location.href = '/login';
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+            alert('An error occurred while fetching user data.');
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        fetchUserData();
+      }, [navigate]);
 
     function formatDate(dateString) {
         const date = new Date(dateString);
