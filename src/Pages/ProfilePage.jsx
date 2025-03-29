@@ -50,6 +50,8 @@ function ProfilePage() {
         const fetchOrders = async (userId) => {
             try {
                 const response = await axios.get(`https://sk8ts-shop.com/api/orders/user/${userId}`);
+                //const response = await axios.get(`http://localhost:3636/orders/user/${userId}`);
+
                 if (response.status === 200 && Array.isArray(response.data)) {
                     setOrders(response.data);
                 } else {
@@ -64,6 +66,7 @@ function ProfilePage() {
         const fetchClaimedOrders = async (employeeId) => {
             try {
                 const response = await axios.get(`https://sk8ts-shop.com/api/orders/employee/${employeeId}`);
+                //const response = await axios.get(`http://localhost:3636/orders/employee/${employeeId}`);
                 if (response.status === 200 && Array.isArray(response.data)) {
                     setClaimedOrders(response.data);
                 }

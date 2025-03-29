@@ -276,7 +276,7 @@ app.get('/orders/employee/:employee_id', (req, res) => {
   }
 
   // Query to fetch orders assigned to the employee
-  orderDb.query('SELECT * FROM orders NATURAL JOIN orderedItems WHERE employee_id = ? AND order_status = "claimed"', [employeeId], (err, results) => {
+  orderDb.query("SELECT * FROM orders NATURAL JOIN orderedItems WHERE employee_id = ? AND order_status='claimed'", [employeeId], (err, results) => {
     if (err) {
       console.error('Error fetching orders for employee:', err);
       return res.status(500).send('Error fetching orders for employee');
