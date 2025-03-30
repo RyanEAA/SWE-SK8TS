@@ -35,7 +35,8 @@ const LoginPage = () => {
         if (user) {
           Cookies.set('user', username, { expires: 7 });
           Cookies.set('user_role', user.user_role, { expires: 7 }); // Store user_role in cookies
-          
+          Cookies.set('user_id', user.user_id, { expires: 7 }); // Store user_role in cookies
+
           navigate('/'); // Redirect to Home.jsx
           setTimeout(() => {
             window.location.reload(); // Force reload

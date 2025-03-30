@@ -64,7 +64,7 @@ function OrderDashboard() {
     }
 
     const handleClaimOrder = async (order_id) => {
-        const employeeId = Cookies.get('employee');
+        const employeeId = Cookies.get('user_id');
         const orderStatus = 'claimed';
       
         try {
