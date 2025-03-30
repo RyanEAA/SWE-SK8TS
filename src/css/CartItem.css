@@ -32,5 +32,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;  /* Adds spacing between buttons and quantity number */
+    margin: 10px;
+    background-color: rgb(170, 170, 170);
+    max-height: 50%;
+    min-width: 40px;
+    border-radius: 4px;
 }

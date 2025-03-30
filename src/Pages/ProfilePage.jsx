@@ -170,14 +170,14 @@ function ProfilePage() {
             <div className="orders-section">
                 <div className="orders-tabs">
                     <button 
-                        className={`tab-button ${activeTab === 'placed' ? 'active' : ''}`}
+                        className={`btn-tab ${activeTab === 'placed' ? 'active' : ''}`}
                         onClick={() => setActiveTab('placed')}
                     >
                         Order History
                     </button>
                     {isEmployee && (
                         <button 
-                            className={`tab-button ${activeTab === 'claimed' ? 'active' : ''}`}
+                            className={`btn-tab ${activeTab === 'claimed' ? 'active' : ''}`}
                             onClick={() => setActiveTab('claimed')}
                         >
                             Claimed Orders

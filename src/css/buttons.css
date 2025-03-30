@@ -1,63 +1,82 @@
 /* Base button styles for ALL buttons */
 .btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s ease;
-    text-align: center;
-    display: inline-block;
-    margin: 0px;
-  }
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: inline-block;
+  margin: 0px;
+}
+
+/* Green buttons (default for most buttons) */
+.btn-green {
+  background-color: #4CAF50;
+  color: white;
+}
+.btn-green:hover {
+  background-color: #3e8e41;
+}
+/* For checkout button */
+.btn-checkout{
+  display: block;
+  width: 100%;
+  margin-top: 0%;
+}
+/* For login and register button */
+.btn-login{
+  width: 100px;
+  margin: 5px;
+}  
+/* Red button (only for logout) */
+.btn-logout {
+  margin-top: auto;
+  padding: 10px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+/* tab buttons for profile page */
+.btn-tab {
+  width: 50%;
+  padding: 12px 24px;
+  background: rgb(230, 230, 230);
+  border: 1px solid #ddd;
+  border-bottom: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0;
+  position: relative;
+  top: 1px;
+  border-radius: 8px 8px 0 0;
+}
+
+.btn-tab.active {
+  background: #ffffff;
+  font-weight: bold;
+  border-bottom: 1px solid #f8f8f8;
+}
   
-  /* Green buttons (default for most buttons) */
-  .btn-green {
-    background-color: #4CAF50;
-    color: white;
-  }
-  .btn-green:hover {
-    background-color: #3e8e41;
-  }
-  /* For checkout button */
-  .btn-checkout{
-    display: block;
-    width: 100%;
-    margin-top: 0%;
-  }
-  /* For login and register button */
-  .btn-login{
-    width: 100px;
-    margin: 5px;
-  }  
-  /* Red button (only for logout) */
-  .btn-logout {
-    margin-top: auto;
-    padding: 10px;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.2s;
-  }
-  /* tab buttons for profile page */
+.btn-logout:hover {
+  background-color: #c82333;
+}
+
+/* White buttons (for tabs and order details) */
+.btn-white {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  width: 50%;
+}
+
+.btn-white:hover {
+  background-color: #e6e6e6;
   
-  
-  .btn-logout:hover {
-    background-color: #c82333;
-  }
-  
-  /* White buttons (for tabs and order details) */
-  .btn-white {
-    background-color: white;
-    color: #333;
-    border: 1px solid #ddd;
-    width: 50%;
-  }
-  
-  .btn-white:hover {
-    background-color: #e6e6e6;
-    
-  }
+}
