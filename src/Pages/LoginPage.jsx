@@ -41,12 +41,8 @@ const LoginPage = () => {
           setTimeout(() => {
             window.location.reload(); // Force reload
           }, 100);
-          
-          // Setting cookies based on if the logged-in user is an employee or not
-          if (user.user_role === 'admin') {
-            Cookies.set('employee', user.user_id, { expires: 7 });
-          }
-        } else {
+                  } 
+        else {
           alert('Login failed: Invalid username or password.');
         }
       } else {
