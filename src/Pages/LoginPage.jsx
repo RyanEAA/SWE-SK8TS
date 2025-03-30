@@ -34,16 +34,17 @@ const LoginPage = () => {
   
         if (user) {
           Cookies.set('user', username, { expires: 7 });
+          Cookies.set('user_role', user.user_role, { expires: 7 }); // Store user_role in cookies
+          
           navigate('/'); // Redirect to Home.jsx
           setTimeout(() => {
             window.location.reload(); // Force reload
           }, 100);
           
-          // Setting cookies based on if the logged in user is an employee or not
-          if (user.user_role == 'admin'){
+          // Setting cookies based on if the logged-in user is an employee or not
+          if (user.user_role === 'admin') {
             Cookies.set('employee', user.user_id, { expires: 7 });
           }
-
         } else {
           alert('Login failed: Invalid username or password.');
         }
@@ -55,9 +56,6 @@ const LoginPage = () => {
       alert('An error occurred. Please try again.');
     }
   };
-  
-  
-  
 
   const handleRegistration = () => {
     navigate('/registration');

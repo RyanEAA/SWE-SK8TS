@@ -13,7 +13,7 @@ const NavBar = (props) => {
 
   const cartItemCount = cart.items.reduce((acc, item) => acc + item.quantity, 0);
   const user = Cookies.get('user');
-  const employee = Cookies.get('employee');
+  const userRole = Cookies.get('user_role');
 
   return (
     <header>
@@ -29,10 +29,8 @@ const NavBar = (props) => {
         ) : (
           <Link to="/login">Login</Link>
         )}
-        {employee ? (
-        <Link to="/OrderDashboard">Order Dashboard</Link>
-        ) : (
-          ''
+        {(userRole === 'employee' || userRole === 'admin') && (
+          <Link to="/OrderDashboard">Order Dashboard</Link>
         )}
 
       </nav>

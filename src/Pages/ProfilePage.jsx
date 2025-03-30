@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
-import '../css/buttons.css'
+import '../css/buttons.css';
 import Order from '../Components/Order';
 import Popup from 'reactjs-popup';
 import OrderPopup from '../Components/OrderPopup';
@@ -12,9 +12,17 @@ function ProfilePage() {
     const [userData, setUserData] = useState(null);
     const [orders, setOrders] = useState([]);
     const [claimedOrders, setClaimedOrders] = useState([]);
-    const [activeTab, setActiveTab] = useState('placed');
+    // Initialize activeTab from localStorage if it exists, default to 'placed'
+    const [activeTab, setActiveTab] = useState(() => {
+        return localStorage.getItem('activeTab') || 'placed';
+    });
     const navigate = useNavigate();
     const [selectedOrder, setSelectedOrder] = useState(null);
+
+    // Whenever activeTab changes, save it to localStorage
+    useEffect(() => {
+        localStorage.setItem('activeTab', activeTab);
+    }, [activeTab]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -80,13 +88,12 @@ function ProfilePage() {
 
     const handleOrderClick = (orderId) => {
         setSelectedOrder(orderId);
-      };
+    };
 
     const handleLogout = () => {
         Cookies.remove('user');
-        Cookies.remove('employee');
+        Cookies.remove('user_role');
         window.location.href = '/';
-        return;
     };
 
     if (!userData) {
@@ -161,60 +168,58 @@ function ProfilePage() {
             </div>
 
             <div className="orders-section">
-            <div className="orders-tabs">
-                <button 
-                    className={`tab-button ${activeTab === 'placed' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('placed')}
-                >
-                    Order History
-                </button>
-                {isEmployee && (
+                <div className="orders-tabs">
                     <button 
-                    className={`tab-button ${activeTab === 'claimed' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('claimed')}
+                        className={`tab-button ${activeTab === 'placed' ? 'active' : ''}`}
+                        onClick={() => setActiveTab('placed')}
                     >
-                    Claimed Orders
+                        Order History
                     </button>
-                )}
+                    {isEmployee && (
+                        <button 
+                            className={`tab-button ${activeTab === 'claimed' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('claimed')}
+                        >
+                            Claimed Orders
+                        </button>
+                    )}
                 </div>
                 
                 <div className="orders-container">
-                {activeTab === 'placed' ? (
-                    reversedOrderIds.length > 0 ? (
-                    reversedOrderIds.map((orderId) => (
-                        <button 
-                        key={orderId}
-                        className="btn btn-white" 
-                        // onClick={() => handleOrderClick(orderId)}
-                        >
-                        <Order orderItems={groupedOrders[orderId]} editable={false} />
-                        </button>
-                    ))
+                    {activeTab === 'placed' ? (
+                        reversedOrderIds.length > 0 ? (
+                            reversedOrderIds.map((orderId) => (
+                                <button 
+                                    key={orderId}
+                                    className="btn btn-white"
+                                >
+                                    <Order orderItems={groupedOrders[orderId]} editable={false} />
+                                </button>
+                            ))
+                        ) : (
+                            <p className="no-orders">No orders placed yet</p>
+                        )
                     ) : (
-                    <p className="no-orders">No orders placed yet</p>
-                    )
-                ) : (
-                    reversedClaimedOrderIds.length > 0 ? (
-                    reversedClaimedOrderIds.map((orderId) => (
-                        <button
-                        key={orderId}
-                        className="btn btn-white" 
-                        // onClick={() => handleOrderClick(orderId)}
-                        >
-                        <Order orderItems={groupedClaimedOrders[orderId]} editable={true} />
-                        </button>
-                    ))
-                    ) : (
-                    <p className="no-orders">No orders claimed yet</p>
-                    )
-                )}
+                        reversedClaimedOrderIds.length > 0 ? (
+                            reversedClaimedOrderIds.map((orderId) => (
+                                <button
+                                    key={orderId}
+                                    className="btn btn-white"
+                                >
+                                    <Order orderItems={groupedClaimedOrders[orderId]} editable={true} />
+                                </button>
+                            ))
+                        ) : (
+                            <p className="no-orders">No orders claimed yet</p>
+                        )
+                    )}
                 </div>
             </div>
             <OrderPopup 
                 orderId={selectedOrder}
                 orderItems={[]} // Pass your order items array here
                 onClose={() => setSelectedOrder(null)}
-                />
+            />
         </div>
     );
 }
