@@ -36,9 +36,9 @@ function CartItem(props) {
                 <div>{props.item.product_name}</div>
                 <div>${(props.item.price * props.item.quantity).toFixed(2)}</div>
                 <div>
-                    <button className="btn btn-green" onClick={ handleDecrement }>dec</button> 
+                    <button className="btn btn-green" onClick={ handleDecrement }>−</button> 
                     <div className="item-quantity">{props.item.quantity} </div>
-                    <button className="btn btn-green" onClick={ handleIncrement }>inc</button>
+                    <button className="btn btn-green" onClick={ handleIncrement }>+</button>
                 </div>
             </div>
         </div>
