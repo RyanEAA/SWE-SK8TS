@@ -11,11 +11,10 @@
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
     align-items: center;  /* Centers content vertically */
-    padding: 10px;  /* Adds space inside the container */
 }
 
 .cart-item-image {
-    max-height: 75px;
+    max-height: 120px;
     display: block;
     margin: auto;  /* Centers image inside its grid cell */
 }
@@ -25,16 +24,14 @@
     display: flex;
     align-items: center;  /* Centers text vertically */
     justify-content: center;  /* Keeps content centered in grid cells */
-    height: 100%;
 }
 
 .item-quantity {
-    display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px;
     background-color: rgb(170, 170, 170);
-    max-height: 50%;
-    min-width: 40px;
+    height: 40px;
+    width: 40px;
     border-radius: 4px;
 }
