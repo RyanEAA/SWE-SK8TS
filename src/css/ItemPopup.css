@@ -28,10 +28,13 @@
     position: absolute;
     top: 5px; /* Moved closer to edge */
     right: 5px; /* Moved closer to edge */
-    background: none;
-    border: none;
+    background: lightcoral;
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 4px;
     font-size: 20px; /* Slightly smaller */
     cursor: pointer;
+    margin: 5px;
   }
   
   .popup-image {

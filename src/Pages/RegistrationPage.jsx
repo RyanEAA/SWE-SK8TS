@@ -123,7 +123,7 @@ const RegistrationPage = () => {
           <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
           {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
         </div>
-        <button type="submit">Register</button>
+        <button className="btn btn-green" type="submit">Register</button>
       </form>
     </div>
   );
