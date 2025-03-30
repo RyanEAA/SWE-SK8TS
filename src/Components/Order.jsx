@@ -37,7 +37,7 @@ function Order({ orderItems, editable = false}) {
         // get needed information
         const newStatus = event.target.value;
         setDeliveryStatus(newStatus);
-        const employeeID = Cookies.get('employee');
+        const employeeID = Cookies.get('user_id');
 
         if (editable) {
             axios.put(`https://sk8ts-shop.com/api/update-orders/${orderId}/${newStatus}/${employeeID}`)
