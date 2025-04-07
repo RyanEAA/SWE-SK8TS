@@ -19,6 +19,7 @@ import ChatBot from "react-chatbotify";
 import OrderDashboard from './Pages/OrderDashboard.jsx';
 import { flow, settings, styles } from "./Components/Chatbot/chatbotConfig.js";
 import OllieChatBot from './Components/Chatbot/OllieChatBot.jsx';
+import Admin from './Pages/Admin.jsx'; // Lazy load admin component
 
 function App() {
 
@@ -99,6 +100,13 @@ function App() {
             interest2='Art'
 
             />}/>
+            
+          {/* <Route path='Admin' element={
+            // lazy load the admin component
+            // Admin is a placeholder for the actual admin component
+            <Admin />
+          }/> */}
+
           <Route path='AboutUs/john' element={<AboutMe 
             location='Software Development, Music'
             skills='Object Oriented Programming, Problem Solving'
