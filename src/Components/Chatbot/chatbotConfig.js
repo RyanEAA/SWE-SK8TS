@@ -4,7 +4,7 @@ import axios from "axios"; // If you're using ChatGPT integration
 
 // Menu options the bot will show
 const helpOptions = ["Home", "Shop", "About Us", "Login", "Github", "Ask AI"]; // ← Add "Ask AI" here
-
+var usersName = ""
 // Chat flow definition
 const flow = {
   start: {
@@ -17,7 +17,10 @@ const flow = {
     path: "end",
   },
   end: {
-    message: (params) => `Nice to meet you, ${params.userInput}!`,
+    message: (params) => {
+      usersName = params.userInput; // Save the name to the variable
+      return `Nice to meet you, ${params.userInput}!`;
+    },
     chatDisabled: true,
     options: helpOptions,
     path: "process_options",
@@ -64,33 +67,55 @@ const flow = {
   chatgpt_query: {
     message: async (params) => {
       try {
-        const response = await axios.post(
-          "https://api.openai.com/v1/chat/completions",
-          {
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: params.userInput }],
-            temperature: 0.7,
+        const userMessage = params.userInput.trim().toLowerCase();
+        
+        // Check for exit commands
+        if (["bye", "exit", "goodbye", "quit"].includes(userMessage)) {
+          // Throw a special error to exit the conversation
+          throw new Error("USER_EXIT");
+        }
+  
+        const response = await fetch("https://api.cohere.ai/v1/chat", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer ",
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `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`, // Replace with env var in production
-            },
-          }
-        );
-
-        return response.data.choices[0].message.content;
+          body: JSON.stringify({
+            model: "command-a-03-2025",
+            message: params.userInput,
+            // preamble: `You are Ollie, a friendly AI skateboard expert for SK8TS. 
+            //         You know everything about decks, trucks, wheels, bearings, and skate culture. 
+            //         Keep responses short, helpful, and focused on skateboarding. The user you will be
+            //         helping is named ${usersName}.
+            //         If asked unrelated questions, gently steer the conversation back to skating.`,
+          }),
+        });
+  
+        const data = await response.json();
+        console.log("🧠 Cohere raw response:", data);
+  
+        return data.text || "Cohere didn't respond with anything.";
       } catch (error) {
-        console.error("OpenAI error:", error);
-        return "Hmm, something went wrong. Try again later!";
+        if (error.message === "USER_EXIT") {
+          // Return null or undefined to prevent any message from showing
+          return null; // This won't display anything in chat
+        }
+        console.error("❌ Cohere frontend error:", error);
+        return "Oops, something went wrong with the AI!";
       }
     },
-    path: "prompt_again",
-  },
-  repeat: {
-    transition: { duration: 3000 },
-    path: "prompt_again",
-  },
+    path: (params) => {
+      // If message is null (user exited), go back to menu
+      if (params.botMessage === null) {
+        return "prompt_again";
+      }
+      return "chatgpt_query";
+    }
+  }
+  
+  
+  
 };
 
 // Export config
