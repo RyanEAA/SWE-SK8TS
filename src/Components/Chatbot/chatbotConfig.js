@@ -1,20 +1,20 @@
-//chatbotConfig.js
+// chatbotConfig.js
 import React from "react";
+import axios from "axios"; // If you're using ChatGPT integration
 
-// conversation pattern
-const helpOptions = ["Home", "Shop", "About Us", "Login", "Github"];
+// Menu options the bot will show
+const helpOptions = ["Home", "Shop", "About Us", "Login", "Github", "Ask AI"]; // ← Add "Ask AI" here
 
-
+// Chat flow definition
 const flow = {
-  // starting chat
   start: {
-    message: "Hello, I am Ollie 👋! Welcome to SK8TS, I'm excited that you are using our site 🙌!",
+    message: "Hello, I am Ollie 👋! Welcome to SK8TS...",
     transition: { duration: 2000 },
-    path: "askName", // Move to the next step
+    path: "askName",
   },
   askName: {
     message: "What is your name?",
-    path: "end", // Move to the final step
+    path: "end",
   },
   end: {
     message: (params) => `Nice to meet you, ${params.userInput}!`,
@@ -48,9 +48,12 @@ const flow = {
         case "Github":
           link = "https://github.com/RyanEAA/SWE-SK8TS";
           break;
+        case "Ask AI":
+          return "chatgpt_query";
         default:
           return "unknown_input";
       }
+
       await params.injectMessage("Sit tight! I'll send you right there!");
       setTimeout(() => {
         window.open(link);
@@ -58,12 +61,39 @@ const flow = {
       return "repeat";
     },
   },
+  chatgpt_query: {
+    message: async (params) => {
+      try {
+        const response = await axios.post(
+          "https://api.openai.com/v1/chat/completions",
+          {
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: params.userInput }],
+            temperature: 0.7,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `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`, // Replace with env var in production
+            },
+          }
+        );
+
+        return response.data.choices[0].message.content;
+      } catch (error) {
+        console.error("OpenAI error:", error);
+        return "Hmm, something went wrong. Try again later!";
+      }
+    },
+    path: "prompt_again",
+  },
   repeat: {
     transition: { duration: 3000 },
     path: "prompt_again",
   },
 };
 
+// Export config
 const settings = {
   general: {
     embedded: false,
@@ -72,19 +102,18 @@ const settings = {
     storageKey: "conversations_summary",
   },
   tooltip: {
-		mode: "CLOSE",
-		text: "Need Help? 🛹",
-	},
+    mode: "CLOSE",
+    text: "Need Help? 🛹",
+  },
   chatButton: {
-		icon: "chatBotIcon.svg",
-	},
+    icon: "chatBotIcon.svg",
+  },
   header: {
     title: "Ollie",
-    avatar: "chatBotIcon.svg"
-  }
-}
-const styles = {
-}
+    avatar: "chatBotIcon.svg",
+  },
+};
 
+const styles = {};
 
 export { flow, settings, styles };
