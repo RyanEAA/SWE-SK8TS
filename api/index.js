@@ -134,7 +134,6 @@ app.get('/orders', (req, res) => {
   });
 });
 
-
 // 🔹 Place Order API
 app.post('/placeOrder', [
   body('user_id').isInt({ min: 1 }).withMessage('Valid user_id is required'),
@@ -196,7 +195,7 @@ app.post('/placeOrder', [
   });
 });
 
-// update orders
+// Update orders API
 app.put(
   '/update-orders/:order_id/:status/:employee_id',
   (req, res) => {
@@ -265,7 +264,6 @@ app.get('/orders/user/:user_id', (req, res) => {
   });
 });
 
-
 // Fetch Orders by Employee ID API
 app.get('/orders/employee/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;
@@ -290,6 +288,125 @@ app.get('/orders/employee/:employee_id', (req, res) => {
   });
 });
 
+// Fetch the three most recently registered users API
+app.get('/users/recent', (req, res) => {
+  userDb.query('SELECT * FROM users ORDER BY created_at DESC LIMIT 3', (err, results) => {
+    if (err) {
+      console.error('Error fetching recent users:', err);
+      return res.status(500).send('Error fetching recent users');
+    }
+    res.json(results);
+  });
+});
+
+// Fetch the two most recently active employees API
+app.get('/employees/active', (req, res) => {
+  userDb.query(
+    "SELECT * FROM users WHERE user_role = 'employee' ORDER BY last_login DESC LIMIT 2",
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching active employees:', err);
+        return res.status(500).send('Error fetching active employees');
+      }
+      res.json(results);
+    }
+  );
+});
+
+// Fetch the five most recently placed orders
+app.get('/orders/recent', (req, res) => {
+  orderDb.query('SELECT * FROM orders ORDER BY order_date DESC LIMIT 5', (err, results) => {
+    if (err) {
+      console.error('Error fetching recent orders:', err);
+      return res.status(500).send('Error fetching recent orders');
+    }
+    res.json(results);
+  });
+});
+
+// Add a new user
+app.post('/users', (req, res) => {
+  const { username, email, password, first_name, last_name, user_role } = req.body;
+  userDb.query(
+    'INSERT INTO users (username, email, password, first_name, last_name, user_role) VALUES (?, ?, ?, ?, ?, ?)',
+    [username, email, password, first_name, last_name, user_role],
+    (err, result) => {
+      if (err) {
+        console.error('Error adding user:', err);
+        return res.status(500).send('Error adding user');
+      }
+      res.status(201).json({ message: 'User added successfully', userId: result.insertId });
+    }
+  );
+});
+
+// Delete a user
+app.delete('/users/:id', (req, res) => {
+  const userId = req.params.id;
+  userDb.query('DELETE FROM users WHERE user_id = ?', [userId], (err, result) => {
+    if (err) {
+      console.error('Error deleting user:', err);
+      return res.status(500).send('Error deleting user');
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ message: 'User deleted successfully' });
+  });
+});
+
+// Add a new product
+app.post('/products', (req, res) => {
+  const { name, price, stock } = req.body;
+  productDb.query(
+    'INSERT INTO products (name, price, stock) VALUES (?, ?, ?)',
+    [name, price, stock],
+    (err, result) => {
+      if (err) {
+        console.error('Error adding product:', err);
+        return res.status(500).send('Error adding product');
+      }
+      res.status(201).json({ message: 'Product added successfully', productId: result.insertId });
+    }
+  );
+});
+
+// Edit an existing product
+app.put('/products/:id', (req, res) => {
+  const productId = req.params.id;
+  const { name, price, stock } = req.body;
+  productDb.query(
+    'UPDATE products SET name = ?, price = ?, stock = ? WHERE product_id = ?',
+    [name, price, stock, productId],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating product:', err);
+        return res.status(500).send('Error updating product');
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
+      res.json({ message: 'Product updated successfully' });
+    }
+  );
+});
+
+// Delete a product
+app.delete('/products/:id', (req, res) => {
+  const productId = req.params.id;
+  productDb.query('DELETE FROM products WHERE product_id = ?', [productId], (err, result) => {
+    if (err) {
+      console.error('Error deleting product:', err);
+      return res.status(500).send('Error deleting product');
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json({ message: 'Product deleted successfully' });
+  });
+});
+
+// Open API Connection
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
 });
