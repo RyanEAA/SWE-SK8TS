@@ -42,15 +42,15 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: uTBzZE3u2FxWHs
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PW}
     ports:
       - '3306:3306'
     expose:
       - '3306'
     volumes:
       - database:/var/lib/mysql
-    # env_file:
-    #   - stack.env
+    env_file:
+      - stack.env
 volumes:
   npmdata:
   npmletsencrypt:
