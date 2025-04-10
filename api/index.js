@@ -299,6 +299,29 @@ app.get('/users/recent', (req, res) => {
   });
 });
 
+// Update last_login to current time after successful login
+app.post('/users/:id/update-last-login', (req, res) => {
+  const userId = req.params.id;
+
+  userDb.query(
+    'UPDATE users SET last_login = NOW() WHERE user_id = ?',
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating last login:', err);
+        return res.status(500).send('Error updating last login');
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'Last login updated successfully' });
+    }
+  );
+});
+
+
 // Fetch the two most recently active employees API
 app.get('/employees/active', (req, res) => {
   userDb.query(
