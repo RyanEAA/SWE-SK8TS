@@ -30,7 +30,7 @@ services:
     environment:
       MYSQL_HOST: db
       MYSQL_USER: root
-      MYSQL_PASSWORD: uTBzZE3u2FxWHs
+      MYSQL_PASSWORD: ${DB_ROOT_PW}
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
       MYSQL_ORDER_DB: order
