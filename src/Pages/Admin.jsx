@@ -82,18 +82,18 @@ function Admin() {
             
             {/* Other admin sections remain unchanged */}
             <div className='admin-section top-right'>
-                <h1>User Management</h1>
-                <p>Manage user accounts and permissions</p>
+                <h1>Recenlty registered Users</h1>
+                <p>Here we'll show the three most recently registered users</p>
             </div>
             
             <div className='admin-section bottom-left'>
                 <h1>Recently Active Employees</h1>
-                <p>View recent employee activity</p>
+                <p>The two most recently active employees</p>
             </div>
             
             <div className='admin-section bottom-right'>
                 <h1>Recent Orders</h1>
-                <p>Here's where recent orders will show up</p>
+                <p>Here's where five most recently placed orders will show</p>
             </div>
         </div>
     );

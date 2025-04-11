@@ -1,59 +1,66 @@
+/* Parent container */
 .admin-page {
-    position: relative;
-    width: 100%;
-    height: 100vh; /* Full viewport height */
-    padding: 20px;
-    box-sizing: border-box;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1fr; /* Equal rows */
     gap: 20px;
-}
-
-.admin-section {
-    padding: 20px;
-    border-radius: 8px;
-    background-color: #f5f5f5;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Alternative using absolute positioning */
-/*
-.admin-page {
-    position: relative;
-    width: 100%;
     height: 100vh;
     padding: 20px;
     box-sizing: border-box;
-}
-
-.admin-section {
-    position: absolute;
-    width: 45%;
-    height: 45%;
-    padding: 20px;
+  }
+  
+  /* All admin sections */
+  .admin-section {
+    background-color: #555;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
     border-radius: 8px;
-    background-color: #f5f5f5;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.top-left {
-    top: 20px;
-    left: 20px;
-}
-
-.top-right {
-    top: 20px;
-    right: 20px;
-}
-
-.bottom-left {
-    bottom: 20px;
-    left: 20px;
-}
-
-.bottom-right {
-    bottom: 20px;
-    right: 20px;
-}
-*/
+    overflow: hidden; /* Prevent content overflow */
+  }
+  
+  /* Claimed orders specific styling */
+  .claimed-orders-container {
+    /* Inherits from .admin-section */
+  }
+  
+  /* Orders list container */
+  .orders-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-top: 10px;
+  }
+  
+  /* Scrollbar styling */
+  .orders-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .orders-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  .orders-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+  
+  /* Order item styling */
+  .order-item {
+    margin: 0 0 15px 10px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  /* Loading states */
+  .loading-spinner, .no-orders {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: white;
+  }
