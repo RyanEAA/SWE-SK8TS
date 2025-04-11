@@ -21,7 +21,6 @@ const NavBar = (props) => {
       <nav>
         <Link to='/'>Home</Link>
         <Link to='/Shop'>Shop</Link>
-        <Link to='/Contact'>Contact</Link>
         <Link to='/AboutUs'>About Us</Link>
         <Link to='/Cart'>Cart{' '}{cartItemCount}</Link>
         {user ? (
