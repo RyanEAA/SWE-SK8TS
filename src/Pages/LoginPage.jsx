@@ -37,6 +37,9 @@ const LoginPage = () => {
           Cookies.set('user_role', user.user_role, { expires: 7 }); // Store user_role in cookies
           Cookies.set('user_id', user.user_id, { expires: 7 }); // Store user_role in cookies
 
+          // Call API to update last_login
+          await axios.post(`https://sk8ts-shop.com/api/users/${user.user_id}/update-last-login`);
+
           navigate('/'); // Redirect to Home.jsx
           setTimeout(() => {
             window.location.reload(); // Force reload

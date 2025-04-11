@@ -1,10 +1,19 @@
 .profile-container {
     font-family: sans-serif;
-    width: 600px; /* Adjust width as needed */
-    margin: 20px auto; /* Center the container */
+    width: 600px;
+    margin: 20px auto;
     border: 1px solid #ddd;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-page-container {
+    display: flex;
+    min-height: 100vh;
+    height: 100vh;
+    padding: 20px;
+    gap: 20px;
+    overflow: hidden;
 }
 
 .profile-header {
@@ -18,11 +27,14 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    margin-right: 20px;
+    object-fit: cover;
+    margin-right: 15px;
 }
 
-.profile-header-text h1 {
+.profile-header-text h1,
+.profile-name {
     margin: 0;
+    font-size: 24px;
 }
 
 .profile-header-text .profile-role {
@@ -33,30 +45,24 @@
 .profile-details table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .profile-details td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
+    padding: 8px 0;
+    vertical-align: top;
     text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-details td:first-child {
+    font-weight: 600;
+    color: #555;
+    width: 150px;
 }
 
 .profile-details td.profile-details {
     font-weight: bold;
-    width: 150px;
-}
-
-.order-container {
-    display: flex;
-    overflow-x: auto; 
-    white-space: nowrap; 
-    padding: 20px;
-}
-.profile-page-container {
-    display: flex;
-    min-height: 100vh;
-    padding: 20px;
-    gap: 20px;
 }
 
 .profile-section {
@@ -80,36 +86,33 @@
     overflow: hidden;
 }
 
-/* Tab styles - put in ProfilePage.css */
+.order-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px;
+}
+
 .orders-tabs {
     display: flex;
     border-bottom: 1px solid #ddd;
 }
 
-
-.orders-container{
+.orders-container {
     padding: 20px;
-    overflow-y: auto; 
-    flex-grow: 1; 
+    overflow-y: auto;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 15px; 
-}
-.orders-container .btn-white {
-    width: 100%;
-    margin-bottom: 0; 
-    padding: 15px;
-    text-align: left;
-    flex-shrink: 0; 
+    gap: 15px;
 }
 
-/* Profile layout styles */
-.profile-page-container {
-    display: flex;
-    height: 100vh;
-    padding: 20px;
-    gap: 20px;
-    overflow: hidden;
+.orders-container .btn-white {
+    width: 100%;
+    margin-bottom: 0;
+    padding: 15px;
+    text-align: left;
+    flex-shrink: 0;
 }
 
 .no-orders {
@@ -117,40 +120,3 @@
     padding: 40px;
     color: #666;
 }
-
-.profile-details table {
-    width: 100%;
-    margin-top: 20px;
-}
-
-.profile-details td {
-    padding: 8px 0;
-    vertical-align: top;
-}
-
-.profile-details td:first-child {
-    font-weight: 600;
-    color: #555;
-    width: 150px;
-}
-
-
-.profile-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.profile-image {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
-}
-
-.profile-name {
-    margin: 0;
-    font-size: 24px;
-}
-

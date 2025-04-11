@@ -7,6 +7,7 @@ import '../css/buttons.css';
 import Order from '../Components/Order';
 import Popup from 'reactjs-popup';
 import OrderPopup from '../Components/OrderPopup';
+import Admin from './Admin';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
@@ -58,8 +59,6 @@ function ProfilePage() {
         const fetchOrders = async (userId) => {
             try {
                 const response = await axios.get(`https://sk8ts-shop.com/api/orders/user/${userId}`);
-                //const response = await axios.get(`http://localhost:3636/orders/user/${userId}`);
-
                 if (response.status === 200 && Array.isArray(response.data)) {
                     setOrders(response.data);
                 } else {
@@ -121,7 +120,9 @@ function ProfilePage() {
     const reversedOrderIds = Object.keys(groupedOrders).sort((a, b) => b - a);
     const reversedClaimedOrderIds = Object.keys(groupedClaimedOrders).sort((a, b) => b - a);
 
-    const isEmployee = userData.user_role === 'admin' || userData.user_role === 'employee';
+    const isEmployee = userData.user_role === 'employee';
+    const isAdmin = userData.user_role === 'admin'; // just in case we need to check for admin specifically
+
 
     return (
         <div className="profile-page-container">
@@ -167,6 +168,11 @@ function ProfilePage() {
                 <button onClick={handleLogout} className="btn-logout">Logout</button>
             </div>
 
+            {isAdmin ? (
+            <div className="orders-section">
+                <Admin />
+            </div>
+        ) : (
             <div className="orders-section">
                 <div className="orders-tabs">
                     <button 
@@ -215,6 +221,7 @@ function ProfilePage() {
                     )}
                 </div>
             </div>
+        )}
             <OrderPopup 
                 orderId={selectedOrder}
                 orderItems={[]} // Pass your order items array here
