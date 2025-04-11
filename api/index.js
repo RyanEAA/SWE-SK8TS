@@ -274,7 +274,8 @@ app.get('/orders/employee/:employee_id', (req, res) => {
   }
 
   // Query to fetch orders assigned to the employee
-  orderDb.query("SELECT * FROM orders JOIN orderedItems WHERE employee_id = ? AND order_status='claimed'", [employeeId], (err, results) => {
+  orderDb.query("SELECT * FROM order.orders o JOIN order.orderedItems oi on o.order_id = oi.order_id WHERE employee_id = ? AND order_status = 'claimed'", 
+    [employeeId], (err, results) => {
     if (err) {
       console.error('Error fetching orders for employee:', err);
       return res.status(500).send('Error fetching orders for employee');
