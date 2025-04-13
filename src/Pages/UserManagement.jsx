@@ -8,6 +8,7 @@ function UserManagement() {
     const [users, setUsers] = useState([]);
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
+    const [filterRole, setFilterRole] = useState('all');
 
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -130,6 +131,12 @@ function UserManagement() {
                     <button type='submit'>Add User</button>
                 </form>
                 <h2>Users</h2>
+                <select name='role-filter-selection' onChange={(e) => setFilterRole(e.target.value)}>
+                    <option value="all">all</option>
+                    <option value="customer">customer</option>
+                    <option value="employee">employee</option>
+                    <option value="admin">admin</option>
+                </select>
                 <div className='users-headers'>
                     <div className='unclaimed-order-id'>Username </div>
                     <div className='unclaimed-order-user-id'>Name</div>
@@ -138,16 +145,19 @@ function UserManagement() {
                     <div></div>
                 </div>
                 <div>
-                    {users.reverse().map((user) => (
-                        <div key={user.id} className='users-container'>
-                            <div>{user.username}</div>
-                            <div>{user.first_name} {user.last_name}</div>
-                            <div>{user.email}</div>
-                            <div>{user.user_role}</div>
-                            <button className='btn btn-primary' onClick={() => handleDeleteUser(user.user_id)}>Delete</button>
-                        </div>
-                    ))}
-                </div>
+                    {users
+                        .filter(user => filterRole === 'all' || user.user_role === filterRole) // Filter users based on filterRole
+                        .reverse() // Reverse the filtered array
+                        .map((user) => (
+                            <div key={user.id} className='users-container'>
+                                <div>{user.username}</div>
+                                <div>{user.first_name} {user.last_name}</div>
+                                <div>{user.email}</div>
+                                <div>{user.user_role}</div>
+                                <button className='btn btn-primary' onClick={() => handleDeleteUser(user.user_id)}>Delete</button>
+                            </div>
+                        ))}
+</div>
                 
             </div>
        </>
