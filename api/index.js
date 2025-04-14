@@ -434,6 +434,13 @@ app.delete('/products/:id', (req, res) => {
 app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
+  console.log("📨 Received message:", userMessage);
+  console.log("🔑 API key present?", !!process.env.COHERE_API_KEY);
+
+  if (!userMessage) {
+    return res.status(400).json({ error: "Missing user message in request body." });
+  }
+
   try {
     const response = await axios.post(
       "https://api.cohere.ai/v1/chat",
@@ -452,9 +459,11 @@ app.post("/chat", async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error("❌ Backend error:", err.response?.data || err.message);
+    console.error("❌ Full error object:", err);
     res.status(500).json({ error: "Something went wrong with the AI call." });
   }
 });
+
 
 
 // Open API Connection

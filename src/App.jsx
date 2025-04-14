@@ -21,6 +21,7 @@ import { flow, settings, styles } from "./Components/Chatbot/chatbotConfig.js";
 import OllieChatBot from './Components/Chatbot/OllieChatBot.jsx';
 import Admin from './Pages/Admin.jsx'; // Lazy load admin component
 import UserManagement from './Pages/UserManagement.jsx';
+import ProductManagement from './Pages/ProductManagement.jsx';
 
 function App() {
 
@@ -126,6 +127,7 @@ function App() {
             />}/>
           <Route path='*' element={<div>404 - Page Not Found</div>} />
           <Route path='/UserManagement' element={<UserManagement />} />
+          <Route path='/ProductManagement' element={<ProductManagement />} />
         </Routes>
         <Footer />
       {/* </CartObjectProvider> */}
