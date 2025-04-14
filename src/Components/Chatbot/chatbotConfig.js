@@ -78,7 +78,7 @@ const flow = {
         const response = await fetch("https://api.cohere.ai/v1/chat", {
           method: "POST",
           headers: {
-            "Authorization": "Bearer ${process.env.REACT_APP_COHERE_API_KEY}",
+            "Authorization": "Bearer ${process.env.COHERE_API_KEY}",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
