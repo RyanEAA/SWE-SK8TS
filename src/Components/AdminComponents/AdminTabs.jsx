@@ -34,7 +34,14 @@ function AdminTabs({ activeTab, setActiveTab }) {
         className={`btn-tab ${activeTab === 'claimedOrders' ? 'active' : ''}`}
         onClick={() => setActiveTab('claimedOrders')}
       >
-        ClaimedOrders
+        Claimed Orders
+      </button>
+
+      <button
+        className={`btn-tab ${activeTab === 'productManagement' ? 'active' : ''}`}
+        onClick={() => setActiveTab('productManagement')}
+      >
+        Product Management
       </button>
 
     </div>

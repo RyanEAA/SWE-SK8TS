@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../css/ProductManagement.css';
+import '../css/admin/Admin.css';
 
 function ProductManagement() {
     const [products, setProducts] = useState([]);
@@ -104,7 +105,7 @@ function ProductManagement() {
                             <div className='product-stock'>Stock Quantity</div>
                             <div className='product-actions'>Actions</div>
                         </div>
-                        <div>
+                        <div className='scrollable-list'>
                             {products.map((product) => (
                                 <div key={product.product_id} className='products-container'>
                                     {isEditing === product.product_id ? (

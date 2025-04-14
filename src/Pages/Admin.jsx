@@ -10,6 +10,7 @@ import AllEmployees from '../Components/AdminComponents/AllEmployees';
 import AllUsers from '../Components/AdminComponents/AllUsers';
 import AllOrders from '../Components/AdminComponents/AllOrders';
 import ClaimedOrders from '../Components/AdminComponents/ClaimedOrders';
+import ProductManagement from './ProductManagement';
 
 function Admin() {
   const [activeTab, setActiveTab] = useState('overall');
@@ -55,6 +56,11 @@ function Admin() {
       {activeTab === 'claimedOrders' && (
         <ClaimedOrders/>
       )}
+
+      {activeTab === 'productManagement' && (
+        <ProductManagement/>
+      )}
+        
     </div>
   );
 }
