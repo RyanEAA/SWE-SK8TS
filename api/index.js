@@ -430,7 +430,7 @@ app.delete('/products/:id', (req, res) => {
   });
 });
 
-app.post("/api/chat", async (req, res) => {
+app.post("/chat", async (req, res) => {
   const userMessage = req.body.message;
 
   try {
