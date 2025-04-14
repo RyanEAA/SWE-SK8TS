@@ -1,6 +1,7 @@
 // AllOrders.jsx
 import Order from '../Order';
 import React , { useState, useEffect } from 'react';
+import '../../css/admin/Admin.css';
 
 function AllOrders() {
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +31,7 @@ function AllOrders() {
       {isLoading.orders ? (
         <div className="loading-spinner">Loading...</div>
       ) : (
-        <div className="orders-list">
+        <div className="orders-list scrollable-list">
           {allOrders.length > 0 ? (
             allOrders.map(order => (
               <div 

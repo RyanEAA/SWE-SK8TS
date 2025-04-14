@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import '../css/admin/Admin.css';
-import '../css/buttons.css';
 
 // admin components
 import AdminTabs from '../Components/AdminComponents/AdminTabs';
