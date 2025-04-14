@@ -11,7 +11,7 @@
   
   /* All admin sections */
   .admin-section {
-    background-color: #555;
+    /* background-color: #555; */
     display: flex;
     flex-direction: column;
     padding: 15px;
@@ -33,19 +33,6 @@
   }
   
   /* Scrollbar styling */
-  .orders-list::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  .orders-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-  }
-  
-  .orders-list::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 3px;
-  }
   
   /* Order item styling */
   .order-item {
@@ -156,3 +143,9 @@
     border-radius: 6px;
     margin: 10px;
   }
+
+.scrollable-list {
+  max-height: 600px; /* or whatever height you want */
+  overflow-y: auto;
+  padding-right: 10px; /* space for scrollbar */
+}

@@ -169,7 +169,7 @@ function ProfilePage() {
             </div>
 
             {isAdmin ? (
-            <div className="orders-section">
+            <div className='admin-section'>
                 <Admin />
             </div>
         ) : (
