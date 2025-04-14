@@ -75,7 +75,7 @@ const flow = {
           throw new Error("USER_EXIT");
         }
   
-        const response = await fetch("http://sk8ts-shop.com/api/chat", {
+        const response = await fetch("https://sk8ts-shop.com/api/chat", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
