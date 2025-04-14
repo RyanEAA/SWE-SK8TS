@@ -123,6 +123,17 @@ app.get('/allusers', (req, res) => {
   });
 });
 
+// 🔹 Fetch Users API
+app.get('/users', (req, res) => {
+  userDb.query('SELECT * FROM users', (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).send('Error fetching users');
+    }
+    res.json(results);
+  });
+});
+
 // 🔹 Fetch Orders API
 app.get('/orders', (req, res) => {
   orderDb.query('SELECT * FROM orders', (err, results) => {
