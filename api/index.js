@@ -113,7 +113,7 @@ app.get('/products', (req, res) => {
 });
 
 // 🔹 Fetch Users API
-app.get('/users', (req, res) => {
+app.get('/allusers', (req, res) => {
   userDb.query('SELECT * FROM users', (err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
@@ -337,6 +337,17 @@ app.get('/employees/active', (req, res) => {
   );
 });
 
+// get all employees
+app.get('/employees', (req, res) => {
+  userDb.query("SELECT * FROM users WHERE user_role = 'employee'", (err, results) => {
+    if (err) {
+      console.error('Error fetching employees:', err);
+      return res.status(500).send('Error fetching employees');
+    }
+    res.json(results);
+  });
+});
+
 // Fetch the five most recently placed orders
 app.get('/orders/recent', (req, res) => {
   orderDb.query('SELECT * FROM orders ORDER BY order_date DESC LIMIT 5', (err, results) => {
@@ -348,6 +359,8 @@ app.get('/orders/recent', (req, res) => {
   });
 });
 
+
+// lol we already have a users endpoint I feel like If I change it I'm going to have to change a lot of stuff
 // Add a new user
 app.post('/users', (req, res) => {
   const { username, email, password, first_name, last_name, user_role } = req.body;

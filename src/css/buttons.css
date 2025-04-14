@@ -46,7 +46,9 @@
 
 /* tab buttons for profile page */
 .btn-tab {
-  width: 50%;
+  /* width: 50%; */
+  flex: 1; /* ✅ each button takes equal space */
+
   padding: 12px 24px;
   background: rgb(230, 230, 230);
   border: 1px solid #ddd;
