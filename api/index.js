@@ -4,7 +4,6 @@ dotenv.config();
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
-const axios = require("axios");
 const { body, validationResult } = require('express-validator');
 
 const app = express();
