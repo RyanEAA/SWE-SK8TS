@@ -431,37 +431,59 @@ app.delete('/products/:id', (req, res) => {
   });
 });
 
-app.post("/chat", async (req, res) => {
+const https = require('https');
+
+app.post('/chat', (req, res) => {
   const userMessage = req.body.message;
 
-  console.log("📨 Received message:", userMessage);
-  console.log("🔑 API key present?", !!process.env.COHERE_API_KEY);
+  console.log('📨 Received message:', userMessage);
+  console.log('🔑 API key present?', !!process.env.COHERE_API_KEY);
 
   if (!userMessage) {
-    return res.status(400).json({ error: "Missing user message in request body." });
+    return res.status(400).json({ error: 'Missing user message in request body.' });
   }
 
-  try {
-    const response = await axios.post(
-      "https://api.cohere.ai/v1/chat",
-      {
-        model: "command-a-03-2025",
-        message: userMessage,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
+  const postData = JSON.stringify({
+    model: 'command-a-03-2025',
+    message: userMessage,
+  });
+
+  const options = {
+    hostname: 'api.cohere.ai',
+    path: '/v1/chat',
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.COHERE_API_KEY}`,
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(postData),
+    },
+  };
+
+  const apiReq = https.request(options, (apiRes) => {
+    let data = '';
+
+    apiRes.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    apiRes.on('end', () => {
+      try {
+        const parsedData = JSON.parse(data);
+        res.status(apiRes.statusCode).json(parsedData);
+      } catch (err) {
+        console.error('❌ Error parsing response:', err);
+        res.status(500).json({ error: 'Error parsing response from AI service.' });
       }
-    );
+    });
+  });
 
-    res.json(response.data);
-  } catch (err) {
-    console.error("❌ Backend error:", err.response?.data || err.message);
-    console.error("❌ Full error object:", err);
-    res.status(500).json({ error: "Something went wrong with the AI call." });
-  }
+  apiReq.on('error', (err) => {
+    console.error('❌ Backend error:', err);
+    res.status(500).json({ error: 'Something went wrong with the AI call.' });
+  });
+
+  apiReq.write(postData);
+  apiReq.end();
 });
 
 
