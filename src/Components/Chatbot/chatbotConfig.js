@@ -75,27 +75,17 @@ const flow = {
           throw new Error("USER_EXIT");
         }
   
-        const response = await fetch("https://api.cohere.ai/v1/chat", {
+        const response = await fetch("http://sk8ts-shop.com/api/chat", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${process.env.REACT_APP_COHERE_API_KEY}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            model: "command-a-03-2025",
-            message: params.userInput,
-            // preamble: `You are Ollie, a friendly AI skateboard expert for SK8TS. 
-            //         You know everything about decks, trucks, wheels, bearings, and skate culture. 
-            //         Keep responses short, helpful, and focused on skateboarding. The user you will be
-            //         helping is named ${usersName}.
-            //         If asked unrelated questions, gently steer the conversation back to skating.`,
-          }),
+          body: JSON.stringify({ message: params.userInput }),
         });
-  
+        
         const data = await response.json();
-        console.log("🧠 Cohere raw response:", data);
-  
-        return data.text || "Cohere didn't respond with anything.";
+        return data.text || "No reply from AI.";
+
       } catch (error) {
         if (error.message === "USER_EXIT") {
           // Return null or undefined to prevent any message from showing

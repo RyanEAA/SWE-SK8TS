@@ -430,6 +430,32 @@ app.delete('/products/:id', (req, res) => {
   });
 });
 
+app.post("/api/chat", async (req, res) => {
+  const userMessage = req.body.message;
+
+  try {
+    const response = await axios.post(
+      "https://api.cohere.ai/v1/chat",
+      {
+        model: "command-a-03-2025",
+        message: userMessage,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (err) {
+    console.error("❌ Backend error:", err.response?.data || err.message);
+    res.status(500).json({ error: "Something went wrong with the AI call." });
+  }
+});
+
+
 // Open API Connection
 app.listen(port, () => {
   console.log(`API service is running on port ${port}`);
