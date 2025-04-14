@@ -1,5 +1,3 @@
-
-
 import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -95,6 +93,7 @@ function ProductManagement() {
         <>
             <div className='admin-section top-left claimed-orders-container'>
                 <h1>Product Management</h1>
+                <button> Create Product </button>
                 {isLoading ? (
                     <p>Loading products...</p>
                 ) : (

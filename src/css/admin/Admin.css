@@ -19,10 +19,6 @@
     overflow: hidden; /* Prevent content overflow */
   }
   
-  /* Claimed orders specific styling */
-  .claimed-orders-container {
-    /* Inherits from .admin-section */
-  }
   
   /* Orders list container */
   .orders-list {

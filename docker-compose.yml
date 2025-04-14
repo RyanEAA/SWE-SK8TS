@@ -48,8 +48,8 @@ services:
       - '3306'
     volumes:
       - database:/var/lib/mysql
-    env_file:
-      - stack.env
+    # env_file:
+    #   - stack.env
 volumes:
   npmdata:
   npmletsencrypt:
