@@ -8,6 +8,7 @@ services:
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
+      COHERE_API_KEY: ${COHERE_API_KEY}
     ports:
       - 3000:3000
   npm:
@@ -32,7 +33,6 @@ services:
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
       MYSQL_ORDER_DB: order
-      COHERE_API_KEY: ${COHERE_API_KEY}
     ports:
       - 3636:3636
     depends_on:
