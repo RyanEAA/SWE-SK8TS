@@ -32,7 +32,7 @@ services:
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
       MYSQL_ORDER_DB: order
-      COHERE_API_KEY_FILE: /run/secrets/cohere_api_key
+      COHERE_API_KEY: ${COHERE_API_KEY}
     ports:
       - 3636:3636
     depends_on:
@@ -41,7 +41,7 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_pw
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PW}
     ports:
       - '3306:3306'
     expose:
@@ -54,6 +54,5 @@ volumes:
   npmdata:
   npmletsencrypt:
   database:
-
 
 
