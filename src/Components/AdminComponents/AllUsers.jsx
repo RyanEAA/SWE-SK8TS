@@ -2,7 +2,7 @@
 import React from 'react';
 import RecentPersonCard from '../RecentPersonCard';
 import { useEffect, useState } from 'react';
-import CreateUserPopup from './PopUps/CreateUserPopUp';
+import CreateUserPopup from './PopUps/CreateUserPopup';
 import '../../css/admin/Admin.css';
 
 function AllUsers() {

@@ -4,9 +4,6 @@ WORKDIR /app
 
 COPY package*.json package-lock.json ./
 
-# ARG REACT_APP_COHERE_API_KEY
-# ENV REACT_APP_COHERE_API_KEY=$REACT_APP_COHERE_API_KEY
-
 RUN npm install
 
 RUN npm i -g serve
