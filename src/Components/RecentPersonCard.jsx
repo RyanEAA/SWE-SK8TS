@@ -1,7 +1,7 @@
 import React from 'react';
 import '../css/admin/Admin.css';
 
-function RecentPersonCard({ person, type = 'user' }) {
+function RecentPersonCard({ person, type = 'user', onClick }) {
     const displayDate = type === 'user' 
         ? new Date(person.created_at).toLocaleDateString()
         : person.last_login === '0000-00-00 00:00:00' 
@@ -13,7 +13,7 @@ function RecentPersonCard({ person, type = 'user' }) {
         : 'Last Active';
 
     return (
-        <div className="recent-card">
+        <div className="recent-card" onClick={onClick}>
             <div className="profile-pic-container">
                 <img 
                     src={"https://img.freepik.com/premium-vector/man-avatar-profile-picture-vector-illustration_268834-538.jpg?semt=ais_hybrid"} 

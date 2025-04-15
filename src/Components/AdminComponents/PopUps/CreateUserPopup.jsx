@@ -3,19 +3,30 @@ import React, { useState } from 'react';
 import '../../../css/admin/CreateUserPopup.css';
 
 
-function CreateUserPopup({ onClose, onUserCreated }) {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [userRole, setUserRole] = useState('customer'); // allow admin to pick role if you want
-  const [errors, setErrors] = useState({});
+function CreateUserPopup({ onClose, onUserCreated, isEditable = false, user = {} }) {
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
+  const safeUser = user || {};
+  const [username, setUsername] = useState(safeUser.username || '');
+  const [email, setEmail] = useState(safeUser.email || '');
+  const [password, setPassword] = useState(safeUser.password ||'');
+  const [confirmPassword, setConfirmPassword] = useState(safeUser.password || '');
+  const [firstName, setFirstName] = useState(safeUser.first_name || '');
+  const [lastName, setLastName] = useState(safeUser.last_name || '');
+  const [userRole, setUserRole] = useState(safeUser.user_role || 'customer');
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).toLowerCase());
   const validatePassword = (password) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W]).{8,}$/.test(password);
+
+  // determine if the user is being edited or created
+  const method = isEditable ? 'PUT' : 'POST';
+  const url = isEditable
+  ? `https://sk8ts-shop.com/api/users/${user.user_id}`
+  : `https://sk8ts-shop.com/api/users`;
+  // const url = isEditable
+  // ? `http://localhost:3636/users/${user.user_id}`
+  // : `https://sk8ts-shop.com/api/users`;
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,8 +49,8 @@ function CreateUserPopup({ onClose, onUserCreated }) {
     }
 
     try {
-      const response = await fetch('https://sk8ts-shop.com/api/users', {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username,

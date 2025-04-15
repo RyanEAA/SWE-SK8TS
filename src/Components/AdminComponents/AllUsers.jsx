@@ -10,43 +10,51 @@ function AllUsers() {
   const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true); 
   const [showCreateUserPopup, setShowCreateUserPopup] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const fetchAllUsers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('https://sk8ts-shop.com/api/allusers/');
+      const data = await response.json();
+      setAllUsers(data);
+    } catch (error) {
+      console.log('Error fetching users:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAllUsers = async () => {
-
-      try {
-        setIsLoading(true);
-        const response = await fetch('https://sk8ts-shop.com/api/allusers/');
-        //const response = await fetch('http://localhost:3636/allusers');
-        const data = await response.json();
-        setAllUsers(data);
-      }catch (error){
-        console.log('Error fetching users:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchAllUsers();
-  }, [])
+  }, []);
 
   return (
     <div className="orders-section">
       <h1>All Users</h1>
 
       {/* button that leads to create user pop coming to screen */}
-      <button className="btn btn-green" onClick={() => setShowCreateUserPopup(true)}>
-        Create User
-      </button>    
+        <button className="btn btn-green" onClick={() => {
+          setSelectedUser(null);               // ✅ clear selected
+          setShowCreateUserPopup(true);       // ✅ open modal
+        }}>
+          Create User
+        </button> 
 
             {/* Popup */}
-      {showCreateUserPopup && (
+            {showCreateUserPopup && (
         <CreateUserPopup
-          onClose={() => setShowCreateUserPopup(false)}
-          onUserCreated={() => {
-            fetchAllUsers();   // refresh the user list after new user is added
-            setShowCreateUserPopup(false); // close popup
+          onClose={() => {
+            setSelectedUser(null);
+            setShowCreateUserPopup(false);
           }}
+          onUserCreated={() => {
+            fetchAllUsers();
+            setSelectedUser(null);
+            setShowCreateUserPopup(false);
+          }}
+          isEditable={!!selectedUser}
+          user={selectedUser}
         />
       )}
 
@@ -55,9 +63,17 @@ function AllUsers() {
       ) : (
         <div className="recent-list scrollable-list">
           {allUsers.length > 0 ? (
-            allUsers.map(user => (
-              <RecentPersonCard key={user.user_id} person={user} type="user" />
-            ))
+            allUsers.reverse().map(user => (
+              <RecentPersonCard
+                key={user.user_id}
+                person={user}
+                type="user"
+                onClick={() => {
+                  setSelectedUser(user);
+                  setShowCreateUserPopup(true);
+                }}
+              />            
+              ))
           ) : (
             <p>No users found</p>
           )}

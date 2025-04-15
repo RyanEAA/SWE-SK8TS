@@ -454,6 +454,30 @@ app.delete('/products/:id', (req, res) => {
   });
 });
 
+// update user
+app.put('/users/:id', (req, res) => {
+  const userId = req.params.id;
+  const { username, email, password, first_name, last_name, user_role } = req.body;
+
+  userDb.query(
+    'UPDATE users SET username = ?, email = ?, password = ?, first_name = ?, last_name = ?, user_role = ? WHERE user_id = ?',
+    [username, email, password, first_name, last_name, user_role, userId],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating user:', err);
+        return res.status(500).send('Error updating user');
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'User updated successfully' });
+    }
+  );
+});
+
+
 const https = require('https');
 
 app.post('/chat', (req, res) => {
