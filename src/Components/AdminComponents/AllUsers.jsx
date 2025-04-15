@@ -35,8 +35,8 @@ function AllUsers() {
 
       {/* button that leads to create user pop coming to screen */}
         <button className="btn btn-green" onClick={() => {
-          setSelectedUser(null);               // ✅ clear selected
-          setShowCreateUserPopup(true);       // ✅ open modal
+          setSelectedUser(null);               // clear selected
+          setShowCreateUserPopup(true);       // open modal
         }}>
           Create User
         </button> 

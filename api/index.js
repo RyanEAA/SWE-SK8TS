@@ -419,6 +419,37 @@ app.post('/products', (req, res) => {
   );
 });
 
+// Create a new product with image upload
+const multer = require('multer');
+const upload = multer({ dest: '/public/Images/' }); // or configure your own
+
+app.post('/createproduct', upload.single('image'), (req, res) => {
+  const {
+    name, description, price, stock_quantity, category_id, brand_id,
+    sku, weight, dimensions, color, size, status
+  } = req.body;
+
+  const imagePath = req.file ? `${req.file.filename}` : null;
+
+  productDb.query(
+    `INSERT INTO products (
+      name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      name, description, price, stock_quantity, category_id, brand_id,
+      sku, weight, dimensions, color, size, imagePath, status
+    ],
+    (err, result) => {
+      if (err) {
+        console.error('Error creating product:', err);
+        return res.status(500).json({ error: 'Error creating product' });
+      }
+      res.status(201).json({ message: 'Product created successfully', productId: result.insertId });
+    }
+  );
+});
+
+
 // Edit an existing product
 app.put('/products/:id', (req, res) => {
   const productId = req.params.id;

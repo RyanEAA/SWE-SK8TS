@@ -18,3 +18,11 @@
     padding-top: 1%;
     font-weight: bolder;
 }
+.claimed-orders-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Let it grow */
+    max-height: calc(100vh - 200px); /* Or however tall your page should be */
+    overflow: hidden;
+  }
+  
