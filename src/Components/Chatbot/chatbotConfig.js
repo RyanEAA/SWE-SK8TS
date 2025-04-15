@@ -1,86 +1,148 @@
 // chatbotConfig.js
 import React from "react";
-import axios from "axios";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import axios from "axios"; // If you're using ChatGPT integration
 
-// Initialize Google Generative AI
-const genAI = new GoogleGenerativeAI("AIzaSyCE-ka79fmgB_w1JSMY83nUmhtRP4cUu1c");
-
-const helpOptions = ["Home", "Shop", "About Us", "Login", "Github", "Ask AI"];
-let usersName = "";
-
+// Menu options the bot will show
+const helpOptions = ["Home", "Shop", "About Us", "Login", "Github", "Ask AI"]; // ← Add "Ask AI" here
+var usersName = ""
+// Chat flow definition
 const flow = {
-  // ... (keep all other flow states the same until chatgpt_query)
+  start: {
+    message: "Hello, I am Ollie 👋! Welcome to SK8TS...",
+    transition: { duration: 2000 },
+    path: "askName",
+  },
+  askName: {
+    message: "What is your name?",
+    path: "end",
+  },
+  end: {
+    message: (params) => {
+      usersName = params.userInput; // Save the name to the variable
+      return `Nice to meet you, ${params.userInput}!`;
+    },
+    chatDisabled: true,
+    options: helpOptions,
+    path: "process_options",
+  },
+  prompt_again: {
+    message: "Do you need any other help?",
+    options: helpOptions,
+    path: "process_options",
+  },
+  process_options: {
+    transition: { duration: 0 },
+    chatDisabled: true,
+    path: async (params) => {
+      let link = "";
+      switch (params.userInput) {
+        case "Home":
+          link = "https://sk8ts-shop.com/";
+          break;
+        case "Shop":
+          link = "https://sk8ts-shop.com/Shop";
+          break;
+        case "About Us":
+          link = "https://sk8ts-shop.com/AboutUs";
+          break;
+        case "Login":
+          link = "https://sk8ts-shop.com/login";
+          break;
+        case "Github":
+          link = "https://github.com/RyanEAA/SWE-SK8TS";
+          break;
+        case "Ask AI":
+          return "chatgpt_query";
+        default:
+          return "unknown_input";
+      }
 
+      await params.injectMessage("Sit tight! I'll send you right there!");
+      setTimeout(() => {
+        window.open(link);
+      }, 1000);
+      return "repeat";
+    },
+  },
   chatgpt_query: {
     message: async (params) => {
       try {
-        // 1. Safely handle user input
-        const userInput = params && params.userInput ? params.userInput.toString() : "";
-        const userMessage = userInput.trim().toLowerCase();
-  
-        // 2. Exit conditions
-        if (!userMessage || ["bye", "exit", "goodbye", "quit", "menu"].includes(userMessage)) {
+        const userMessage = params.userInput.trim().toLowerCase();
+        
+        // Exit conditions
+        if (["bye", "exit", "goodbye", "quit", "menu"].includes(userMessage)) {
           throw new Error("USER_EXIT");
         }
   
-        // 3. Initialize conversation state
-        const conversationState = (params && params.conversationState) || {};
-  
-        // 4. Detect skill level
-        if (typeof userMessage === 'string') {
-          if (userMessage.includes('beginner')) conversationState.skillLevel = 'beginner';
-          else if (userMessage.includes('intermediate')) conversationState.skillLevel = 'intermediate';
-          else if (userMessage.includes('advanced') || userMessage.includes('pro')) {
-            conversationState.skillLevel = 'advanced';
-          }
-        }
-  
-        // 5. Get products (if still needed)
+        // Get current products (using your existing API exactly as is)
         let products = [];
         try {
           const response = await fetch('https://sk8ts-shop.com/api/products');
           products = await response.json();
-        } catch (error) {
-          console.error("Failed to fetch products:", error);
+        } catch (e) {
+          console.error("Couldn't fetch products:", e);
         }
   
-        // 6. Build the prompt for Gemini
-        const prompt = `You are Ollie, a skateboard expert assistant.
-          User: ${usersName || 'Guest'}
-          Skill Level: ${conversationState.skillLevel || 'not specified'}
+        // Create dynamic preamble with product info and skate knowledge
+        const preamble = `You are Ollie, the skateboard expert at SK8TS shop. 
+          Current user: ${usersName}.
+          Your goal is to help customers find their perfect skateboard from this list which are in the website
           
-          ${products.length > 0 ? `Available Products:
-          ${products.slice(0, 3).map(p => `${p.name} ($${p.price})`).join('\n')}` : ''}
+          [{"product_id":1,"name":"Street King Skateboards","description":"Durable 7-ply maple deck with responsive trucks and smooth wheels. Perfect for street skating and tricks.","price":99.98,"stock_quantity":46,"category_id":1,"brand_id":10,"image_path":"street-king.jpeg","sku":"STR-KNG-001","weight":4,"dimensions":"32x8.25","color":"Natural/Red","size":"8.25","created_at":"2025-02-10T17:15:08.000Z","updated_at":"2025-04-15T16:43:56.000Z","status":"active"},{"product_id":2,"name":"Pro Stunt Skateboard","description":"High-quality deck with reinforced trucks and fast bearings. Ideal for advanced tricks and competition use.","price":119.99,"stock_quantity":28,"category_id":1,"brand_id":12,"image_path":"pro-stunt-skateboard.jpeg","sku":"PRO-ST-002","weight":4.5,"dimensions":"31x8","color":"Black/Gold","size":"8.0","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-04-15T15:55:11.000Z","status":"active"},{"product_id":3,"name":"Cruiser Wave Board","description":"Smooth-riding cruiser with soft wheels for city and campus commuting. Lightweight and compact.","price":89.99,"stock_quantity":25,"category_id":2,"brand_id":8,"image_path":"cruiser-wave-board.jpeg","sku":"CRS-WAVE-003","weight":4.7,"dimensions":"30x8.5","color":"Blue/White","size":"8.5","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-04-15T16:28:21.000Z","status":"active"},{"product_id":4,"name":"Downhill Speed Longboard","description":"Designed for high-speed downhill rides with precision bearings and a drop-through deck.","price":125.99,"stock_quantity":9,"category_id":3,"brand_id":5,"image_path":"downhill-speed-longboard.jpeg","sku":"DLH-SPD-004","weight":4.8,"dimensions":"38x9","color":"Carbon Black","size":"9.0","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-04-14T01:30:47.000Z","status":"active"},{"product_id":5,"name":"Freestyle Dancing Longboard","description":"Flexy bamboo deck with responsive trucks. Perfect for longboard dancing and freestyle tricks.","price":179.99,"stock_quantity":20,"category_id":3,"brand_id":7,"image_path":"freestyle-dancing-longboard.jpeg","sku":"FSD-LNG-005","weight":4.6,"dimensions":"42x9.5","color":"Natural/Woodgrain","size":"9.5","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-02-26T20:26:21.000Z","status":"active"},{"product_id":6,"name":"Mini Cruiser Board","description":"Compact and ultra-portable board for casual rides. 
+          Soft wheels for a smooth ride.","price":59.99,"stock_quantity":40,"category_id":2,"brand_id":9,"image_path":"mini-cruiser-board.jpeg","sku":"MIN-CRS-006","weight":4.3,"dimensions":"27x7.5","color":"Yellow/Black","size":"7.5","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-02-26T20:25:19.000Z","status":"active"},{"product_id":7,"name":"All-Terrain Off-Road Board","description":"Pneumatic tires with a sturdy deck for off-road and trail riding. Great for adventure seekers.","price":199.99,"stock_quantity":10,"category_id":4,"brand_id":11,"image_path":"all-terrain-board.jpeg","sku":"ATB-TRK-007","weight":4.9,"dimensions":"40x10","color":"Camo Green","size":"10.0","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-02-26T20:26:22.000Z","status":"active"},{"product_id":8,"name":"Electric Skateboard Turbo-X","description":"Powerful dual-motor electric skateboard with a top speed of 25 mph and long battery life.","price":499.99,"stock_quantity":9,"category_id":5,"brand_id":15,"image_path":"electric-skateboard-turbo-x.jpeg","sku":"ELE-TBX-008","weight":4.7,"dimensions":"39x9.5","color":"Matte Black","size":"9.5","created_at":"2025-02-10T23:11:05.000Z","updated_at":"2025-04-14T01:36:24.000Z","status":"active"}]
           
-          Please respond to: "${userInput}"`;
+          Skateboard Knowledge:
+          - Deck width: 7.5" (tech) to 8.5" (vert)
+          - Wheel hardness: 78a (soft) to 101a (hard)
+          - Truck sizing: Match to deck width
+          - Complete boards best for beginners
+          
+          Response Rules:
+          1. Then ask about skill level
+          2. Suggest 2-3 specific products by name and price and don't try to bold words using **
+          3. Mention why they're good for the user's needs
+          4. Keep responses under 4 sentences`;
+  
+        const fullPrompt = `${preamble}\n\nUser question: ${params.userInput}`;
+  
+        const response = await fetch("https://sk8ts-shop.com/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer hAFMOMnM8E2ijQEbJbALxKPU9rCO4qOF2nyeLrms"
+          },
+          body: JSON.stringify({ 
+            message: fullPrompt,
+            user_context: {
+              name: usersName,
+              products_available: products.length,
+              interaction_time: new Date().toISOString()
+            }
+          }),
+        });
         
-        // 7. Call Gemini API
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        
-        return text || "Let me think about that for a moment...";
+        const data = await response.json();
+        return data.text || "Let me check our best options for you...";
   
       } catch (error) {
-        console.error("Chat error:", error);
         if (error.message === "USER_EXIT") {
-          return "Returning to main menu...";
+          return null;
         }
-        return "Sorry, I'm having trouble. Please try again.";
+        console.error("AI Error:", error);
+        return "My wheels stuck! Could you ask again?";
       }
     },
     path: (params) => {
-      if (!params || !params.userInput || ["bye", "exit", "goodbye", "quit", "menu"].includes(params.userInput.trim().toLowerCase())) {
-        return "prompt_again";
-      }
+      if (params.botMessage === null) return "prompt_again";
       return "chatgpt_query";
     }
   }
+  
+  
+  
 };
 
-
+// Export config
 const settings = {
   general: {
     embedded: false,
