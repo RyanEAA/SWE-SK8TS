@@ -6,6 +6,7 @@ import axios from 'axios';
 import '../css/ProductManagement.css';
 import '../css/admin/Admin.css';
 import CreateProductPopup from '../Components/AdminComponents/PopUps/CreateProductPopup';
+import '../css/buttons.css';
 
 function ProductManagement() {
   const [products, setProducts] = useState([]);

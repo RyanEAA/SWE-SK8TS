@@ -17,6 +17,7 @@
     padding: 15px;
     border-radius: 8px;
     overflow: hidden; /* Prevent content overflow */
+    background-color: #ececec;
   }
   
   
@@ -69,6 +70,7 @@
     align-items: center;
     transition: all 0.2s ease;
     border-left: 3px solid #4CAF50; /* Accent color */
+    background-color: white;
   }
   
   .recent-card:hover {
@@ -101,7 +103,7 @@
   .user-details h4 {
     margin: 0;
     font-size: 0.95rem;
-    color: white;
+    color: black;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
