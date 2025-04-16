@@ -108,9 +108,11 @@ Response Rules:
 5. Keep discussions on the topic of skateboarding. You may give advice related to skateboarding`;
 
         const fullPrompt = `${preamble}\n\nConversation so far:\n${historyText}\n\nContinue the conversation.`;
-
+        // const keyResponse = await fetch("/chat");
+        // const keyData = await keyResponse.json();
+        // const apiKey = keyData.key;
         // Send to Gemini
-        const geminiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCE-ka79fmgB_w1JSMY83nUmhtRP4cUu1c", {
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCE-ka79fmgB_w1JSMY83nUmhtRP4cUu1c`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
