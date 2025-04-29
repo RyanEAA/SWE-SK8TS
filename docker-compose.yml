@@ -32,7 +32,7 @@ services:
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
       MYSQL_ORDER_DB: order
-      REACT_APP_GEMINI_API_KEY: ${REACT_APP_GEMINI_API_KEY} # Add this line
+      VITE_GEMINI_API_KEY: ${VITE_GEMINI_API_KEY} 
     ports:
       - 3636:3636
     depends_on:
