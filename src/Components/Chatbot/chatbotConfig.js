@@ -1,8 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
-// Menu options the bot will show
-const helpOptions = ["Home", "Shop", "About Us", "Login", "Github", "Ask AI"];
+helpOptions// Menu options the bot will show
+const helpOptions = ["Shop", "About Us", "Login", "Github", "Ask AI"];
 
 var usersName = "";
 const conversationHistory = []; // Track conversation history for context
