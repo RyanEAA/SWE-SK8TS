@@ -526,7 +526,209 @@ app.get('/chat', (req, res) => {
   });
 });
 
+// HERE
 
+
+app.put('/editOrder/:order_id', [
+  body('user_id').isInt({ min: 1 }).withMessage('Valid user_id is required'),
+  body('total_amount').isFloat({ min: 0 }).withMessage('Total amount must be non-negative'),
+  body('shipping_address').notEmpty().trim().withMessage('Shipping address is required'),
+  body('items').isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
+  body('items.*.product_id').isInt({ min: 1 }).withMessage('Valid product_id required'),
+  body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be positive integer'),
+  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be non-negative'),
+  body('items.*.customization').optional().isString().trim()
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { order_id } = req.params;
+  const { user_id, total_amount, shipping_address, items } = req.body;
+
+  orderDb.getConnection((err, connection) => {
+    if (err) {
+      console.error('Database connection error:', err);
+      return res.status(500).send('Database connection failed');
+    }
+
+    connection.beginTransaction(err => {
+      if (err) {
+        connection.release();
+        return res.status(500).send('Error processing order');
+      }
+
+      // Step 1: Update the order details
+      const updateOrderQuery = `
+        UPDATE orders
+        SET total_amount = ?, shipping_address = ?
+        WHERE order_id = ? AND user_id = ?
+      `;
+
+      connection.query(updateOrderQuery, [total_amount, shipping_address, order_id, user_id], (err, result) => {
+        if (err) {
+          connection.rollback(() => connection.release());
+          return res.status(500).send('Error updating order');
+        }
+
+        if (result.affectedRows === 0) {
+          connection.rollback(() => connection.release());
+          return res.status(404).json({ message: 'Order not found or unauthorized' });
+        }
+
+        // Step 2: Delete existing items for the order
+        const deleteItemsQuery = 'DELETE FROM orderedItems WHERE order_id = ?';
+
+        connection.query(deleteItemsQuery, [order_id], (err) => {
+          if (err) {
+            connection.rollback(() => connection.release());
+            return res.status(500).send('Error clearing existing order items');
+          }
+
+          // Step 3: Insert updated items
+          const insertItems = items.map(item => [
+            order_id, item.product_id, item.quantity, item.price, item.customization || null
+          ]);
+
+          connection.query(
+            'INSERT INTO orderedItems (order_id, product_id, quantity, price, customization) VALUES ?',
+            [insertItems],
+            (err) => {
+              if (err) {
+                connection.rollback(() => connection.release());
+                return res.status(500).send('Error adding updated order items');
+              }
+
+              // Step 4: Commit the transaction
+              connection.commit(err => {
+                connection.release();
+                if (err) return res.status(500).send('Error finalizing order update');
+
+                res.status(200).json({ message: 'Order updated successfully', orderId: order_id });
+              });
+            }
+          );
+        });
+      });
+    });
+  });
+});
+
+// Admin Analytics API
+app.get('/admin/analytics', (req, res) => {
+  const activeUsersQuery = `
+    SELECT u.username, COUNT(o.order_id) AS total_orders
+    FROM users u
+    JOIN orders o ON u.user_id = o.user_id
+    GROUP BY u.user_id
+    ORDER BY total_orders DESC
+    LIMIT 3
+  `;
+
+  const productiveEmployeesQuery = `
+    SELECT u.username, COUNT(o.order_id) AS fulfilled_orders
+    FROM users u
+    JOIN orders o ON u.user_id = o.employee_id
+    WHERE o.order_status = 'sent'
+    GROUP BY u.user_id
+    ORDER BY fulfilled_orders DESC
+    LIMIT 3
+  `;
+
+  const popularItemsQuery = `
+    SELECT p.name, SUM(oi.quantity) AS total_sold
+    FROM products p
+    JOIN orderedItems oi ON p.product_id = oi.product_id
+    GROUP BY p.product_id
+    ORDER BY total_sold DESC
+    LIMIT 5
+  `;
+
+  Promise.all([
+    new Promise((resolve, reject) => userDb.query(activeUsersQuery, (err, results) => err ? reject(err) : resolve(results))),
+    new Promise((resolve, reject) => userDb.query(productiveEmployeesQuery, (err, results) => err ? reject(err) : resolve(results))),
+    new Promise((resolve, reject) => productDb.query(popularItemsQuery, (err, results) => err ? reject(err) : resolve(results)))
+  ])
+  .then(([activeUsers, productiveEmployees, popularItems]) => {
+    res.json({ activeUsers, productiveEmployees, popularItems });
+  })
+  .catch(err => {
+    console.error('Error fetching analytics:', err);
+    res.status(500).send('Error fetching analytics');
+  });
+});
+
+// Contact Us - Submit Message
+app.post('/contact', [
+  body('user_id').isInt({ min: 1 }).withMessage('Valid user_id is required'),
+  body('title').notEmpty().trim().escape().withMessage('Title is required'),
+  body('message_text').notEmpty().trim().escape().withMessage('Message text is required')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { user_id, title, message_text } = req.body;
+
+  userDb.query(
+    'INSERT INTO messages (user_id, title, message_text, created_at, is_read) VALUES (?, ?, ?, NOW(), 0)',
+    [user_id, title, message_text],
+    (err, result) => {
+      if (err) {
+        console.error('Error submitting message:', err);
+        return res.status(500).send('Error submitting message');
+      }
+      res.status(201).json({ message: 'Message submitted successfully', messageId: result.insertId });
+    }
+  );
+});
+
+// Admin Message Center
+app.get('/admin/messages', (req, res) => {
+  userDb.query(
+    `SELECT m.message_id, m.title, m.created_at, u.username
+     FROM messages m
+     JOIN users u ON m.user_id = u.user_id
+     ORDER BY m.created_at DESC`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching messages:', err);
+        return res.status(500).send('Error fetching messages');
+      }
+      res.json(results);
+    }
+  );
+});
+
+// Admin View Specific Message
+app.get('/admin/message/:message_id', (req, res) => {
+  const messageId = req.params.message_id;
+  userDb.query(
+    `SELECT m.*, u.username, u.email
+     FROM messages m
+     JOIN users u ON m.user_id = u.user_id
+     WHERE m.message_id = ?`,
+    [messageId],
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching message:', err);
+        return res.status(500).send('Error fetching message');
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Message not found' });
+      }
+      res.json(results[0]);
+    }
+  );
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled server error:', err);
+  res.status(500).send('Internal server error');
+});
 
 // Open API Connection
 app.listen(port, () => {
