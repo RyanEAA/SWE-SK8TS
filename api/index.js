@@ -519,7 +519,7 @@ app.post('/chat', async (req, res) => {
   }
 
   try {
-    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCE-ka79fmgB_w1JSMY83nUmhtRP4cUu1c`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
