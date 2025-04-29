@@ -534,20 +534,19 @@ app.post('/chat', async (req, res) => {
     });
 
     const data = await geminiResponse.json();
-    const aiMessage = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    if (!aiMessage) {
-      return res.status(500).json({ error: 'Failed to get a response from Gemini' });
+    if (!data || !data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0]) {
+      return res.status(500).json({ error: 'Failed to get a valid response from Gemini API' });
     }
+
+    const aiMessage = data.candidates[0].content.parts[0].text;
 
     res.json({ message: aiMessage });
   } catch (error) {
-    console.error('Error connecting to Gemini:', error);
-    res.status(500).json({ error: 'Error connecting to Gemini' });
+    console.error('Error connecting to Gemini API:', error);
+    res.status(500).json({ error: 'Error connecting to Gemini API' });
   }
 });
-
-// HERE
 
 
 app.put('/editOrder/:order_id', [
