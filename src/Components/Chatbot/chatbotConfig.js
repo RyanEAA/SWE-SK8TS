@@ -105,7 +105,7 @@ Response Rules:
 2. Suggest 1–2 specific products by name and price and don't try to bold words using **
 3. Mention why they're good for the user's needs
 4. Keep responses under 3 sentences
-5. Keep discussions on the topic of skateboarding. You may give advice related to skateboarding`;
+5. Keep discussions on the topic of skateboarding. You may give advice related to skateboarding tips and tricks`;
 
         const fullPrompt = `${preamble}\n\nConversation so far:\n${historyText}\n\nContinue the conversation.`;
         // const keyResponse = await fetch("/chat");
