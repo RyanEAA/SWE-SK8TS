@@ -510,6 +510,7 @@ app.put('/users/:id', (req, res) => {
 
 
 const https = require('https');
+const fetch = require('node-fetch');
 
 app.post('/chat', async (req, res) => {
   const { prompt } = req.body;
