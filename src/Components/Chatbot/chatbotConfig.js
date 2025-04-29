@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 // Menu options the bot will show
 const helpOptions = ["Home", "Shop", "About Us", "Login", "Github", "Ask AI"];
 
@@ -115,7 +112,7 @@ Response Rules:
         // const keyData = await keyResponse.json();
         // const apiKey = keyData.key;
         // Send to Gemini
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCE-ka79fmgB_w1JSMY83nUmhtRP4cUu1c`, {
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
