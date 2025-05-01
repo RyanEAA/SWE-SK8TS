@@ -13,11 +13,18 @@ function AllOrders() {
                 setIsLoading(true);
                 const response = await fetch('https://sk8ts-shop.com/api/orders');
                 const data = await response.json();
-                // Add this console.log to check the API response structure
-                console.log('API Response:', data);
-                setAllOrders(data);
+                
+                // Remove JSON parsing since customization is already a string
+                const ordersWithCustomizations = data.map(order => ({
+                    ...order,
+                    customization: order.customization || null
+                }));
+
+                console.log('All orders data:', ordersWithCustomizations); // Add this line
+                
+                setAllOrders(ordersWithCustomizations);
             } catch (error) {
-                console.log('Error fetching all orders:', error);
+                console.error('Error fetching all orders:', error);
             } finally {
                 setIsLoading(false);
             }

@@ -290,6 +290,33 @@ app.get('/orders/user/:user_id', (req, res) => {
   });
 });
 
+app.get('/orders/:order_id', (req, res) => {
+  const orderId = req.params.order_id;
+
+  // Check if order_id is valid
+  if (!/^\d+$/.test(orderId)) {
+    return res.status(400).json({ error: 'Invalid order ID' });
+  }
+
+  // Query to fetch order and its items
+  orderDb.query(
+    'SELECT * FROM orders o JOIN orderedItems oi ON o.order_id = oi.order_id WHERE o.order_id = ?',
+    [orderId],
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching order:', err);
+        return res.status(500).send('Error fetching order');
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+
+      res.json(results);
+    }
+  );
+});
+
 // Fetch Orders by Employee ID API
 app.get('/orders/employee/:employee_id', (req, res) => {
   const employeeId = req.params.employee_id;

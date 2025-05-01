@@ -124,5 +124,3 @@ function Order({ orderItems, editable = false}) {
 }
 
 export default Order;
-
-

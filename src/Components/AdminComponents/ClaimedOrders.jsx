@@ -15,6 +15,7 @@ function ClaimedOrders() {
                 setIsLoading(true);
                 const response = await fetch(`https://sk8ts-shop.com/api/orders/employee/${userId}`);
                 const data = await response.json();
+                console.log('Claimed orders data:', data); // Add this line
                 setClaimedOrders(data);
             } catch (error) {
                 console.log('Error fetching claimed orders:', error);
