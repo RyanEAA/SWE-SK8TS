@@ -1,4 +1,4 @@
-helpOptions// Menu options the bot will show
+// Menu options the bot will show
 const helpOptions = ["Shop", "About Us", "Login", "Github", "Ask AI"];
 
 var usersName = "";
