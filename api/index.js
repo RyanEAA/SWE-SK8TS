@@ -22,6 +22,10 @@ app.use(cors(corsOptions));
 
 app.use(express.json()); // Middleware for JSON parsing
 
+const path = require('path');
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+
 // Database pool configuration
 const dbConfig = {
   connectionLimit: 10, // Allow up to 10 concurrent connections
@@ -421,7 +425,7 @@ app.post('/products', (req, res) => {
 
 // Create a new product with image upload
 const multer = require('multer');
-const upload = multer({ dest: '/public/Images/' }); // or configure your own
+const upload = multer({ dest: 'public/Images/' }); // or configure your own
 
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
