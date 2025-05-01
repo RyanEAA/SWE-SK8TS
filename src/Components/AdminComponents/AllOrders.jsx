@@ -1,11 +1,11 @@
-// AllOrders.jsx
 import Order from '../Order';
-import React , { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/admin/Admin.css';
 
 function AllOrders() {
   const [isLoading, setIsLoading] = useState(true);
   const [allOrders, setAllOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null); // Add this state
 
   useEffect(() => {
     const fetchAllOrders = async () => {
@@ -24,7 +24,6 @@ function AllOrders() {
     fetchAllOrders();
   }, []);
 
-
   return (
     <div className="admin-section">
       <h1>All Orders</h1>
@@ -37,7 +36,7 @@ function AllOrders() {
               <div 
                 key={order.order_id} 
                 className="order-item"
-                onClick={() => setSelectedOrder(order.order_id)}
+                onClick={() => setSelectedOrder(order.order_id)} // Use the setter here
               >
                 <Order orderItems={[order]} editable={false} />
               </div>

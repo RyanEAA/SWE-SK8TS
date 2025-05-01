@@ -153,7 +153,8 @@ app.post('/placeOrder', [
   body('items').isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
   body('items.*.product_id').isInt({ min: 1 }).withMessage('Valid product_id is required for each item'),
   body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be a positive integer'),
-  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number')
+  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number'),
+  body('items.*.customization').optional().isString().trim()
 ], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -186,21 +187,27 @@ app.post('/placeOrder', [
         }
 
         const order_id = orderResult.insertId;
-        const insertItems = items.map(item => [order_id, item.product_id, item.quantity, item.price]);
+        const insertItems = items.map(item => [
+          order_id, item.product_id, item.quantity, item.price, item.customization || null
+        ]);
 
-        connection.query('INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES ?', [insertItems], (err) => {
-          if (err) {
-            connection.rollback(() => connection.release());
-            return res.status(500).send('Error adding ordered items');
+        connection.query(
+          'INSERT INTO orderedItems (order_id, product_id, quantity, price, customization) VALUES ?',
+          [insertItems],
+          (err) => {
+            if (err) {
+              connection.rollback(() => connection.release());
+              return res.status(500).send('Error adding ordered items');
+            }
+
+            connection.commit(err => {
+              connection.release();
+              if (err) return res.status(500).send('Error finalizing order');
+
+              res.status(201).json({ message: 'Order added successfully', orderId: order_id });
+            });
           }
-
-          connection.commit(err => {
-            connection.release();
-            if (err) return res.status(500).send('Error finalizing order');
-
-            res.status(201).json({ message: 'Order added successfully', orderId: order_id });
-          });
-        });
+        );
       });
     });
   });
