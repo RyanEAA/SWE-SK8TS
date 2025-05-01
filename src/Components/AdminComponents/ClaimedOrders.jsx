@@ -35,21 +35,25 @@ function ClaimedOrders() {
         {isLoading ? (
             <div className="loading-spinner">Loading...</div>
         ) : (
+            // ...existing code...
             <div className="claimed-orders-list scrollable-list">
-                {claimedOrders.length > 0 ? (
-                    claimedOrders.map(order => (
-                        <div 
-                key={order.order_id} 
-                className="order-item"
-                onClick={() => setSelectedOrder(order.order_id)}
-              >
-                <Order orderItems={[order]} editable={true} />
-              </div>
-                    ))
-                ) : (
-                    <p>No claimed orders found</p>
-                )}
-            </div>
+            {claimedOrders.length > 0 ? (
+                claimedOrders.map(order => (
+                    <div 
+                        key={order.order_id} 
+                        className="order-item"
+                        onClick={() => setSelectedOrder(order.order_id)}
+                    >
+                        <Order 
+                            orderId={order.order_id}
+                            editable={true} 
+                        />
+                    </div>
+                ))
+            ) : (
+                <p>No claimed orders found</p>
+            )}
+        </div>
         )}
         </div>
     );

@@ -49,14 +49,17 @@ function AllOrders() {
                 <div className="loading-spinner">Loading...</div>
             ) : (
                 <div className="all-orders-list scrollable-list">
-                    {Object.values(groupedOrders).length > 0 ? (
-                        Object.values(groupedOrders).map(orderItems => (
+                    {Object.keys(groupedOrders).length > 0 ? (
+                        Object.keys(groupedOrders).map(orderId => (
                             <div 
-                                key={orderItems[0].order_id} 
+                                key={orderId} 
                                 className="order-item"
-                                onClick={() => setSelectedOrder(orderItems[0].order_id)}
+                                onClick={() => setSelectedOrder(orderId)}
                             >
-                                <Order orderItems={orderItems} editable={false} />
+                                <Order 
+                                    orderId={orderId}
+                                    editable={false} 
+                                />
                             </div>
                         ))
                     ) : (

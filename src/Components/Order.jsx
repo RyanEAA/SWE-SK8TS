@@ -5,36 +5,48 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import '../css/Order.css';
 
-function Order({ orderItems, editable = false}) {
+function Order({ orderId, editable = false }) {
+    const [orderItems, setOrderItems] = useState([]);
     const [productNames, setProductNames] = useState({});
-    const [deliveryStatus, setDeliveryStatus] = useState(orderItems && orderItems.length > 0 ? orderItems[0].order_status : '');
+    const [deliveryStatus, setDeliveryStatus] = useState('');
     const [showPopup, setShowPopup] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchProductNames = async () => {
+        const fetchOrderData = async () => {
             try {
-                const response = await axios.get('https://sk8ts-shop.com/api/products');
-                if (response.status === 200 && Array.isArray(response.data)) {
+                const [orderResponse, productsResponse] = await Promise.all([
+                    axios.get(`https://sk8ts-shop.com/api/order/${orderId}`),
+                    axios.get('https://sk8ts-shop.com/api/products')
+                ]);
+
+                if (orderResponse.data.length > 0) {
+                    setOrderItems(orderResponse.data);
+                    setDeliveryStatus(orderResponse.data[0].order_status);
+                }
+
+                if (Array.isArray(productsResponse.data)) {
                     const names = {};
-                    response.data.forEach((product) => {
+                    productsResponse.data.forEach((product) => {
                         names[product.product_id] = product.name;
                     });
                     setProductNames(names);
                 }
+
+                setLoading(false);
             } catch (error) {
-                console.error('Error fetching products:', error);
+                console.error('Error fetching data:', error);
+                setError('Failed to load order data');
+                setLoading(false);
             }
         };
 
-        fetchProductNames();
-    }, []);
-
-    if (!orderItems || orderItems.length === 0) {
-        return <div>No Orders</div>;
-    }
+        fetchOrderData();
+    }, [orderId]);
 
     const handleDeliveryStatusChange = (event) => {
-        event.stopPropagation(); // Prevent triggering the order click
+        event.stopPropagation();
         const newStatus = event.target.value;
         setDeliveryStatus(newStatus);
         const employeeID = Cookies.get('user_id');
@@ -65,7 +77,10 @@ function Order({ orderItems, editable = false}) {
         setShowPopup(true);
     };
 
-    const orderId = orderItems[0].order_id;
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+    if (!orderItems || orderItems.length === 0) return <div>No Order Found</div>;
+
     const totalAmount = orderItems[0].total_amount;
 
     return (
@@ -79,7 +94,7 @@ function Order({ orderItems, editable = false}) {
                             className='order-dropdown' 
                             value={deliveryStatus} 
                             onChange={handleDeliveryStatusChange}
-                            onClick={(e) => e.stopPropagation()} // Prevent triggering the order click
+                            onClick={(e) => e.stopPropagation()}
                         >
                             <option value="claimed">Claimed</option>
                             <option value="unclaimed">Unclaimed</option>

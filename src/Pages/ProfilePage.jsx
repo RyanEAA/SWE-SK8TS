@@ -5,15 +5,12 @@ import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
 import '../css/buttons.css';
 import Order from '../Components/Order';
-import OrderPopup from '../Components/OrderPopup';
 import Admin from './Admin';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
-    const [allOrders, setAllOrders] = useState([]);
+    const [orderIds, setOrderIds] = useState([]);
     const navigate = useNavigate();
-    const [selectedOrder, setSelectedOrder] = useState(null);
-    const [selectedOrderItems, setSelectedOrderItems] = useState(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -59,7 +56,9 @@ function ProfilePage() {
             }
             
             if (response.status === 200 && Array.isArray(response.data)) {
-                setAllOrders(response.data);
+                // Extract unique order IDs
+                const uniqueOrderIds = [...new Set(response.data.map(order => order.order_id))];
+                setOrderIds(uniqueOrderIds.sort((a, b) => b - a)); // Sort in descending order
             } else {
                 alert('Error retrieving orders.');
             }
@@ -69,37 +68,11 @@ function ProfilePage() {
         }
     };
 
-    const handleOrderClick = (orderId, orderItems) => {
-        // const formattedItems = orderItems.map(item => ({
-        //     productName: item.product_name,
-        //     quantity: item.quantity,
-        //     price: item.price,
-        //     orderDate: new Date(item.order_date).toLocaleDateString(),
-        //     status: item.order_status, // Fixed: Changed from item.status to item.order_status
-        //     shippingAddress: item.shipping_address,
-        //     customization: item.customization || 'No customization',
-        //     claimedBy: item.claimed_by
-        // }));
-        
-        // setSelectedOrder(orderId);
-        // setSelectedOrderItems(formattedItems);
-    };
-
     const handleLogout = () => {
         Cookies.remove('user');
         Cookies.remove('user_role');
         Cookies.remove('user_id');
         window.location.href = '/';
-    };
-
-    const groupAllOrders = (orders) => {
-        return orders.reduce((acc, order) => {
-            if (!acc[order.order_id]) {
-                acc[order.order_id] = [];
-            }
-            acc[order.order_id].push(order);
-            return acc;
-        }, {});
     };
 
     if (!userData) {
@@ -108,7 +81,6 @@ function ProfilePage() {
 
     const isEmployee = userData.user_role === 'employee';
     const isAdmin = userData.user_role === 'admin';
-    const currentUserId = parseInt(Cookies.get('user_id'));
 
     return (
         <div className="profile-page-container">
@@ -168,36 +140,20 @@ function ProfilePage() {
                 <div className="orders-section">
                     <h2>Order History</h2>
                     <div className="orders-container">
-                        {allOrders.length > 0 ? (
-                            Object.entries(groupAllOrders(allOrders))
-                                .sort(([a], [b]) => b - a)
-                                .map(([orderId, orderItems]) => (
-                                    <button 
-                                        key={orderId} 
-                                        className="btn btn-white"
-                                        onClick={() => handleOrderClick(orderId, orderItems)}
-                                    >
-                                        <Order 
-                                            orderItems={orderItems} 
-                                            editable={isEmployee && orderItems[0].claimed_by === currentUserId}
-                                        />
-                                    </button>
-                                ))
+                        {orderIds.length > 0 ? (
+                            orderIds.map(orderId => (
+                                <Order 
+                                    key={orderId} 
+                                    orderId={orderId} 
+                                    editable={isEmployee}
+                                />
+                            ))
                         ) : (
                             <p className="no-orders">No orders found</p>
                         )}
                     </div>
                 </div>
             )}
-            
-            <OrderPopup
-                orderId={selectedOrder}
-                orderItems={selectedOrderItems}
-                onClose={() => {
-                    setSelectedOrder(null);
-                    setSelectedOrderItems(null);
-                }}
-            />
         </div>
     );
 }
