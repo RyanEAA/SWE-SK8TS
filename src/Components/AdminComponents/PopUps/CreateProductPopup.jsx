@@ -16,18 +16,37 @@ function CreateProductPopup({ onClose, onProductCreated }) {
     color: '',
     size: '',
     status: 'active',
+    customizations: [], // Add customizations field
   });
 
   const [imageFile, setImageFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [customizationInput, setCustomizationInput] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
+  };
+
+  const handleAddCustomization = () => {
+    if (customizationInput.trim()) {
+      setForm((prev) => ({
+        ...prev,
+        customizations: [...prev.customizations, customizationInput.trim()],
+      }));
+      setCustomizationInput('');
+    }
+  };
+
+  const handleRemoveCustomization = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      customizations: prev.customizations.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -35,7 +54,11 @@ function CreateProductPopup({ onClose, onProductCreated }) {
 
     const formData = new FormData();
     for (const key in form) {
-      formData.append(key, form[key]);
+      if (key === 'customizations') {
+        formData.append(key, JSON.stringify(form[key])); // Send customizations as JSON
+      } else {
+        formData.append(key, form[key]);
+      }
     }
     if (imageFile) {
       formData.append('image', imageFile);
@@ -43,10 +66,8 @@ function CreateProductPopup({ onClose, onProductCreated }) {
 
     try {
       const response = await fetch('https://sk8ts-shop.com/api/createproduct', {
-        // const response = await fetch('http://localhost:3636/createproduct', {
-
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       const data = await response.json();
@@ -91,6 +112,29 @@ function CreateProductPopup({ onClose, onProductCreated }) {
               <option value="inactive">Inactive</option>
               <option value="discontinued">Discontinued</option>
             </select>
+          </div>
+
+          <div className="form-group">
+            <label>Customizations:</label>
+            <div className="customizations-list">
+              {form.customizations.map((customization, index) => (
+                <div key={index} className="customization-item">
+                  {customization}
+                  <button type="button" onClick={() => handleRemoveCustomization(index)}>
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+            <input
+              type="text"
+              value={customizationInput}
+              onChange={(e) => setCustomizationInput(e.target.value)}
+              placeholder="Add a customization"
+            />
+            <button type="button" onClick={handleAddCustomization}>
+              Add Customization
+            </button>
           </div>
 
           <div className="form-group">
