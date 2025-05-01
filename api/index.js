@@ -134,7 +134,6 @@ app.get('/users', (req, res) => {
   });
 });
 
-
 // 🔹 Fetch Orders API
 app.get('/orders', (req, res) => {
   orderDb.query(

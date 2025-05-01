@@ -5,7 +5,6 @@ import Cookies from 'js-cookie';
 import '../css/ProfilePage.css';
 import '../css/buttons.css';
 import Order from '../Components/Order';
-import Popup from 'reactjs-popup';
 import OrderPopup from '../Components/OrderPopup';
 import Admin from './Admin';
 
@@ -14,6 +13,7 @@ function ProfilePage() {
     const [allOrders, setAllOrders] = useState([]);
     const navigate = useNavigate();
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedOrderItems, setSelectedOrderItems] = useState(null);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -69,8 +69,20 @@ function ProfilePage() {
         }
     };
 
-    const handleOrderClick = (orderId) => {
-        setSelectedOrder(orderId);
+    const handleOrderClick = (orderId, orderItems) => {
+        // const formattedItems = orderItems.map(item => ({
+        //     productName: item.product_name,
+        //     quantity: item.quantity,
+        //     price: item.price,
+        //     orderDate: new Date(item.order_date).toLocaleDateString(),
+        //     status: item.order_status, // Fixed: Changed from item.status to item.order_status
+        //     shippingAddress: item.shipping_address,
+        //     customization: item.customization || 'No customization',
+        //     claimedBy: item.claimed_by
+        // }));
+        
+        // setSelectedOrder(orderId);
+        // setSelectedOrderItems(formattedItems);
     };
 
     const handleLogout = () => {
@@ -163,7 +175,7 @@ function ProfilePage() {
                                     <button 
                                         key={orderId} 
                                         className="btn btn-white"
-                                        onClick={() => handleOrderClick(orderId)}
+                                        onClick={() => handleOrderClick(orderId, orderItems)}
                                     >
                                         <Order 
                                             orderItems={orderItems} 
@@ -177,10 +189,14 @@ function ProfilePage() {
                     </div>
                 </div>
             )}
+            
             <OrderPopup
                 orderId={selectedOrder}
-                orderItems={selectedOrder ? groupAllOrders(allOrders)[selectedOrder] : []}
-                onClose={() => setSelectedOrder(null)}
+                orderItems={selectedOrderItems}
+                onClose={() => {
+                    setSelectedOrder(null);
+                    setSelectedOrderItems(null);
+                }}
             />
         </div>
     );
