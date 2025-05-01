@@ -290,7 +290,7 @@ app.get('/orders/user/:user_id', (req, res) => {
   });
 });
 
-app.get('/orders/:order_id', (req, res) => {
+app.get('/order/:order_id', (req, res) => {
   const orderId = req.params.order_id;
 
   // Check if order_id is valid
