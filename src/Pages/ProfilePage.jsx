@@ -11,17 +11,9 @@ import Admin from './Admin';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
-    const [orders, setOrders] = useState([]);
-    const [claimedOrders, setClaimedOrders] = useState([]);
-    const [activeTab, setActiveTab] = useState(() => {
-        return localStorage.getItem('activeTab') || 'placed';
-    });
+    const [allOrders, setAllOrders] = useState([]);
     const navigate = useNavigate();
     const [selectedOrder, setSelectedOrder] = useState(null);
-
-    useEffect(() => {
-        localStorage.setItem('activeTab', activeTab);
-    }, [activeTab]);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -40,15 +32,7 @@ function ProfilePage() {
                     const user = response.data.find((u) => u.user_id === parseInt(userId));
                     if (user) {
                         setUserData(user);
-
-                        // Fetch orders based on role
-                        if (userRole === 'admin') {
-                            fetchAllOrders();
-                        } else if (userRole === 'employee') {
-                            fetchClaimedOrders(userId);
-                        } else {
-                            fetchOrders(userId);
-                        }
+                        fetchAllUserOrders(userId, userRole);
                     } else {
                         alert('User not found. Redirecting to login.');
                         window.location.href = '/login';
@@ -62,48 +46,28 @@ function ProfilePage() {
             }
         };
 
-        const fetchOrders = async (userId) => {
-            try {
-                const response = await axios.get(`https://sk8ts-shop.com/api/orders/user/${userId}`);
-                if (response.status === 200 && Array.isArray(response.data)) {
-                    setOrders(response.data);
-                } else {
-                    alert('Error retrieving orders.');
-                }
-            } catch (error) {
-                console.error('Error fetching orders:', error);
-                alert('An error occurred while fetching orders.');
-            }
-        };
-
-        const fetchClaimedOrders = async (employeeId) => {
-            try {
-                const response = await axios.get(`https://sk8ts-shop.com/api/orders/employee/${employeeId}`);
-                if (response.status === 200 && Array.isArray(response.data)) {
-                    setClaimedOrders(response.data);
-                } else {
-                    alert('Error retrieving claimed orders.');
-                }
-            } catch (error) {
-                console.error('Error fetching claimed orders:', error);
-            }
-        };
-
-        const fetchAllOrders = async () => {
-            try {
-                const response = await axios.get('https://sk8ts-shop.com/api/orders');
-                if (response.status === 200 && Array.isArray(response.data)) {
-                    setOrders(response.data);
-                } else {
-                    alert('Error retrieving all orders.');
-                }
-            } catch (error) {
-                console.error('Error fetching all orders:', error);
-            }
-        };
-
         fetchUserData();
     }, [navigate]);
+
+    const fetchAllUserOrders = async (userId, userRole) => {
+        try {
+            let response;
+            if (userRole === 'admin') {
+                response = await axios.get('https://sk8ts-shop.com/api/orders');
+            } else {
+                response = await axios.get(`https://sk8ts-shop.com/api/orders/user/${userId}`);
+            }
+            
+            if (response.status === 200 && Array.isArray(response.data)) {
+                setAllOrders(response.data);
+            } else {
+                alert('Error retrieving orders.');
+            }
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            alert('An error occurred while fetching orders.');
+        }
+    };
 
     const handleOrderClick = (orderId) => {
         setSelectedOrder(orderId);
@@ -116,31 +80,23 @@ function ProfilePage() {
         window.location.href = '/';
     };
 
+    const groupAllOrders = (orders) => {
+        return orders.reduce((acc, order) => {
+            if (!acc[order.order_id]) {
+                acc[order.order_id] = [];
+            }
+            acc[order.order_id].push(order);
+            return acc;
+        }, {});
+    };
+
     if (!userData) {
         return <div>Loading user data...</div>;
     }
 
-    const groupedOrders = orders.reduce((acc, order) => {
-        if (!acc[order.order_id]) {
-            acc[order.order_id] = [];
-        }
-        acc[order.order_id].push(order);
-        return acc;
-    }, {});
-
-    const groupedClaimedOrders = claimedOrders.reduce((acc, order) => {
-        if (!acc[order.order_id]) {
-            acc[order.order_id] = [];
-        }
-        acc[order.order_id].push(order);
-        return acc;
-    }, {});
-
-    const reversedOrderIds = Object.keys(groupedOrders).sort((a, b) => b - a);
-    const reversedClaimedOrderIds = Object.keys(groupedClaimedOrders).sort((a, b) => b - a);
-
     const isEmployee = userData.user_role === 'employee';
     const isAdmin = userData.user_role === 'admin';
+    const currentUserId = parseInt(Cookies.get('user_id'));
 
     return (
         <div className="profile-page-container">
@@ -198,51 +154,32 @@ function ProfilePage() {
                 </div>
             ) : (
                 <div className="orders-section">
-                    <div className="orders-tabs">
-                        <button
-                            className={`btn-tab ${activeTab === 'placed' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('placed')}
-                        >
-                            Order History
-                        </button>
-                        {isEmployee && (
-                            <button
-                                className={`btn-tab ${activeTab === 'claimed' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('claimed')}
-                            >
-                                Claimed Orders
-                            </button>
-                        )}
-                    </div>
-
+                    <h2>Order History</h2>
                     <div className="orders-container">
-                        {activeTab === 'placed' ? (
-                            reversedOrderIds.length > 0 ? (
-                                reversedOrderIds.map((orderId) => (
-                                    <button key={orderId} className="btn btn-white">
-                                        <Order orderItems={groupedOrders[orderId]} editable={false} />
+                        {allOrders.length > 0 ? (
+                            Object.entries(groupAllOrders(allOrders))
+                                .sort(([a], [b]) => b - a)
+                                .map(([orderId, orderItems]) => (
+                                    <button 
+                                        key={orderId} 
+                                        className="btn btn-white"
+                                        onClick={() => handleOrderClick(orderId)}
+                                    >
+                                        <Order 
+                                            orderItems={orderItems} 
+                                            editable={isEmployee && orderItems[0].claimed_by === currentUserId}
+                                        />
                                     </button>
                                 ))
-                            ) : (
-                                <p className="no-orders">No orders placed yet</p>
-                            )
                         ) : (
-                            reversedClaimedOrderIds.length > 0 ? (
-                                reversedClaimedOrderIds.map((orderId) => (
-                                    <button key={orderId} className="btn btn-white">
-                                        <Order orderItems={groupedClaimedOrders[orderId]} editable={true} />
-                                    </button>
-                                ))
-                            ) : (
-                                <p className="no-orders">No orders claimed yet</p>
-                            )
+                            <p className="no-orders">No orders found</p>
                         )}
                     </div>
                 </div>
             )}
             <OrderPopup
                 orderId={selectedOrder}
-                orderItems={[]}
+                orderItems={selectedOrder ? groupAllOrders(allOrders)[selectedOrder] : []}
                 onClose={() => setSelectedOrder(null)}
             />
         </div>

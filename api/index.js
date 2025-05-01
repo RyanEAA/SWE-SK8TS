@@ -134,16 +134,21 @@ app.get('/users', (req, res) => {
   });
 });
 
+
 // 🔹 Fetch Orders API
 app.get('/orders', (req, res) => {
-  orderDb.query('SELECT * FROM orders', (err, results) => {
-    if (err) {
-      console.error('Error fetching orders:', err);
-      return res.status(500).send('Error fetching orders');
+  orderDb.query(
+    'SELECT * FROM orders o JOIN orderedItems oi ON o.order_id = oi.order_id',
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching orders:', err);
+        return res.status(500).send('Error fetching orders');
+      }
+      res.json(results);
     }
-    res.json(results);
-  });
+  );
 });
+
 
 // 🔹 Place Order API
 app.post('/placeOrder', [

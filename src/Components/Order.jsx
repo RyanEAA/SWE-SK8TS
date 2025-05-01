@@ -18,8 +18,6 @@ function Order({ orderItems, editable = false}) {
                         names[product.product_id] = product.name;
                     });
                     setProductNames(names);
-                } else {
-                    console.error('Error fetching products:', response);
                 }
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -27,34 +25,27 @@ function Order({ orderItems, editable = false}) {
         };
 
         fetchProductNames();
-    }, []); // Fetch products only once
+    }, []);
 
     if (!orderItems || orderItems.length === 0) {
         return <div>No Orders</div>;
     }
 
     const handleDeliveryStatusChange = (event) => {
-        // get needed information
         const newStatus = event.target.value;
         setDeliveryStatus(newStatus);
         const employeeID = Cookies.get('user_id');
 
-        if (editable) {
+        if (editable && employeeID) {
             axios.put(`https://sk8ts-shop.com/api/update-orders/${orderId}/${newStatus}/${employeeID}`)
-            //axios.put(`http://localhost:3636/update-orders/${orderId}/${newStatus}/${employeeID}`)
                 .then(response => {
                     console.log('Delivery status updated:', response);
                     window.location.reload();
                 })
                 .catch(error => {
                     console.error('Error updating delivery status:', error);
-                    // Optionally, revert the local state if the update fails
-                    // setDeliveryStatus(orderItems[0].order_status);
                 });
-            } else {
-                console.log('employee_id cookies not found');
         }
-
     };
 
     const orderId = orderItems[0].order_id;
@@ -77,7 +68,14 @@ function Order({ orderItems, editable = false}) {
             </div>
             <div className='ordered-items-list'>
                 {orderItems.map((item) => (
-                    <OrderedItem key={item.product_id} item={item} productName={productNames[item.product_id]} />
+                    <OrderedItem 
+                        key={`${item.product_id}-${item.customization}`} 
+                        item={{
+                            ...item,
+                            customizations: item.customization ? JSON.parse(item.customization) : null
+                        }}
+                        productName={productNames[item.product_id]} 
+                    />
                 ))}
             </div>
         </div>
