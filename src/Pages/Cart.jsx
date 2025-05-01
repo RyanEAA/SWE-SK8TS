@@ -78,7 +78,7 @@ function Cart() {
                 product_id: item.product_id,
                 quantity: item.quantity,
                 price: item.price,
-                customizations: item.customizations || null, // Include customizations
+                customization: item.customizations || null, // Ensure the field matches the API's expected structure
             })),
         };
 
@@ -97,7 +97,7 @@ function Cart() {
         console.error('Error placing order:', error);
         alert('An error occurred while placing your order.');
     }
-  };
+};
 
   if (loading) {
     return <div>Loading user data...</div>;
