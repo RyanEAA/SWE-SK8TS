@@ -200,6 +200,7 @@ app.post('/placeOrder', [
           (err) => {
             if (err) {
               connection.rollback(() => connection.release());
+              console.error('Error adding ordered items:', err);
               return res.status(500).send('Error adding ordered items');
             }
 
