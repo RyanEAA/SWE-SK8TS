@@ -681,7 +681,7 @@ app.get('/admin/analytics', (req, res) => {
 });
 
 // Contact Us - Submit Message
-app.post('/contact', [
+app.post('/message', [
   body('user_id').isInt({ min: 1 }).withMessage('Valid user_id is required'),
   body('title').notEmpty().trim().escape().withMessage('Title is required'),
   body('message_text').notEmpty().trim().escape().withMessage('Message text is required')
