@@ -112,19 +112,19 @@ Response Rules:
         // const keyData = await keyResponse.json();
         // const apiKey = keyData.key;
         // Send to Gemini
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    contents: [
-      {
-        parts: [{ text: fullPrompt }]
-      }
-    ]
-  })
-});
+        const geminiResponse = await fetch(`https://sk8ts-shop/api/chat`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: fullPrompt }]
+              }
+            ]
+          })
+        });
 
         const data = await geminiResponse.json();
         const aiMessage = data?.candidates?.[0]?.content?.parts?.[0]?.text;

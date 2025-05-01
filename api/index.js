@@ -510,23 +510,44 @@ app.put('/users/:id', (req, res) => {
 
 
 const https = require('https');
+const fetch = require('node-fetch');
 
-app.get('/chat', (req, res) => {
-  db.query('SELECT value FROM gem WHERE key_id = 1', (err, results) => {
-    if (err) {
-      console.error('DB error:', err);
-      return res.status(500).json({ error: 'Database error' });
+app.post('/chat', async (req, res) => {
+  const { prompt } = req.body;
+
+  if (!prompt) {
+    return res.status(400).json({ error: 'Prompt is required' });
+  }
+
+  try {
+    const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [{ text: prompt }],
+          },
+        ],
+      }),
+    });
+
+    const data = await geminiResponse.json();
+
+    if (!data || !data.candidates || !data.candidates[0] || !data.candidates[0].content || !data.candidates[0].content.parts || !data.candidates[0].content.parts[0]) {
+      return res.status(500).json({ error: 'Failed to get a valid response from Gemini API' });
     }
 
-    if (results.length === 0) {
-      return res.status(404).json({ error: 'No entry found at key_id 1' });
-    }
+    const aiMessage = data.candidates[0].content.parts[0].text;
 
-    res.json({ value: results[0].value });
-  });
+    res.json({ message: aiMessage });
+  } catch (error) {
+    console.error('Error connecting to Gemini API:', error);
+    res.status(500).json({ error: 'Error connecting to Gemini API' });
+  }
 });
-
-// HERE
 
 
 app.put('/editOrder/:order_id', [

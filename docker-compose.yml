@@ -29,10 +29,10 @@ services:
       MYSQL_HOST: db
       MYSQL_USER: root
       MYSQL_PASSWORD: ${DB_ROOT_PW}
+      GEMINI_API_KEY: ${GEMINI_API_KEY} 
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
       MYSQL_ORDER_DB: order
-      COHERE_API_KEY: ${COHERE_API_KEY}
     ports:
       - 3636:3636
     depends_on:
