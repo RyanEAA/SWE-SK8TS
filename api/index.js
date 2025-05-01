@@ -280,7 +280,7 @@ app.get('/orders/user/:user_id', (req, res) => {
     `SELECT o.*, oi.*, p.customizations
      FROM orders o
      NATURAL JOIN orderedItems oi
-     JOIN products p ON oi.product_id = p.product_id
+     JOIN ${process.env.MYSQL_PRODUCTS_DB}.products p ON oi.product_id = p.product_id
      WHERE o.user_id = ?
      ORDER BY o.order_id DESC`,
     [userId],

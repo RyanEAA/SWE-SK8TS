@@ -57,44 +57,45 @@ function Cart() {
 
   const handleCheckout = async () => {
     if (!userData) {
-      alert('You must be logged in to check out.');
-      return;
+        alert('You must be logged in to check out.');
+        return;
     }
     if (cartItems.length === 0) {
-      alert('Cart is empty');
-      return;
+        alert('Cart is empty');
+        return;
     }
     if (!address) {
-      alert('Please enter a shipping address');
-      return;
+        alert('Please enter a shipping address');
+        return;
     }
 
     try {
-      const orderData = {
-        user_id: userData.user_id,
-        total_amount: totalPrice,
-        shipping_address: address,
-        items: cartItems.map(item => ({
-          product_id: item.product_id,
-          quantity: item.quantity,
-          price: item.price
-        }))
-      };
+        const orderData = {
+            user_id: userData.user_id,
+            total_amount: totalPrice,
+            shipping_address: address,
+            items: cartItems.map(item => ({
+                product_id: item.product_id,
+                quantity: item.quantity,
+                price: item.price,
+                customizations: item.customizations || null, // Include customizations
+            })),
+        };
 
-      const response = await axios.post('https://sk8ts-shop.com/api/placeOrder', orderData, {
-        headers: { 'Content-Type': 'application/json' }
-      });
+        const response = await axios.post('https://sk8ts-shop.com/api/placeOrder', orderData, {
+            headers: { 'Content-Type': 'application/json' },
+        });
 
-      if (response.status === 201) {
-        alert('Order placed successfully!');
-        dispatch(clearCart()); // Clear the cart after successful order
-        navigate('/');
-      } else {
-        alert('Failed to place order. Please try again.');
-      }
+        if (response.status === 201) {
+            alert('Order placed successfully!');
+            dispatch(clearCart()); // Clear the cart after successful order
+            navigate('/');
+        } else {
+            alert('Failed to place order. Please try again.');
+        }
     } catch (error) {
-      console.error('Error placing order:', error);
-      alert('An error occurred while placing your order.');
+        console.error('Error placing order:', error);
+        alert('An error occurred while placing your order.');
     }
   };
 
