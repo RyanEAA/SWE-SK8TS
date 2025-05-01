@@ -5,40 +5,37 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from '../CartSlice.js';
 import Cookies from 'js-cookie';
 
-
 function ItemPopup({ isOpen, onClose, product }) {
-
-
-
   const [quantity, setQuantity] = React.useState(1);
   const [error, setError] = React.useState('');
+  const [selectedCustomization, setSelectedCustomization] = React.useState('');
   const popupContentRef = useRef(null);
 
-  // add redux cart
   const cart = useSelector((state) => state.cart);
-
-  // add redux dispatch
   const dispatch = useDispatch();
-  
-  // Add click outside handler
+
   useEffect(() => {
     function handleClickOutside(event) {
-      // Only run this if the popup is open
       if (isOpen && popupContentRef.current && !popupContentRef.current.contains(event.target)) {
         handleClose();
       }
     }
-    
-    // Add event listener when the popup is open
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
-    // Clean up the event listener
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    // Set the default customization to the first option if available
+    if (product && product.customizations && product.customizations.length > 0) {
+      setSelectedCustomization(product.customizations[0]);
+    }
+  }, [product]);
 
   if (!isOpen || !product) return null;
 
@@ -46,20 +43,17 @@ function ItemPopup({ isOpen, onClose, product }) {
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       if (item.product_id === itemId) {
-        return item.quantity; // Found the item, return its quantity
+        return item.quantity;
       }
     }
-    return 0; // Item not found, return 0 or handle the case as needed
+    return 0;
   }
 
   const handleQuantityChange = (e) => {
     const amountInput = parseInt(e.target.value);
-  
-    // Get the amount in cart
     const amountInCart = getItemQuantity(cart.items, product.product_id);
-  
     const totalAmount = amountInput + amountInCart;
-    
+
     if (amountInput >= 0 && totalAmount <= product.stock_quantity) {
       setQuantity(amountInput);
       setError('');
@@ -67,20 +61,22 @@ function ItemPopup({ isOpen, onClose, product }) {
       setQuantity(0);
       setError('Quantity must be at least 1');
     } else if (totalAmount > product.stock_quantity) {
-      // Correctly set the quantity to the remaining stock
       setError(`Total limit for item is ${product.stock_quantity}`);
-    } // No need for the final else block
+    }
+  };
 
+  const handleCustomizationChange = (e) => {
+    setSelectedCustomization(e.target.value);
   };
 
   const handleClose = () => {
     setError('');
-    setQuantity(0);
+    setQuantity(1);
+    setSelectedCustomization('');
     onClose();
   };
 
   const handleAddToCart = () => {
-
     const username = Cookies.get('user');
     if (!username) {
       alert('You must be logged in to check out.');
@@ -89,8 +85,6 @@ function ItemPopup({ isOpen, onClose, product }) {
     }
 
     if (!error || error === `Total limit for item is ${product.stock_quantity}`) {
-      // add to redux using dispath
-      // create product obj
       const productToAdd = {
         product_id: product.product_id,
         product_name: product.name,
@@ -98,11 +92,11 @@ function ItemPopup({ isOpen, onClose, product }) {
         quantity: quantity,
         price: product.price,
         maxQuantity: product.stock_quantity,
+        customizations: selectedCustomization, // Only the selected customization
       };
       dispatch(addItem(productToAdd));
       handleClose();
     }
-
   };
 
   return (
@@ -116,8 +110,8 @@ function ItemPopup({ isOpen, onClose, product }) {
         />
         <h2>{product.name}</h2>
         <p>{product.description}</p>
-        <p>Price: ${product.price}</p>
-        <div className="quantity-input">
+        <p><strong>${product.price}</strong></p> {}
+        <div className="quantity-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {}
           <h1>Quantity:</h1>
           <input
             type="number"
@@ -127,6 +121,24 @@ function ItemPopup({ isOpen, onClose, product }) {
             min="1"
             max={product.stock_quantity}
           />
+        </div>
+        <div className="customizations">
+          <h3>Customization:</h3>
+          {product.customizations && product.customizations.length > 0 ? (
+            <select
+              id="customization"
+              value={selectedCustomization}
+              onChange={handleCustomizationChange}
+            >
+              {product.customizations.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p>No customizations available for this product.</p>
+          )}
         </div>
         <div className="error-message">{error}</div>
         <button className="btn btn-green" onClick={handleAddToCart}>Add to Cart</button>

@@ -7,8 +7,7 @@ import ItemPopup from '../Components/ItemPopup';
 
 import { useSelector } from 'react-redux';
 
-
-function Catelog({onAdd}) { // function is obtained from App.js
+function Catelog({ onAdd }) { // function is obtained from App.js
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showPopUp, setShowPopUp] = useState(false);
@@ -16,12 +15,8 @@ function Catelog({onAdd}) { // function is obtained from App.js
   // Access the cart items from the Redux store
   const cartItems = useSelector((state) => state.cart.items);
 
-  // console.log('cart in popup:', cartItems); // Log the cart items
-
-
   /* handles the api call to get the products */
   useEffect(() => {
-    // Fetch all products from the API
     fetch('https://sk8ts-shop.com/api/products')
       .then((response) => {
         if (!response.ok) {
@@ -30,8 +25,15 @@ function Catelog({onAdd}) { // function is obtained from App.js
         return response.json();
       })
       .then((data) => {
-        //console.log('Fetched products:', data); // Log the fetched data
-        setProducts(data);
+        // Filter products to only include those with status 'active'
+        const activeProducts = data
+          .filter(product => product.status === 'active')
+          .map(product => ({
+            ...product,
+            customizations: product.customizations || [] // Ensure customizations is an array
+          }));
+        setProducts(activeProducts);
+        console.log('Active Products:', activeProducts); // Log the active products
       })
       .catch((error) => {
         console.error('Error fetching products:', error);
@@ -43,6 +45,7 @@ function Catelog({onAdd}) { // function is obtained from App.js
     setSelectedProduct(product);
     setShowPopUp(true);
   }
+
   /* handles user closing the pop up */
   const handleClosePopUp = () => {
     setShowPopUp(false);
