@@ -21,7 +21,6 @@ function Catelog({onAdd}) { // function is obtained from App.js
 
   /* handles the api call to get the products */
   useEffect(() => {
-    // Fetch all products from the API
     fetch('https://sk8ts-shop.com/api/products')
       .then((response) => {
         if (!response.ok) {
@@ -30,8 +29,11 @@ function Catelog({onAdd}) { // function is obtained from App.js
         return response.json();
       })
       .then((data) => {
-        //console.log('Fetched products:', data); // Log the fetched data
-        setProducts(data);
+        const updatedProducts = data.map(product => ({
+          ...product,
+          customizations: product.customizations || [] // Ensure customizations is an array
+        }));
+        setProducts(updatedProducts);
       })
       .catch((error) => {
         console.error('Error fetching products:', error);

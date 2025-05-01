@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 function ItemPopup({ isOpen, onClose, product }) {
 
 
-
+  const [selectedCustomization, setSelectedCustomization] = useState('');
   const [quantity, setQuantity] = React.useState(1);
   const [error, setError] = React.useState('');
   const popupContentRef = useRef(null);
@@ -73,6 +73,11 @@ function ItemPopup({ isOpen, onClose, product }) {
 
   };
 
+  const handleCustomizationChange = (e) => {
+    setSelectedCustomization(e.target.value);
+  };
+
+
   const handleClose = () => {
     setError('');
     setQuantity(0);
@@ -106,30 +111,31 @@ function ItemPopup({ isOpen, onClose, product }) {
   };
 
   return (
-    <div className="popup-overlay">
-      <div className="popup-content" ref={popupContentRef}>
-        <button className="close-button" onClick={handleClose}>×</button>
-        <img
-          src={product.image_url || `/Images/products/${product.image_path}`}
-          alt={product.name}
-          className="popup-image"
-        />
-        <h2>{product.name}</h2>
-        <p>{product.description}</p>
+    <div className={`popup ${isOpen ? 'open' : ''}`}>
+      <div className="popup-content">
+        <h1>{product.name}</h1>
         <p>Price: ${product.price}</p>
-        <div className="quantity-input">
-          <h1>Quantity:</h1>
-          <input
-            type="number"
-            id="quantity"
-            value={quantity}
-            onChange={handleQuantityChange}
-            min="1"
-            max={product.stock_quantity}
-          />
-        </div>
-        <div className="error-message">{error}</div>
-        <button className="btn btn-green" onClick={handleAddToCart}>Add to Cart</button>
+        <p>Stock: {product.stock_quantity}</p>
+
+        {product.customizations.length > 0 && (
+          <div>
+            <label htmlFor="customization">Choose Customization:</label>
+            <select
+              id="customization"
+              value={selectedCustomization}
+              onChange={handleCustomizationChange}
+            >
+              <option value="">Select an option</option>
+              {product.customizations.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <button className="btn btn-green" onClick={onClose}>Close</button>
       </div>
     </div>
   );
