@@ -108,10 +108,7 @@ app.get('/products', (req, res) => {
       console.error('Error fetching products:', err);
       return res.status(500).send('Error fetching products');
     }
-    res.json(results.map(product => ({
-      ...product,
-      customizations: product.customizations ? JSON.parse(product.customizations) : []
-    })));
+    res.json(results);
   });
 });
 
@@ -156,8 +153,7 @@ app.post('/placeOrder', [
   body('items').isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
   body('items.*.product_id').isInt({ min: 1 }).withMessage('Valid product_id is required for each item'),
   body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be a positive integer'),
-  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number'),
-  body('items.*.customization').optional().isString().trim()
+  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number')
 ], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -182,7 +178,7 @@ app.post('/placeOrder', [
         INSERT INTO orders (user_id, order_date, total_amount, shipping_address, order_status)
         VALUES (?, NOW(), ?, ?, 'unclaimed')
       `;
-
+      
       connection.query(insertOrderQuery, [user_id, total_amount, shipping_address], (err, orderResult) => {
         if (err) {
           connection.rollback(() => connection.release());
@@ -190,28 +186,21 @@ app.post('/placeOrder', [
         }
 
         const order_id = orderResult.insertId;
-        const insertItems = items.map(item => [
-          order_id, item.product_id, item.quantity, item.price, item.customization || null
-        ]);
+        const insertItems = items.map(item => [order_id, item.product_id, item.quantity, item.price]);
 
-        connection.query(
-          'INSERT INTO orderedItems (order_id, product_id, quantity, price, customization) VALUES ?',
-          [insertItems],
-          (err) => {
-            if (err) {
-              connection.rollback(() => connection.release());
-              console.error('Error adding ordered items:', err);
-              return res.status(500).send('Error adding ordered items');
-            }
-
-            connection.commit(err => {
-              connection.release();
-              if (err) return res.status(500).send('Error finalizing order');
-
-              res.status(201).json({ message: 'Order added successfully', orderId: order_id });
-            });
+        connection.query('INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES ?', [insertItems], (err) => {
+          if (err) {
+            connection.rollback(() => connection.release());
+            return res.status(500).send('Error adding ordered items');
           }
-        );
+
+          connection.commit(err => {
+            connection.release();
+            if (err) return res.status(500).send('Error finalizing order');
+
+            res.status(201).json({ message: 'Order added successfully', orderId: order_id });
+          });
+        });
       });
     });
   });
@@ -277,25 +266,13 @@ app.get('/unclaimed_orders', (req, res) => {
 // 🔹 Fetch Ordered Items API
 app.get('/orders/user/:user_id', (req, res) => {
   const userId = req.params.user_id;
-  orderDb.query(
-    `SELECT o.*, oi.*, p.customizations
-     FROM orders o
-     NATURAL JOIN orderedItems oi
-     JOIN ${process.env.MYSQL_PRODUCTS_DB}.products p ON oi.product_id = p.product_id
-     WHERE o.user_id = ?
-     ORDER BY o.order_id DESC`,
-    [userId],
-    (err, results) => {
-      if (err) {
-        console.error('Error fetching ordered items:', err);
-        return res.status(500).send('Error fetching ordered items');
-      }
-      res.json(results.map(order => ({
-        ...order,
-        customizations: order.customizations ? JSON.parse(order.customizations) : []
-      })));
+  orderDb.query('SELECT * FROM orders NATURAL JOIN orderedItems WHERE user_id = ? ORDER BY order_id DESC', [userId], (err, results) => {
+    if (err) {
+      console.error('Error fetching ordered items:', err);
+      return res.status(500).send('Error fetching ordered items');
     }
-  );
+    res.json(results);
+  });
 });
 
 // Fetch Orders by Employee ID API
@@ -449,19 +426,18 @@ const upload = multer({ dest: '/public/Images/' }); // or configure your own
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
-    sku, weight, dimensions, color, size, status, customizations
+    sku, weight, dimensions, color, size, status
   } = req.body;
 
   const imagePath = req.file ? `${req.file.filename}` : null;
 
   productDb.query(
     `INSERT INTO products (
-      name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status, customizations
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       name, description, price, stock_quantity, category_id, brand_id,
-      sku, weight, dimensions, color, size, imagePath, status,
-      customizations ? JSON.stringify(customizations) : null
+      sku, weight, dimensions, color, size, imagePath, status
     ],
     (err, result) => {
       if (err) {
@@ -477,11 +453,10 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
 // Edit an existing product
 app.put('/products/:id', (req, res) => {
   const productId = req.params.id;
-  const { name, price, stock, customizations } = req.body;
-
+  const { name, price, stock } = req.body;
   productDb.query(
-    'UPDATE products SET name = ?, price = ?, stock_quantity = ?, customizations = ? WHERE product_id = ?',
-    [name, price, stock, customizations ? JSON.stringify(customizations) : null, productId],
+    'UPDATE products SET name = ?, price = ?, stock_quantity = ? WHERE product_id = ?',
+    [name, price, stock, productId],
     (err, result) => {
       if (err) {
         console.error('Error updating product:', err);
@@ -706,7 +681,7 @@ app.get('/admin/analytics', (req, res) => {
 });
 
 // Contact Us - Submit Message
-app.post('/contact', [
+app.post('/message', [
   body('user_id').isInt({ min: 1 }).withMessage('Valid user_id is required'),
   body('title').notEmpty().trim().escape().withMessage('Title is required'),
   body('message_text').notEmpty().trim().escape().withMessage('Message text is required')
