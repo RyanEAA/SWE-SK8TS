@@ -426,18 +426,20 @@ const upload = multer({ dest: '/public/Images/' }); // or configure your own
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
-    sku, weight, dimensions, color, size, status
+    sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
   const imagePath = req.file ? `${req.file.filename}` : null;
 
+  const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
+
   productDb.query(
     `INSERT INTO products (
-      name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status, customizations
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       name, description, price, stock_quantity, category_id, brand_id,
-      sku, weight, dimensions, color, size, imagePath, status
+      sku, weight, dimensions, color, size, imagePath, status, JSON.stringify(parsedCustomizations)
     ],
     (err, result) => {
       if (err) {
