@@ -67,16 +67,16 @@ const flow = {
     message: async (params) => {
       try {
         const userMessage = params.userInput.trim().toLowerCase();
-
+  
         // Track user message
         conversationHistory.push({ role: "user", content: params.userInput });
-
+  
         // Reset conversation if user exits
         if (["bye", "exit", "goodbye", "quit", "menu"].includes(userMessage)) {
           conversationHistory.length = 0;
           throw new Error("USER_EXIT");
         }
-
+  
         // Get product list
         let products = [];
         try {
@@ -85,17 +85,17 @@ const flow = {
         } catch (e) {
           console.error("Couldn't fetch products:", e);
         }
-
+  
         // Construct history text
         let historyText = "";
         for (const msg of conversationHistory) {
           historyText += `${msg.role === "user" ? "User" : "Ollie"}: ${msg.content}\n`;
         }
-
+  
         // Prompt
         const preamble = `You are Ollie, the skateboard expert at SK8TS shop. 
 Current user: ${usersName}.
-Your goal is to help customers find their perfect skateboard from this list which are in the website:
+Your goal is to help customers find their perfect skateboard from this list which is in the website:
 
 ${JSON.stringify(products)}
 
@@ -106,41 +106,33 @@ Response Rules:
 3. Mention why they're good for the user's needs
 4. Keep responses under 3 sentences
 5. Keep discussions on the topic of skateboarding. You may give advice related to skateboarding tips and tricks`;
-
         const fullPrompt = `${preamble}\n\nConversation so far:\n${historyText}\n\nContinue the conversation.`;
-        // const keyResponse = await fetch("/chat");
-        // const keyData = await keyResponse.json();
-        // const apiKey = keyData.key;
-        // Send to Gemini
-        const geminiResponse = await fetch(`https://sk8ts-shop/api/chat`, {
+  
+        
+        const geminiResponse = await fetch(`https://sk8ts-shop.com/api/chat`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            contents: [
-              {
-                parts: [{ text: fullPrompt }]
-              }
-            ]
+            prompt: fullPrompt 
           })
         });
-
+  
         const data = await geminiResponse.json();
-        const aiMessage = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const aiMessage = data.message;
 
-        // Track bot reply
         if (aiMessage) {
           conversationHistory.push({ role: "bot", content: aiMessage });
         }
-
+  
         return aiMessage || "Let me check our best options for you...";
-
+  
       } catch (error) {
         if (error.message === "USER_EXIT") {
           return null;
         }
-        console.error("Gemini AI Error:", error);
+        console.error("API Error:", error);
         return "My wheels stuck! Could you ask again?";
       }
     },
