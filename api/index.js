@@ -463,17 +463,20 @@ app.post('/products', (req, res) => {
 
 // Create a new product with image upload
 // create folder where images will be stored
+// Ensure the 'public/Images' directory exists
 const fs = require('fs');
-const multer = require('multer'); // Set up multer for file uploads
+const multer = require('multer');
+const path = require('path');
 
 const uploadDir = path.join(__dirname, 'public', 'Images');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'public', 'Images'));
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -483,13 +486,19 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+// Serve static files from the 'public' directory
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+// Create Product API with Image Upload
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
     sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
-  const imagePath = req.file ? `${req.file.filename}` : null;
+  // Store the relative path to the image
+  const imagePath = req.file ? `/public/Images/${req.file.filename}` : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
 
