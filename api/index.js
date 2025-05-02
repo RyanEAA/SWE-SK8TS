@@ -464,7 +464,6 @@ app.post('/products', (req, res) => {
 // Create a new product with image upload
 // create folder where images will be stored
 const fs = require('fs');
-const path = require('path');
 const multer = require('multer'); // Set up multer for file uploads
 
 const uploadDir = path.join(__dirname, 'public', 'Images');
