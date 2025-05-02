@@ -56,3 +56,4 @@ volumes:
   npmdata:
   npmletsencrypt:
   database:
+  shared-images:
