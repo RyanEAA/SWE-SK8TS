@@ -491,7 +491,7 @@ const upload = multer({ storage });
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Endpoint to serve images
-app.get('/api/images/:filename', (req, res) => {
+app.get('/images/:filename', (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(uploadDir, filename);
 
