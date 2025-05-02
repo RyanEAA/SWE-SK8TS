@@ -475,7 +475,7 @@ if (!fs.existsSync(uploadDir)) {
 // Update the storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '..', 'public', 'Images'));
+    cb(null, path.join(__dirname, '..', 'public', 'Images','products'));
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
