@@ -466,21 +466,14 @@ app.post('/products', (req, res) => {
 const fs = require('fs');
 const multer = require('multer'); // Set up multer for file uploads
 
-// Replace the existing uploadDir configuration
-const uploadDir = path.join(__dirname, '..', 'public', 'Images');
+const uploadDir = path.join(__dirname, 'public', 'Images');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Replace the existing storage configuration and createproduct endpoint
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const productsDir = '/app/public/Images';
-    if (!fs.existsSync(productsDir)) {
-      fs.mkdirSync(productsDir, { recursive: true });
-    }
-    cb(null, productsDir);
+    cb(null, path.join(__dirname, 'public', 'Images'));
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -489,9 +482,6 @@ const storage = multer.diskStorage({
   }
 });
 
-// Update the static files middleware
-app.use('/images', express.static('/app/public/Images'));
-
 const upload = multer({ storage });
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
@@ -499,7 +489,6 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
     sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
-  // Construct the relative image path for database storage
   const imagePath = req.file ? `${req.file.filename}` : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
@@ -517,11 +506,7 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
         console.error('Error creating product:', err);
         return res.status(500).json({ error: 'Error creating product' });
       }
-      res.status(201).json({ 
-        message: 'Product created successfully', 
-        productId: result.insertId,
-        imagePath: imagePath
-      });
+      res.status(201).json({ message: 'Product created successfully', productId: result.insertId });
     }
   );
 });
