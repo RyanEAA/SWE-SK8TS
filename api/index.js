@@ -466,7 +466,9 @@ app.post('/products', (req, res) => {
 // Ensure the 'public/Images' directory exists
 const fs = require('fs');
 const multer = require('multer');
+const path = require('path');
 
+// Ensure the 'public/Images' directory exists
 const uploadDir = path.join(__dirname, 'public', 'Images');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -489,6 +491,18 @@ const upload = multer({ storage });
 // Serve static files from the 'public' directory
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+// Endpoint to serve images
+app.get('/api/images/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(uploadDir, filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'Image not found' });
+  }
+
+  res.sendFile(filePath);
+});
+
 // Create Product API with Image Upload
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
@@ -497,7 +511,7 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
   } = req.body;
 
   // Store the relative path to the image
-  const imagePath = req.file ? `/public/Images/${req.file.filename}` : null;
+  const imagePath = req.file ? `/api/images/${req.file.filename}` : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
 
