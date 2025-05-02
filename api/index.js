@@ -490,18 +490,6 @@ const upload = multer({ storage });
 // Serve static files from the 'public' directory
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-// Endpoint to serve images
-app.get('/images/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const filePath = path.join(__dirname, 'public', 'Images', filename); // Correct path
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: 'Image not found' });
-  }
-
-  res.sendFile(filePath);
-});
-
 // Create Product API with Image Upload
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
