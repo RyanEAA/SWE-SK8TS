@@ -463,8 +463,18 @@ app.post('/products', (req, res) => {
 
 // Create a new product with image upload
 const multer = require('multer');
-const upload = multer({ dest: 'public/Images/' }); // or configure your own
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/Images/');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname); // preserve extension
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`;
+    cb(null, uniqueName);
+  }
+});
 
+const upload = multer({ storage });
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
