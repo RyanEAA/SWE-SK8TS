@@ -1,6 +1,5 @@
-// CreateProductPopup.jsx
 import React, { useState } from 'react';
-import '../../../css/admin/CreateUserPopup.css'; // reuse same modal styles
+import '../../../css/admin/CreateUserPopup.css';
 
 function CreateProductPopup({ onClose, onProductCreated }) {
   const [form, setForm] = useState({
@@ -16,10 +15,11 @@ function CreateProductPopup({ onClose, onProductCreated }) {
     color: '',
     size: '',
     status: 'active',
-    customizations: [], // Add customizations field
+    customizations: [],
   });
 
   const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [message, setMessage] = useState('');
   const [customizationInput, setCustomizationInput] = useState('');
 
@@ -29,7 +29,11 @@ function CreateProductPopup({ onClose, onProductCreated }) {
   };
 
   const handleImageChange = (e) => {
-    setImageFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   const handleAddCustomization = () => {
@@ -55,7 +59,7 @@ function CreateProductPopup({ onClose, onProductCreated }) {
     const formData = new FormData();
     for (const key in form) {
       if (key === 'customizations') {
-        formData.append(key, JSON.stringify(form[key])); // Send customizations as JSON
+        formData.append(key, JSON.stringify(form[key]));
       } else {
         formData.append(key, form[key]);
       }
@@ -75,14 +79,26 @@ function CreateProductPopup({ onClose, onProductCreated }) {
         setMessage(data.error || 'Failed to create product.');
       } else {
         setMessage('Product created successfully!');
+        if (imagePreview) {
+          URL.revokeObjectURL(imagePreview); // Clean up the preview URL
+        }
         onProductCreated();
         onClose();
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error creating product:', err);
       setMessage('Error creating product');
     }
   };
+
+  // Clean up image preview URL when component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   return (
     <div className="popup-overlay">
@@ -101,6 +117,7 @@ function CreateProductPopup({ onClose, onProductCreated }) {
                 name={field}
                 value={form[field]}
                 onChange={handleChange}
+                required={field === 'name' || field === 'price' || field === 'stock_quantity'}
               />
             </div>
           ))}
@@ -120,31 +137,66 @@ function CreateProductPopup({ onClose, onProductCreated }) {
               {form.customizations.map((customization, index) => (
                 <div key={index} className="customization-item">
                   {customization}
-                  <button type="button" onClick={() => handleRemoveCustomization(index)}>
+                  <button 
+                    type="button" 
+                    onClick={() => handleRemoveCustomization(index)}
+                    className="btn btn-red btn-small"
+                  >
                     Remove
                   </button>
                 </div>
               ))}
             </div>
-            <input
-              type="text"
-              value={customizationInput}
-              onChange={(e) => setCustomizationInput(e.target.value)}
-              placeholder="Add a customization"
-            />
-            <button type="button" onClick={handleAddCustomization}>
-              Add Customization
-            </button>
+            <div className="customization-input-group">
+              <input
+                type="text"
+                value={customizationInput}
+                onChange={(e) => setCustomizationInput(e.target.value)}
+                placeholder="Add a customization"
+              />
+              <button 
+                type="button" 
+                onClick={handleAddCustomization}
+                className="btn btn-blue"
+              >
+                Add
+              </button>
+            </div>
           </div>
 
           <div className="form-group">
             <label>Upload Image:</label>
-            <input type="file" accept="image/*" onChange={handleImageChange} />
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageChange}
+              required
+            />
+            {imagePreview && (
+              <div className="image-preview">
+                <img 
+                  src={imagePreview} 
+                  alt="Preview" 
+                  style={{ maxWidth: '200px', marginTop: '10px' }} 
+                />
+              </div>
+            )}
           </div>
 
           <div className="popup-buttons">
             <button type="submit" className="btn btn-green">Create</button>
-            <button type="button" className="btn btn-red" onClick={onClose}>Cancel</button>
+            <button 
+              type="button" 
+              className="btn btn-red" 
+              onClick={() => {
+                if (imagePreview) {
+                  URL.revokeObjectURL(imagePreview);
+                }
+                onClose();
+              }}
+            >
+              Cancel
+            </button>
           </div>
         </form>
       </div>

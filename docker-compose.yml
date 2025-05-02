@@ -38,7 +38,7 @@ services:
     depends_on:
       - db
     volumes:
-      - shared-images:/usr/src/app/public/Images
+      - shared-images:/app/public/Images
   db:
     image: mariadb:latest
     restart: always
