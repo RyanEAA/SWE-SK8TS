@@ -462,14 +462,23 @@ app.post('/products', (req, res) => {
 });
 
 // Create a new product with image upload
-const multer = require('multer');
+// create folder where images will be stored
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer'); // Set up multer for file uploads
+
+const uploadDir = path.join(__dirname, 'public', 'Images');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/Images/');
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // preserve extension
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`;
+    const ext = path.extname(file.originalname);
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
     cb(null, uniqueName);
   }
 });
@@ -481,7 +490,7 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
     sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
-  const imagePath = req.file ? `${req.file.filename}` : null;
+  const imagePath = req.file ? `/api/public/Images/${req.file.filename}` : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
 

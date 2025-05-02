@@ -37,6 +37,8 @@ services:
       - 3636:3636
     depends_on:
       - db
+    volumes:
+      - shared-images:/app/public/Images
   db:
     image: mariadb:latest
     restart: always
@@ -54,5 +56,3 @@ volumes:
   npmdata:
   npmletsencrypt:
   database:
-
-
