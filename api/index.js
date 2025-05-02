@@ -488,7 +488,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Serve static files from the 'public' directory
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/Images', express.static(path.join(__dirname, 'public', 'Images')));
 
 // Create Product API with Image Upload
 app.post('/createproduct', upload.single('image'), (req, res) => {
