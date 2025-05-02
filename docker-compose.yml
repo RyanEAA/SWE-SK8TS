@@ -11,7 +11,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - shared-images:/app/public/Images
+      - shared-images:/app/public/Images/products
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
