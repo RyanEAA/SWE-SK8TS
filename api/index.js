@@ -466,14 +466,16 @@ app.post('/products', (req, res) => {
 const fs = require('fs');
 const multer = require('multer'); // Set up multer for file uploads
 
-const uploadDir = path.join(__dirname, 'public', 'Images');
+// Replace the existing uploadDir configuration
+const uploadDir = path.join(__dirname, '..', 'public', 'Images');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Update the storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'public', 'Images'));
+    cb(null, path.join(__dirname, '..', 'public', 'Images'));
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -489,7 +491,8 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
     sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
-  const imagePath = req.file ? `/api/public/Images/${req.file.filename}` : null;
+  // Store only the filename in the database
+  const imagePath = req.file ? req.file.filename : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
 
