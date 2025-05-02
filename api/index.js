@@ -500,7 +500,7 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
   } = req.body;
 
   // Construct the relative image path for database storage
-  const imagePath = req.file ? `Images/${req.file.filename}` : null;
+  const imagePath = req.file ? `${req.file.filename}` : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
 
