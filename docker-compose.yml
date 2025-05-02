@@ -10,6 +10,8 @@ services:
       NODE_ENV: production
     ports:
       - 3000:3000
+    volumes:
+      - shared-images:/app/public/Images
   npm:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
