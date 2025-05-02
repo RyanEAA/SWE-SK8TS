@@ -466,7 +466,6 @@ app.post('/products', (req, res) => {
 // Ensure the 'public/Images' directory exists
 const fs = require('fs');
 const multer = require('multer');
-const path = require('path');
 
 // Ensure the 'public/Images' directory exists
 const uploadDir = path.join(__dirname, 'public', 'Images');
