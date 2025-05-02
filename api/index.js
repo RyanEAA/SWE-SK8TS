@@ -473,7 +473,7 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+    cb(null, path.join(__dirname, 'public', 'Images'));
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
