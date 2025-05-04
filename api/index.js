@@ -871,12 +871,12 @@ app.put('/admin/message/:message_id/markread', (req, res) => {
 // get top 3 users
 app.get('/admin/top-users', (req, res) => {
   userDb.query(
-    `SELECT u.*, COUNT(o.order_id) AS order_count
-     FROM orders o
-     JOIN users u ON o.user_id = u.user_id
-     GROUP BY u.user_id
-     ORDER BY order_count DESC
-     LIMIT 3`,
+    'SELECT u.*, COUNT(o.order_id) AS order_count\
+    FROM order.orders o\
+    JOIN users.users u ON o.user_id = u.user_id\
+    GROUP BY u.user_id\
+    ORDER BY order_count DESC\
+    LIMIT 3;',
     (err, results) => {
       if (err) {
         console.error('Error fetching top users:', err);
