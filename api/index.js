@@ -868,6 +868,69 @@ app.put('/admin/message/:message_id/markread', (req, res) => {
   );
 });
 
+// get top 3 users
+app.get('/admin/top-users', (req, res) => {
+  orderDb.query(
+    `SELECT u.*, COUNT(o.order_id) AS order_count
+     FROM orders o
+     JOIN users u ON o.user_id = u.user_id
+     GROUP BY u.user_id
+     ORDER BY order_count DESC
+     LIMIT 3`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching top users:', err);
+        return res.status(500).send('Error fetching top users');
+      }
+      res.json(results);
+    }
+  );
+});
+
+
+// get top 3 employees
+app.get('/admin/top-employees', (req, res) => {
+  orderDb.query(
+    `SELECT u.*, COUNT(o.order_id) AS handled_orders
+     FROM orders o
+     JOIN users u ON o.employee_id = u.user_id
+     WHERE o.employee_id IS NOT NULL
+     GROUP BY u.user_id
+     ORDER BY handled_orders DESC
+     LIMIT 3`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching top employees:', err);
+        return res.status(500).send('Error fetching top employees');
+      }
+      res.json(results);
+    }
+  );
+});
+
+
+//get top 5 products
+app.get('/admin/top-products', (req, res) => {
+  orderDb.query(
+    `SELECT p.*, SUM(oi.quantity) AS total_ordered
+     FROM orderedItems oi
+     JOIN products p ON oi.product_id = p.product_id
+     GROUP BY oi.product_id
+     ORDER BY total_ordered DESC
+     LIMIT 5`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching top products:', err);
+        return res.status(500).send('Error fetching top products');
+      }
+      res.json(results);
+    }
+  );
+});
+
+
+
+
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Unhandled server error:', err);

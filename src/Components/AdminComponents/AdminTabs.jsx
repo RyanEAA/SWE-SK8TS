@@ -41,7 +41,7 @@ function AdminTabs({ activeTab, setActiveTab }) {
         className={`btn-tab ${activeTab === 'productManagement' ? 'active' : ''}`}
         onClick={() => setActiveTab('productManagement')}
       >
-        Product Management
+        Products
       </button>
 
       <button
