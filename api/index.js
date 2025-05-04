@@ -912,9 +912,9 @@ app.get('/admin/top-employees', (req, res) => {
 
 //get top 5 products
 app.get('/admin/top-products', (req, res) => {
-  orderDb.query(
+  productDb.query(
     `SELECT p.*, SUM(oi.quantity) AS total_ordered
-     FROM orderedItems oi
+     FROM order.orderedItems oi
      JOIN products p ON oi.product_id = p.product_id
      GROUP BY oi.product_id
      ORDER BY total_ordered DESC
