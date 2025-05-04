@@ -12,6 +12,7 @@ import Home from './Pages/Home.jsx';
 import ProductInfo from './Pages/ProductInfo.jsx';
 import Cart from './Pages/Cart.jsx';
 import RegistrationPage from './Pages/RegistrationPage.jsx';
+import Contact from './Pages/Contact.jsx'
 import LoginPage from './Pages/LoginPage.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
@@ -33,7 +34,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/Shop' element={<Catelog/>}/>
-          <Route path='/Contact'/>
+          <Route path='/Contact' element={<Contact/>}/> 
           <Route path='/AboutUs' element={<AboutUs />}/>
           <Route path='/Cart' element={<Cart/>}/>
           <Route path='/ProductInfo/:id' element={<ProductInfo/>}/>
