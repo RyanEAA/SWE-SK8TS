@@ -23,11 +23,19 @@ const NavBar = (props) => {
         <Link to='/Shop'>Shop</Link>
         <Link to='/AboutUs'>About Us</Link>
         <Link to='/Cart'>Cart{' '}{cartItemCount}</Link>
+
+        {userRole === 'employee' && (
+          <Link to='/ContactUs'>Contact</Link>
+
+        )}
+
         {user ? (
-        <Link to="/profile">Profile</Link>
+            <Link to="/profile">Profile</Link>
+
         ) : (
           <Link to="/login">Login</Link>
         )}
+
         {(userRole === 'employee' || userRole === 'admin') && (
           <Link to="/OrderDashboard">Order Dashboard</Link>
         )}
