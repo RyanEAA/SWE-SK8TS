@@ -892,7 +892,7 @@ app.get('/admin/top-users', (req, res) => {
 app.get('/admin/top-employees', (req, res) => {
   userDb.query(
     `SELECT u.*, COUNT(o.order_id) AS handled_orders
-     FROM orders o
+     FROM order.orders o
      JOIN users u ON o.employee_id = u.user_id
      WHERE o.employee_id IS NOT NULL
      GROUP BY u.user_id
