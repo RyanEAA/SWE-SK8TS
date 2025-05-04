@@ -846,6 +846,28 @@ app.get('/admin/message/:message_id', (req, res) => {
   );
 });
 
+// Admin Update Message Status
+app.put('/admin/message/:message_id/markread', (req, res) => {
+  const messageId = req.params.message_id;
+
+  userDb.query(
+    'UPDATE messages SET is_read = 1 WHERE message_id = ?',
+    [messageId],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating message:', err);
+        return res.status(500).send('Failed to update message');
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).send('Message not found');
+      }
+
+      res.json({ message: 'Message marked as read' });
+    }
+  );
+});
+
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Unhandled server error:', err);

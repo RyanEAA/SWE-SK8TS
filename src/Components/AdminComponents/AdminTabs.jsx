@@ -44,6 +44,13 @@ function AdminTabs({ activeTab, setActiveTab }) {
         Product Management
       </button>
 
+      <button
+        className={`btn-tab ${activeTab === 'allMessages' ? 'active' : ''}`}
+        onClick={() => setActiveTab('allMessages')}
+      >
+        Messages
+      </button>
+
     </div>
   );
 }
