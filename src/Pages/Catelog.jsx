@@ -33,7 +33,6 @@ function Catelog({ onAdd }) { // function is obtained from App.js
             customizations: product.customizations || [] // Ensure customizations is an array
           }));
         setProducts(activeProducts);
-        console.log('Active Products:', activeProducts); // Log the active products
       })
       .catch((error) => {
         console.error('Error fetching products:', error);

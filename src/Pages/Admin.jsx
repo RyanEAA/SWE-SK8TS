@@ -11,6 +11,7 @@ import AllUsers from '../Components/AdminComponents/AllUsers';
 import AllOrders from '../Components/AdminComponents/AllOrders';
 import ClaimedOrders from '../Components/AdminComponents/ClaimedOrders';
 import ProductManagement from './ProductManagement';
+import AllMessages from '../Components/AdminComponents/AllMessages';
 
 function Admin() {
   const [activeTab, setActiveTab] = useState('overall');
@@ -48,9 +49,7 @@ function Admin() {
       )}
 
       {activeTab === 'orders' && (
-        <AllOrders
-          setSelectedOrder={setSelectedOrder}
-        />
+        <AllOrders/>
       )}
 
       {activeTab === 'claimedOrders' && (
@@ -59,6 +58,10 @@ function Admin() {
 
       {activeTab === 'productManagement' && (
         <ProductManagement/>
+      )}
+
+      {activeTab === 'allMessages' && (
+        <AllMessages/>
       )}
         
     </div>

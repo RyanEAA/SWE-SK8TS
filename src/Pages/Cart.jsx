@@ -72,15 +72,17 @@ function Cart() {
     try {
         const orderData = {
             user_id: userData.user_id,
-            total_amount: totalPrice,
-            shipping_address: address,
+            total_amount: parseFloat(totalPrice.toFixed(2)), // Ensure it's a valid float
+            shipping_address: address.trim(), // Trim whitespace
             items: cartItems.map(item => ({
                 product_id: item.product_id,
                 quantity: item.quantity,
-                price: item.price,
-                customization: item.customizations || null, // Ensure the field matches the API's expected structure
+                price: parseFloat(item.price.toFixed(2)), // Ensure price is a valid float
+                customization: JSON.stringify(item.customizations || []), // Default to null if not provided
             })),
         };
+
+        console.log('Order Data:', orderData); // Log the payload for debugging
 
         const response = await axios.post('https://sk8ts-shop.com/api/placeOrder', orderData, {
             headers: { 'Content-Type': 'application/json' },
@@ -95,9 +97,14 @@ function Cart() {
         }
     } catch (error) {
         console.error('Error placing order:', error);
-        alert('An error occurred while placing your order.');
+        if (error.response && error.response.data) {
+            console.error('API Response Error:', error.response.data); // Log API error details
+            alert(`Error: ${error.response.data.errors?.[0]?.msg || 'Failed to place order'}`);
+        } else {
+            alert('An error occurred while placing your order.');
+        }
     }
-};
+  };
 
   if (loading) {
     return <div>Loading user data...</div>;

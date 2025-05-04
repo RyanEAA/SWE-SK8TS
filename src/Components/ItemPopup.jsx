@@ -14,6 +14,22 @@ function ItemPopup({ isOpen, onClose, product }) {
   const cart = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
+  // Parse customizations if they are stringified
+  const parsedCustomizations = React.useMemo(() => {
+    if (!product || !product.customizations) {
+      return [];
+    }
+  
+    try {
+      return typeof product.customizations === 'string'
+        ? JSON.parse(product.customizations)
+        : product.customizations || [];
+    } catch (error) {
+      console.error('Failed to parse customizations:', error);
+      return [];
+    }
+  }, [product]);
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (isOpen && popupContentRef.current && !popupContentRef.current.contains(event.target)) {
@@ -32,26 +48,16 @@ function ItemPopup({ isOpen, onClose, product }) {
 
   useEffect(() => {
     // Set the default customization to the first option if available
-    if (product && product.customizations && product.customizations.length > 0) {
-      setSelectedCustomization(product.customizations[0]);
+    if (parsedCustomizations.length > 0) {
+      setSelectedCustomization(parsedCustomizations[0]);
     }
-  }, [product]);
+  }, [parsedCustomizations]);
 
   if (!isOpen || !product) return null;
 
-  function getItemQuantity(items, itemId) {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.product_id === itemId) {
-        return item.quantity;
-      }
-    }
-    return 0;
-  }
-
   const handleQuantityChange = (e) => {
     const amountInput = parseInt(e.target.value);
-    const amountInCart = getItemQuantity(cart.items, product.product_id);
+    const amountInCart = cart.items.find((item) => item.product_id === product.product_id)?.quantity || 0;
     const totalAmount = amountInput + amountInCart;
 
     if (amountInput >= 0 && totalAmount <= product.stock_quantity) {
@@ -110,8 +116,8 @@ function ItemPopup({ isOpen, onClose, product }) {
         />
         <h2>{product.name}</h2>
         <p>{product.description}</p>
-        <p><strong>${product.price}</strong></p> {}
-        <div className="quantity-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {}
+        <p><strong>${product.price}</strong></p>
+        <div className="quantity-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1>Quantity:</h1>
           <input
             type="number"
@@ -124,13 +130,13 @@ function ItemPopup({ isOpen, onClose, product }) {
         </div>
         <div className="customizations">
           <h3>Customization:</h3>
-          {product.customizations && product.customizations.length > 0 ? (
+          {parsedCustomizations.length > 0 ? (
             <select
               id="customization"
               value={selectedCustomization}
               onChange={handleCustomizationChange}
             >
-              {product.customizations.map((option, index) => (
+              {parsedCustomizations.map((option, index) => (
                 <option key={index} value={option}>
                   {option}
                 </option>

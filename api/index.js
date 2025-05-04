@@ -23,6 +23,10 @@ app.use(cors(corsOptions));
 
 app.use(express.json()); // Middleware for JSON parsing
 
+const path = require('path');
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+
 // Database pool configuration
 const dbConfig = {
   connectionLimit: 10, // Allow up to 10 concurrent connections
@@ -137,14 +141,18 @@ app.get('/users', (req, res) => {
 
 // 🔹 Fetch Orders API
 app.get('/orders', (req, res) => {
-  orderDb.query('SELECT * FROM orders', (err, results) => {
-    if (err) {
-      console.error('Error fetching orders:', err);
-      return res.status(500).send('Error fetching orders');
+  orderDb.query(
+    'SELECT * FROM orders o JOIN orderedItems oi ON o.order_id = oi.order_id',
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching orders:', err);
+        return res.status(500).send('Error fetching orders');
+      }
+      res.json(results);
     }
-    res.json(results);
-  });
+  );
 });
+
 
 // 🔹 Place Order API
 app.post('/placeOrder', [
@@ -154,7 +162,8 @@ app.post('/placeOrder', [
   body('items').isArray({ min: 1 }).withMessage('Items must be a non-empty array'),
   body('items.*.product_id').isInt({ min: 1 }).withMessage('Valid product_id is required for each item'),
   body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be a positive integer'),
-  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number')
+  body('items.*.price').isFloat({ min: 0 }).withMessage('Price must be a non-negative number'),
+  body('items.*.customization').optional().isString().trim()
 ], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -187,21 +196,27 @@ app.post('/placeOrder', [
         }
 
         const order_id = orderResult.insertId;
-        const insertItems = items.map(item => [order_id, item.product_id, item.quantity, item.price]);
+        const insertItems = items.map(item => [
+          order_id, item.product_id, item.quantity, item.price, item.customization || null
+        ]);
 
-        connection.query('INSERT INTO orderedItems (order_id, product_id, quantity, price) VALUES ?', [insertItems], (err) => {
-          if (err) {
-            connection.rollback(() => connection.release());
-            return res.status(500).send('Error adding ordered items');
+        connection.query(
+          'INSERT INTO orderedItems (order_id, product_id, quantity, price, customization) VALUES ?',
+          [insertItems],
+          (err) => {
+            if (err) {
+              connection.rollback(() => connection.release());
+              return res.status(500).send('Error adding ordered items');
+            }
+
+            connection.commit(err => {
+              connection.release();
+              if (err) return res.status(500).send('Error finalizing order');
+
+              res.status(201).json({ message: 'Order added successfully', orderId: order_id });
+            });
           }
-
-          connection.commit(err => {
-            connection.release();
-            if (err) return res.status(500).send('Error finalizing order');
-
-            res.status(201).json({ message: 'Order added successfully', orderId: order_id });
-          });
-        });
+        );
       });
     });
   });
@@ -274,6 +289,33 @@ app.get('/orders/user/:user_id', (req, res) => {
     }
     res.json(results);
   });
+});
+
+app.get('/order/:order_id', (req, res) => {
+  const orderId = req.params.order_id;
+
+  // Check if order_id is valid
+  if (!/^\d+$/.test(orderId)) {
+    return res.status(400).json({ error: 'Invalid order ID' });
+  }
+
+  // Query to fetch order and its items
+  orderDb.query(
+    'SELECT * FROM orders o JOIN orderedItems oi ON o.order_id = oi.order_id WHERE o.order_id = ?',
+    [orderId],
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching order:', err);
+        return res.status(500).send('Error fetching order');
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Order not found' });
+      }
+
+      res.json(results);
+    }
+  );
 });
 
 // Fetch Orders by Employee ID API
@@ -421,16 +463,34 @@ app.post('/products', (req, res) => {
 });
 
 // Create a new product with image upload
-const multer = require('multer');
-const upload = multer({ dest: '/public/Images/' }); // or configure your own
+// create folder where images will be stored
+const fs = require('fs');
+const multer = require('multer'); // Set up multer for file uploads
 
+const uploadDir = path.join(__dirname, 'public', 'Images');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'public', 'Images'));
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, uniqueName);
+  }
+});
+
+const upload = multer({ storage });
 app.post('/createproduct', upload.single('image'), (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
     sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
-  const imagePath = req.file ? `${req.file.filename}` : null;
+  const imagePath = req.file ? `/api/public/Images/${req.file.filename}` : null;
 
   const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
 
@@ -786,6 +846,91 @@ app.get('/admin/message/:message_id', (req, res) => {
     }
   );
 });
+
+// Admin Update Message Status
+app.put('/admin/message/:message_id/markread', (req, res) => {
+  const messageId = req.params.message_id;
+
+  userDb.query(
+    'UPDATE messages SET is_read = 1 WHERE message_id = ?',
+    [messageId],
+    (err, result) => {
+      if (err) {
+        console.error('Error updating message:', err);
+        return res.status(500).send('Failed to update message');
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).send('Message not found');
+      }
+
+      res.json({ message: 'Message marked as read' });
+    }
+  );
+});
+
+// get top 3 users
+app.get('/admin/top-users', (req, res) => {
+  orderDb.query(
+    `SELECT u.*, COUNT(o.order_id) AS order_count
+     FROM orders o
+     JOIN users u ON o.user_id = u.user_id
+     GROUP BY u.user_id
+     ORDER BY order_count DESC
+     LIMIT 3`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching top users:', err);
+        return res.status(500).send('Error fetching top users');
+      }
+      res.json(results);
+    }
+  );
+});
+
+
+// get top 3 employees
+app.get('/admin/top-employees', (req, res) => {
+  orderDb.query(
+    `SELECT u.*, COUNT(o.order_id) AS handled_orders
+     FROM orders o
+     JOIN users u ON o.employee_id = u.user_id
+     WHERE o.employee_id IS NOT NULL
+     GROUP BY u.user_id
+     ORDER BY handled_orders DESC
+     LIMIT 3`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching top employees:', err);
+        return res.status(500).send('Error fetching top employees');
+      }
+      res.json(results);
+    }
+  );
+});
+
+
+//get top 5 products
+app.get('/admin/top-products', (req, res) => {
+  orderDb.query(
+    `SELECT p.*, SUM(oi.quantity) AS total_ordered
+     FROM orderedItems oi
+     JOIN products p ON oi.product_id = p.product_id
+     GROUP BY oi.product_id
+     ORDER BY total_ordered DESC
+     LIMIT 5`,
+    (err, results) => {
+      if (err) {
+        console.error('Error fetching top products:', err);
+        return res.status(500).send('Error fetching top products');
+      }
+      res.json(results);
+    }
+  );
+});
+
+
+
 
 // Error handler
 app.use((err, req, res, next) => {

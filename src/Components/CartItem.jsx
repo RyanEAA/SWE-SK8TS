@@ -8,8 +8,11 @@ function CartItem(props) {
     const dispatch = useDispatch();
 
     const handleDecrement = () => {
-        const productToRemove = props.item.product_id;
-
+        const productToRemove = {
+            product_id: props.item.product_id,
+            customizations: props.item.customizations,
+        };
+    
         if (props.item.quantity > 0) {
             dispatch(removeItem(productToRemove));
         }
@@ -21,8 +24,9 @@ function CartItem(props) {
             quantity: 1,
             price: props.item.price,
             maxQuantity: props.item.maxQuantity,
-            customizations: props.item.customizations, 
+            customizations: props.item.customizations,
         };
+    
         if (props.item.quantity < props.item.maxQuantity) {
             dispatch(addItem(productToAdd));
         }

@@ -93,7 +93,7 @@ function Overall() {
                                     onClick={() => setSelectedOrder(orderId)}
                                 >
                                     <Order 
-                                        orderItems={groupedClaimedOrders[orderId]} 
+                                        orderId={orderId}
                                         editable={true} 
                                     />
                                 </div>
@@ -156,6 +156,7 @@ function Overall() {
                 {isLoading.orders ? (
                     <div className="loading-spinner">Loading...</div>
                 ) : (
+                    // ...existing code...
                     <div className="orders-list">
                         {recentOrders.length > 0 ? (
                             recentOrders.map(order => (
@@ -165,7 +166,7 @@ function Overall() {
                                     onClick={() => setSelectedOrder(order.order_id)}
                                 >
                                     <Order 
-                                        orderItems={[order]} 
+                                        orderId={order.order_id}
                                         editable={false} 
                                     />
                                 </div>
