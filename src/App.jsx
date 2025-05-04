@@ -22,7 +22,7 @@ import { flow, settings, styles } from "./Components/Chatbot/chatbotConfig.js";
 import OllieChatBot from './Components/Chatbot/OllieChatBot.jsx';
 import UserManagement from './Pages/UserManagement.jsx';
 import ProductManagement from './Pages/ProductManagement.jsx';
-import ContactUs from './Pages/ContactPage.jsx';
+
 
 
 function App() {
@@ -42,7 +42,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/OrderDashboard" element={<OrderDashboard />} />
-          <Route path="/ContactUs" element={<ContactUs/>} />
           <Route path='AboutUs/wilson' element={<AboutMe 
             location='Austin, TX'
             skills='Python, SQL'
@@ -126,7 +125,6 @@ function App() {
           <Route path='*' element={<div>404 - Page Not Found</div>} />
           <Route path='/UserManagement' element={<UserManagement />} />
           <Route path='/ProductManagement' element={<ProductManagement />} />
-          <Route path='/ContactUs' element={<ContactUs />} />
         </Routes>
         <Footer />
       {/* </CartObjectProvider> */}

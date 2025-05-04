@@ -3,7 +3,7 @@ import '../css/Contact.css';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
-const ContactUs = () => {
+const Contact = () => {
   // get user data from cookies
   const userId = Cookies.get('user_id');
   const userRole = Cookies.get('user_role');
@@ -130,4 +130,4 @@ const ContactUs = () => {
   );
 };
 
-export default ContactUs;
+export default Contact;

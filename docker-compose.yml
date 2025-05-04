@@ -2,7 +2,7 @@
 
 services:
   reactapp:
-    pull_policy: build
+    # pull_policy: build
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -21,7 +21,7 @@ services:
       - npmdata:/data
       - npmletsencrypt:/etc/letsencrypt
   api:
-    pull_policy: build
+    # pull_policy: build
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -32,7 +32,7 @@ services:
       GEMINI_API_KEY: ${GEMINI_API_KEY} 
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
-      MYSQL_ORDER_DB: order
+      MYSQL_ORDER_DB: "order"
     ports:
       - 3636:3636
     depends_on:
