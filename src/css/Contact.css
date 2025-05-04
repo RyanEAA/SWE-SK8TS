@@ -86,8 +86,8 @@
   /* Remove any existing box-shadow effects and replace with bottom-only extension */
   .form-control:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 2px 0 0 #3498db; /* Only shows at the bottom */
+    border-color: black;
+    box-shadow: 0 2px 0 0 black; /* Only shows at the bottom */
   }
   
   /* For error states - bottom only extension */
@@ -106,6 +106,12 @@
     min-height: 150px;
     resize: vertical;
   }
+  .contact-form input,
+  .contact-form textarea {
+    padding: 0.75rem;
+    font-family: monospace;
+    font-size: 1rem;
+  }
   
   /* Remove any existing transform effects that might be causing full expansion */
   /* Add these to override any existing transforms */
@@ -118,26 +124,6 @@
     font-size: 0.875rem;
     margin-top: 0.25rem;
     display: block;
-  }
-  
-  .submit-button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s;
-  }
-  
-  .submit-button:hover {
-    background: #2980b9;
-  }
-  
-  .submit-button:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
   }
   
   .message {

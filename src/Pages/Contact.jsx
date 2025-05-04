@@ -78,7 +78,7 @@ const ContactUs = () => {
           </div>
           <div className="info-item">
             <strong>Address</strong>
-            <p>123 Skate St.<br />Los Angeles, CA 90001</p>
+            <p>3001 S Congress Ave<br />Austin, TX 78704</p>
           </div>
         </div>
       </div>
