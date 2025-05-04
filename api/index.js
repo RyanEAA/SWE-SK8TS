@@ -870,7 +870,7 @@ app.put('/admin/message/:message_id/markread', (req, res) => {
 
 // get top 3 users
 app.get('/admin/top-users', (req, res) => {
-  orderDb.query(
+  userDb.query(
     `SELECT u.*, COUNT(o.order_id) AS order_count
      FROM orders o
      JOIN users u ON o.user_id = u.user_id
@@ -890,7 +890,7 @@ app.get('/admin/top-users', (req, res) => {
 
 // get top 3 employees
 app.get('/admin/top-employees', (req, res) => {
-  orderDb.query(
+  userDb.query(
     `SELECT u.*, COUNT(o.order_id) AS handled_orders
      FROM orders o
      JOIN users u ON o.employee_id = u.user_id
