@@ -27,11 +27,6 @@ const NavBar = (props) => {
         )}
         <Link to='/Cart'>Cart{' '}{cartItemCount}</Link>
 
-        {userRole === 'customer' && (
-          <Link to='/Contact'>Contact</Link>
-
-        )}
-
         {user ? (
             <Link to="/profile">Profile</Link>
 
