@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import RecentPersonCard from '../RecentPersonCard';
 
-import '../../css/admin/analytics.css';
+import '../../css/admin/Analytics.css';
 
 const Analytics = () => {
   const [topUsers, setTopUsers] = useState([]);

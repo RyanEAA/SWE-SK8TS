@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../css/admin/Admin.css';
-import '../../css/admin/analytics.css';
+import '../../css/admin/Analytics.css';
 
 
 import Order from '../../Components/Order'
