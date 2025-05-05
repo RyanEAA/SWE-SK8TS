@@ -1,0 +1,91 @@
+.dashboard {
+display: flex;
+flex-direction: column;
+padding: 2rem;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: #f9f9fb;
+color: #333;
+
+/* Scroll behavior */
+height: 100%;
+overflow-y: auto;
+padding-bottom: 20px;
+
+}
+
+
+.dashboard-row {
+display: flex;
+gap: 2rem;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+}
+
+.card {
+background: white;
+padding: 1.5rem;
+border-radius: 1rem;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+flex: 1;
+min-width: 280px;
+}
+
+.full-width {
+flex: 2;
+}
+
+.card h2 {
+font-size: 1.25rem;
+margin-bottom: 1rem;
+border-bottom: 1px solid #e0e0e0;
+padding-bottom: 0.5rem;
+}
+
+.list-item {
+margin: 0.5rem 0;
+padding: 0.5rem 1rem;
+background-color: #eef3ff;
+border-radius: 0.5rem;
+font-weight: 500;
+}
+
+.revenue-chart-placeholder {
+height: 200px;
+background: linear-gradient(135deg, #e6f0ff, #f5faff);
+display: flex;
+align-items: center;
+justify-content: center;
+color: #888;
+border-radius: 0.5rem;
+}
+
+.product-bar {
+margin-bottom: 1rem;
+}
+
+.product-bar span {
+display: block;
+margin-bottom: 0.25rem;
+font-weight: 600;
+}
+
+.bar {
+background: #e0e0e0;
+border-radius: 1rem;
+overflow: hidden;
+height: 12px;
+}
+
+.fill {
+background: #007bff;
+height: 100%;
+transition: width 0.3s ease;
+border-radius: 1rem 0 0 1rem;
+}
+
+.scrollable-list {
+    max-height: 600px; /* or whatever height you want */
+    overflow-y: auto;
+    padding-right: 10px; /* space for scrollbar */
+}
+  
