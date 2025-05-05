@@ -116,7 +116,7 @@ function ProductManagement() {
                   <div>{product.name}</div>
                   <div>${product.price.toFixed(2)}</div>
                   <div>{product.stock_quantity}</div>
-                  <button onClick={() => handleEditClick(product)}>Edit</button>
+                  <button className="btn-green btn" onClick={() => handleEditClick(product)}>Edit</button>
                 </div>
               ))}
             </div>
