@@ -512,32 +512,32 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
   );
 });
 
-app.get('/api/products/:id', (req, res) => {
-  const productId = req.params.id;
+// app.get('/api/products/:id', (req, res) => {
+//   const productId = req.params.id;
   
-  productDb.query('SELECT * FROM products WHERE product_id = ?', [productId], (err, results) => {
-    if (err) {
-      console.error('DB error:', err); // full error
-      return res.status(500).json({ error: 'Database error', details: err.message });
-    }
+//   productDb.query('SELECT * FROM products WHERE product_id = ?', [productId], (err, results) => {
+//     if (err) {
+//       console.error('DB error:', err); // full error
+//       return res.status(500).json({ error: 'Database error', details: err.message });
+//     }
     
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
+//     if (results.length === 0) {
+//       return res.status(404).json({ message: 'Product not found' });
+//     }
 
-    const product = results[0];
-    if (product.customizations) {
-      try {
-        product.customizations = JSON.parse(product.customizations);
-      } catch (e) {
-        console.error('Error parsing customizations:', e);
-        product.customizations = null;
-      }
-    }
+//     const product = results[0];
+//     if (product.customizations) {
+//       try {
+//         product.customizations = JSON.parse(product.customizations);
+//       } catch (e) {
+//         console.error('Error parsing customizations:', e);
+//         product.customizations = null;
+//       }
+//     }
 
-    res.json(product);
-  });
-}); 
+//     res.json(product);
+//   });
+// }); 
 
 // Edit an existing product
 app.put('/products/:id', (req, res) => {
