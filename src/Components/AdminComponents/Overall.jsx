@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../css/admin/Admin.css';
-import '../../css/admin/Analytics.css';
+//import '../../css/admin/Analytics.css';
 
 
 import Order from '../../Components/Order'
@@ -78,7 +78,7 @@ function Overall() {
     const reversedClaimedOrderIds = Object.keys(groupedClaimedOrders).sort((a, b) => b - a);
 
     return (
-        <div className='admin-page scrollable-list'>
+        <div className='admin-page'>
             {/* Claimed Orders */}
             {/* <div className='admin-section top-left claimed-orders-container'> */}
             <div className='admin-section top-left '>
