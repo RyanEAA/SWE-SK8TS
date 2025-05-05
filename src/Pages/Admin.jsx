@@ -60,6 +60,10 @@ function Admin() {
       {activeTab === 'productManagement' && (
         <ProductManagement/>
       )}
+
+      {activeTab === 'analytics' && (
+        <Analytics />
+      )}
         
     </div>
   );
