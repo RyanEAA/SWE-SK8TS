@@ -4,6 +4,7 @@ import '../css/ItemPopup.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItem } from '../CartSlice.js';
 import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 function ItemPopup({ isOpen, onClose, product }) {
   const [quantity, setQuantity] = React.useState(1);
@@ -11,6 +12,9 @@ function ItemPopup({ isOpen, onClose, product }) {
   const [selectedCustomization, setSelectedCustomization] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(true);
   const popupContentRef = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const cart = useSelector(state => state.cart);
 
   // Safe product access
   const safeProduct = product || {};
@@ -20,9 +24,15 @@ function ItemPopup({ isOpen, onClose, product }) {
     if (!safeProduct.customizations) return [];
     
     try {
-      return typeof safeProduct.customizations === 'string'
+      if (Array.isArray(safeProduct.customizations)) {
+        return safeProduct.customizations;
+      }
+      
+      const parsed = typeof safeProduct.customizations === 'string'
         ? JSON.parse(safeProduct.customizations)
-        : safeProduct.customizations || [];
+        : safeProduct.customizations;
+      
+      return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
       console.error('Failed to parse customizations:', error);
       return [];
@@ -46,18 +56,18 @@ function ItemPopup({ isOpen, onClose, product }) {
   const isOutOfStock = safeProduct.stock_quantity <= 0;
 
   const handleQuantityChange = (e) => {
-    const amountInput = parseInt(e.target.value);
-    const amountInCart = cart.items.find((item) => item.product_id === product.product_id)?.quantity || 0;
+    const amountInput = parseInt(e.target.value) || 0;
+    const amountInCart = cart.items.find((item) => item.product_id === safeProduct.product_id)?.quantity || 0;
     const totalAmount = amountInput + amountInCart;
 
-    if (amountInput >= 0 && totalAmount <= product.stock_quantity) {
+    if (amountInput >= 1 && totalAmount <= safeProduct.stock_quantity) {
       setQuantity(amountInput);
       setError('');
-    } else if (amountInput < 0) {
-      setQuantity(0);
+    } else if (amountInput < 1) {
+      setQuantity(1);
       setError('Quantity must be at least 1');
-    } else if (totalAmount > product.stock_quantity) {
-      setError(`Total limit for item is ${product.stock_quantity}`);
+    } else if (totalAmount > safeProduct.stock_quantity) {
+      setError(`Only ${safeProduct.stock_quantity - amountInCart} available`);
     }
   };
 
@@ -76,23 +86,27 @@ function ItemPopup({ isOpen, onClose, product }) {
     const username = Cookies.get('user');
     if (!username) {
       alert('You must be logged in to check out.');
-      navigate('/shop');
+      navigate('/login');
       return;
     }
 
-    if (!error || error === `Total limit for item is ${product.stock_quantity}`) {
-      const productToAdd = {
-        product_id: product.product_id,
-        product_name: product.name,
-        image_path: product.image_path,
-        quantity: quantity,
-        price: product.price,
-        maxQuantity: product.stock_quantity,
-        customizations: selectedCustomization, // Only the selected customization
-      };
-      dispatch(addItem(productToAdd));
-      handleClose();
+    if (quantity < 1) {
+      setError('Quantity must be at least 1');
+      return;
     }
+
+    const productToAdd = {
+      product_id: safeProduct.product_id,
+      product_name: safeProduct.name,
+      image_path: safeProduct.image_path,
+      quantity: quantity,
+      price: safeProduct.price,
+      maxQuantity: safeProduct.stock_quantity,
+      customizations: selectedCustomization,
+    };
+    
+    dispatch(addItem(productToAdd));
+    handleClose();
   };
 
   return (
@@ -100,13 +114,13 @@ function ItemPopup({ isOpen, onClose, product }) {
       <div className="popup-content" ref={popupContentRef}>
         <button className="close-button" onClick={handleClose}>×</button>
         <img
-          src={product.image_url || `/Images/products/${product.image_path}`}
-          alt={product.name}
+          src={safeProduct.image_url || `/Images/products/${safeProduct.image_path}`}
+          alt={safeProduct.name}
           className="popup-image"
         />
-        <h2>{product.name}</h2>
-        <p>{product.description}</p>
-        <p><strong>${product.price}</strong></p>
+        <h2>{safeProduct.name}</h2>
+        <p>{safeProduct.description}</p>
+        <p><strong>${safeProduct.price}</strong></p>
         <div className="quantity-input" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1>Quantity:</h1>
           <input
@@ -115,18 +129,18 @@ function ItemPopup({ isOpen, onClose, product }) {
             value={quantity}
             onChange={handleQuantityChange}
             min="1"
-            max={product.stock_quantity}
-            disabled={isOutOfStock}  // Added disabled state when out of stock
+            max={safeProduct.stock_quantity}
+            disabled={isOutOfStock}
           />
         </div>
-        <div className="customizations">
-          <h3>Customization:</h3>
-          {parsedCustomizations.length > 0 ? (
+        {parsedCustomizations.length > 0 && (
+          <div className="customizations">
+            <h3>Customization:</h3>
             <select
               id="customization"
               value={selectedCustomization}
               onChange={handleCustomizationChange}
-              disabled={isOutOfStock}  // Added disabled state when out of stock
+              disabled={isOutOfStock}
             >
               {parsedCustomizations.map((option, index) => (
                 <option key={index} value={option}>
@@ -134,10 +148,8 @@ function ItemPopup({ isOpen, onClose, product }) {
                 </option>
               ))}
             </select>
-          ) : (
-            <p>No customizations available for this product.</p>
-          )}
-        </div>
+          </div>
+        )}
         <div className="error-message">{error}</div>
         {isOutOfStock ? (
           <button 
@@ -151,7 +163,7 @@ function ItemPopup({ isOpen, onClose, product }) {
           <button 
             className="btn btn-green" 
             onClick={handleAddToCart}
-            disabled={!!error}
+            disabled={!!error || quantity < 1}
           >
             Add to Cart
           </button>
