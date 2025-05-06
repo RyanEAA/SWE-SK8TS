@@ -465,52 +465,78 @@ app.post('/products', (req, res) => {
 // Create a new product with image upload
 // create folder where images will be stored
 const fs = require('fs');
-const multer = require('multer'); // Set up multer for file uploads
 
-const uploadDir = path.join(__dirname, 'public', 'Images');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+(async () => {
+  const multer = require('multer');
+  const upload = multer({ dest: 'uploads/' }); // Files will be stored in the 'uploads' directory
+  const fetch = require('node-fetch');
+  const { Octokit } = await import('@octokit/rest');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, 'public', 'Images'));
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, uniqueName);
-  }
-});
+  const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+    request: { fetch }, // Provide the fetch implementation
+  });
 
-const upload = multer({ storage });
-app.post('/createproduct', upload.single('image'), (req, res) => {
+  app.post('/createproduct', upload.single('image'), async (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
     sku, weight, dimensions, color, size, status, customizations
   } = req.body;
 
-  const imagePath = req.file ? `/api/public/Images/${req.file.filename}` : null;
+  const imagePath = req.file ? req.file.path : null;
 
-  const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
+  try {
+    let githubImageUrl = null;
 
-  productDb.query(
-    `INSERT INTO products (
-      name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status, customizations
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      name, description, price, stock_quantity, category_id, brand_id,
-      sku, weight, dimensions, color, size, imagePath, status, JSON.stringify(parsedCustomizations)
-    ],
-    (err, result) => {
-      if (err) {
-        console.error('Error creating product:', err);
-        return res.status(500).json({ error: 'Error creating product' });
-      }
-      res.status(201).json({ message: 'Product created successfully', productId: result.insertId });
+    if (imagePath) {
+      // Read the image file
+      const imageBuffer = fs.readFileSync(imagePath);
+      const base64Image = imageBuffer.toString('base64');
+
+      // Upload the image to GitHub
+      const response = await octokit.repos.createOrUpdateFileContents({
+        owner: 'eligulley1', // Replace with your GitHub username
+        repo: 'sk8ts-images',       // Replace with your repository name
+        path: `Images/${req.file.filename}`, // Path in the repo
+        message: `Add product image: ${req.file.filename}`,
+        content: base64Image,
+      });
+
+      // Get the public URL of the uploaded image
+      githubImageUrl = response.data.content.download_url;
     }
-  );
+
+    const parsedCustomizations = customizations ? JSON.parse(customizations) : [];
+
+    // Insert product into the database
+    productDb.query(
+      `INSERT INTO products (
+        name, description, price, stock_quantity, category_id, brand_id, sku, weight, dimensions, color, size, image_path, status, customizations
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        name, description, price, stock_quantity, category_id, brand_id,
+        sku, weight, dimensions, color, size, githubImageUrl, status, JSON.stringify(parsedCustomizations)
+      ],
+      (err, result) => {
+        if (err) {
+          console.error('Error creating product:', err);
+          return res.status(500).json({ error: 'Error creating product' });
+        }
+        res.status(201).json({ message: 'Product created successfully', productId: result.insertId });
+      }
+    );
+  } catch (error) {
+    console.error('Error uploading image to GitHub:', error);
+    res.status(500).json({ error: 'Error uploading image to GitHub' });
+  } finally {
+    // Clean up the local file
+    if (imagePath) {
+      fs.unlinkSync(imagePath);
+    }
+  }
 });
+
+})();
 
 // Update a product (partial update allowed)
 app.put('/products/:id', (req, res) => {
