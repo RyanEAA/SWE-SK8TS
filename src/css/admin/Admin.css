@@ -332,3 +332,46 @@
   resize: vertical; 
 }
 
+/* Update the sales chart container */
+.sales-chart-container {
+  height: 300px;
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* For the dashboard layout */
+.dashboard-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: stretch; /* Make cards equal height */
+}
+
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Specific full-width card adjustment */
+.full-width {
+  flex: 2;
+  min-width: 60%; /* Adjust this percentage as needed */
+}
+
+/* Chart canvas wrapper */
+.chart-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
