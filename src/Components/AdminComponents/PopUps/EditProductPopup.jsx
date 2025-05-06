@@ -102,11 +102,22 @@ function EditProductPopup({ product, onClose, onSave }) {
     setShowDeleteConfirm(true);
   };
 
-  const handleConfirmDelete = () => {
-    // This will be implemented when you have the API ready
-    console.log('Product deletion confirmed');
-    setShowDeleteConfirm(false);
-    onClose();
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await fetch(`/products/${product.id}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        console.log('Product deleted successfully');
+        setShowDeleteConfirm(false);
+        onClose(); // Close the popup after successful deletion
+      } else {
+        console.error('Failed to delete product');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
   };
 
   const fields = [
