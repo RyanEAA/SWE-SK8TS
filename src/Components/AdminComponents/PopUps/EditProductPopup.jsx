@@ -104,14 +104,18 @@ function EditProductPopup({ product, onClose, onSave }) {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`https://sk8ts-shop.com/api/products/${product.id}`, {
+      console.log('Deleting product:', product);
+      const response = await fetch(`https://sk8ts-shop.com/api/products/${product.product_id}`, {
         method: 'DELETE',
       });
   
       if (response.ok) {
         console.log('Product deleted successfully');
         setShowDeleteConfirm(false);
-        onClose(); // Close the popup after successful deletion
+        onClose(); // Close the edit popup
+        if (onProductDeleted) {
+          onProductDeleted(); // Refresh the product list
+        }
       } else {
         console.error('Failed to delete product');
       }

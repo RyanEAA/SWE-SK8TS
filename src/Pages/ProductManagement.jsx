@@ -56,6 +56,10 @@ function ProductManagement() {
     setEditedProduct(product);
   };
 
+  const handleDeleteProduct = () => {
+    fetchAllProducts(); // Re-fetch the product list from the server
+  };
+
   const handleSaveProduct = async (updatedProduct) => {
     try {
       const response = await axios.put(
@@ -122,12 +126,18 @@ function ProductManagement() {
             </div>
           </>
         )}
-
         {isEditing && (
           <EditProductPopup
             product={editedProduct}
-            onClose={() => setIsEditing(null)}
+            onClose={() => {
+              fetchAllProducts(); // Refresh the product list
+              setIsEditing(null); // Close the edit popup
+            }}
             onSave={handleSaveProduct}
+            onProductDeleted={() => {
+              fetchAllProducts(); // Refresh the product list
+              setIsEditing(null); // Close the edit popup
+            }}
           />
         )}
       </div>
