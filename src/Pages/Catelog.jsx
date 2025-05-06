@@ -59,7 +59,7 @@ function Catelog({ onAdd }) { // function is obtained from App.js
             id={product.product_id}
             name={product.name}
             price={product.price}
-            photo={`/Images/products/${product.image_path}`}
+            photo={product.image_path}
           /> 
         </div>
       ))}

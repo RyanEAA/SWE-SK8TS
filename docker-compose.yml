@@ -33,6 +33,7 @@ services:
       MYSQL_PRODUCTS_DB: products
       MYSQL_USERS_DB: users
       MYSQL_ORDER_DB: "order"
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
     ports:
       - 3636:3636
     depends_on:

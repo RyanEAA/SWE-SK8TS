@@ -53,7 +53,7 @@ function ProductInfo({ onAdd }) {
       <h1>{product.name}</h1>
       <div className="product-info">
         <div className="product-image-container">
-          <img className="product-image" src={`/Images/products/${product.image_path}`} alt={product.name} />
+          <img className="product-image" src={product.image_path} alt={product.name} />
         </div>
         <div className="product-details">
           <p><strong>Price:</strong> ${product.price}</p>

@@ -74,7 +74,7 @@ function Home() {
 
           <h2>Featured Product</h2>
         <Link to={`/productInfo/${randomProduct.product_id}`}>
-          <img src={`/Images/products/${randomProduct.image_path}`} alt={randomProduct.name} className="image-highlight"/>
+          <img src={randomProduct.image_path} alt={randomProduct.name} className="image-highlight"/>
           <p>{randomProduct.name}</p>
         </Link>
         </div>

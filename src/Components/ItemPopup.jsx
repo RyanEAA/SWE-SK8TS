@@ -114,7 +114,7 @@ function ItemPopup({ isOpen, onClose, product }) {
       <div className="popup-content" ref={popupContentRef}>
         <button className="close-button" onClick={handleClose}>×</button>
         <img
-          src={safeProduct.image_url || `/Images/products/${safeProduct.image_path}`}
+          src={safeProduct.image_url || safeProduct.image_path}
           alt={safeProduct.name}
           className="popup-image"
         />
