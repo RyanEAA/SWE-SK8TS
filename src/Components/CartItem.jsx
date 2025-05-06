@@ -35,7 +35,7 @@ function CartItem(props) {
     return (
         <div className='container-container'>
             <div className="item-container">
-                <img className='cart-item-image' src={`/Images/products/${props.item.image_path}`} alt={props.item.name} />
+                <img className='cart-item-image' src={props.item.image_path} alt={props.item.name} />
                 <div>{props.item.product_name}</div>
                 <div>${(props.item.price * props.item.quantity).toFixed(2)}</div>
                 <div>
