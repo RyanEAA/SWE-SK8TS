@@ -79,9 +79,3 @@ transition: width 0.3s ease;
 border-radius: 1rem 0 0 1rem;
 }
 
-.scrollable-list {
-    max-height: 100px; /* or whatever height you want */
-    overflow-y: auto;
-    padding-right: 10px; /* space for scrollbar */
-}
-  

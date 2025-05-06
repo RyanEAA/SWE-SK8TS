@@ -145,7 +145,6 @@
   }
 
   .scrollable-list {
-    max-height: 100px; /* or whatever height you want */
     overflow-y: auto;
     padding-right: 10px; /* space for scrollbar */
   }
