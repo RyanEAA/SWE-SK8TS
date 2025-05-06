@@ -467,13 +467,17 @@ app.post('/products', (req, res) => {
 const fs = require('fs');
 
 (async () => {
-  const { Octokit } = await import('@octokit/rest');
-  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
   const multer = require('multer');
-  
-const upload = multer({ dest: 'uploads/' }); // Files will be stored in the 'uploads' directory
+  const upload = multer({ dest: 'uploads/' }); // Files will be stored in the 'uploads' directory
+  const fetch = require('node-fetch');
+  const { Octokit } = await import('@octokit/rest');
 
-app.post('/createproduct', upload.single('image'), async (req, res) => {
+  const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+    request: { fetch }, // Provide the fetch implementation
+  });
+
+  app.post('/createproduct', upload.single('image'), async (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
     sku, weight, dimensions, color, size, status, customizations
