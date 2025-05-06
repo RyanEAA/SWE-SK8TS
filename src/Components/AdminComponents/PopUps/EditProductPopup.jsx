@@ -104,7 +104,7 @@ function EditProductPopup({ product, onClose, onSave }) {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await fetch(`/products/${product.id}`, {
+      const response = await fetch(`https://sk8ts-shop.com/api/products/${product.id}`, {
         method: 'DELETE',
       });
   
