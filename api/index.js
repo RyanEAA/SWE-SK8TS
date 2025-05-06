@@ -469,10 +469,8 @@ const fs = require('fs');
 (async () => {
   const { Octokit } = await import('@octokit/rest');
   const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-
-})();
-
-const multer = require('multer');
+  const multer = require('multer');
+  
 const upload = multer({ dest: 'uploads/' }); // Files will be stored in the 'uploads' directory
 
 app.post('/createproduct', upload.single('image'), async (req, res) => {
@@ -533,6 +531,8 @@ app.post('/createproduct', upload.single('image'), async (req, res) => {
     }
   }
 });
+
+})();
 
 // Update a product (partial update allowed)
 app.put('/products/:id', (req, res) => {
