@@ -496,7 +496,7 @@ const fs = require('fs');
       // Upload the image to GitHub
       const response = await octokit.repos.createOrUpdateFileContents({
         owner: 'eligulley1', // Replace with your GitHub username
-        repo: 'Ssk8ts-images',       // Replace with your repository name
+        repo: 'sk8ts-images',       // Replace with your repository name
         path: `Images/${req.file.filename}`, // Path in the repo
         message: `Add product image: ${req.file.filename}`,
         content: base64Image,
