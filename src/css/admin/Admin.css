@@ -150,4 +150,186 @@
     padding-right: 10px; /* space for scrollbar */
   }
 
+  /* Product Edit Popup Specific Styles */
+  .product-edit-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+  .product-edit-popup-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: auto; /* Changed from fixed width */
+    min-width: 800px; /* Minimum width */
+    max-width: 90vw; /* Maximum width */
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation: productEditFadeIn 0.3s ease;
+  }
+  
+  .product-edit-popup-content h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .product-edit-form-columns {
+    display: flex;
+    gap: 40px; /* Increased gap */
+    margin-top: 20px;
+    width: 100%;
+  }
+  
+  
+  .product-edit-form-left {
+    min-width: 400px;
+  }
+  
+  .product-edit-form-right {
+    flex: 1;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 50px;
+  }
+  
+  .product-edit-customization-section {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    flex-grow: 1;
+    margin-bottom: 20px;
+  }
+  
+  .product-edit-customization-section h3 {
+    margin-top: 0;
+    color: #555;
+  }
+  
+  .product-edit-customizations-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .product-edit-customization-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    padding: 5px;
+    background: #f5f5f5;
+    border-radius: 4px;
+  }
+  
+  .product-edit-customization-item span {
+    flex-grow: 1;
+    font-size: 0.9rem;
+  }
+  
+  .product-edit-customization-input {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  
+  .product-edit-customization-input input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .product-edit-popup-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .product-edit-confirm-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .product-edit-confirm-content {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  }
+  
+  .product-edit-confirm-content h3 {
+    margin-top: 0;
+    color: #d32f2f;
+  }
+  
+  .product-edit-confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  /* Form group specific to product edit */
+  .product-edit-form-group {
+    margin-bottom: 15px;
+  }
+  
+  .product-edit-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .product-edit-form-group input,
+  .product-edit-form-group select,
+  .product-edit-form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .product-edit-error-message {
+    color: #f44336;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: block;
+  }
+  
+  @keyframes productEditFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+.product-edit-form-group textarea {
+  resize: vertical; 
+}
 
