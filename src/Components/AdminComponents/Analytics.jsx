@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import RecentPersonCard from '../RecentPersonCard';
-
+import SalesChart from '../AdminComponents/SalesChart'; 
 import '../../css/admin/Analytics.css';
 
 const Analytics = () => {
@@ -10,10 +10,10 @@ const Analytics = () => {
   const [topProducts, setTopProducts] = useState([]);
 
   useEffect(() => {
-    
     axios.get('https://sk8ts-shop.com/api/admin/top-users')
       .then(res => setTopUsers(Array.isArray(res.data) ? res.data : []))
       .catch(err => console.error('Error fetching top users:', err));
+      
     axios.get('https://sk8ts-shop.com/api/admin/top-employees')
       .then(res => setTopEmployees(Array.isArray(res.data) ? res.data : []))
       .catch(err => console.error('Error fetching top employees:', err));
@@ -24,20 +24,16 @@ const Analytics = () => {
   }, []);
 
   return (
-    <div className="dashboard scrollable-list">
+    <div className="dashboard scfrollable-list">
       <div className="dashboard-row">
         <div className="card">
           <h2>Top Users</h2>
           {topUsers.map(user => (
             <RecentPersonCard
-            key={user.user_id}
-            person={user}
-            type="user"
-            onClick={() => {
-              setSelectedUser(user);
-              setShowCreateUserPopup(true);
-            }}
-          />  
+              key={user.user_id}
+              person={user}
+              type="user"
+            />
           ))}
         </div>
 
@@ -45,14 +41,10 @@ const Analytics = () => {
           <h2>Top Employees</h2>
           {topEmployees.map(user => (
             <RecentPersonCard
-            key={user.user_id}
-            person={user}
-            type="user"
-            onClick={() => {
-              setSelectedUser(user);
-              setShowCreateUserPopup(true);
-            }}
-          />
+              key={user.user_id}
+              person={user}
+              type="user"
+            />
           ))}
         </div>
       </div>
@@ -60,7 +52,7 @@ const Analytics = () => {
       <div className="dashboard-row">
         <div className="card full-width">
           <h2>Revenue</h2>
-          <div className="revenue-chart-placeholder">(Insert chart component here)</div>
+          <SalesChart />
         </div>
 
         <div className="card">
