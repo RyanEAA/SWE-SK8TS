@@ -9,51 +9,41 @@ function ItemPopup({ isOpen, onClose, product }) {
   const [quantity, setQuantity] = React.useState(1);
   const [error, setError] = React.useState('');
   const [selectedCustomization, setSelectedCustomization] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(true);
   const popupContentRef = useRef(null);
 
-  const cart = useSelector((state) => state.cart);
-  const dispatch = useDispatch();
-
-  // Parse customizations if they are stringified
-  const parsedCustomizations = React.useMemo(() => {
-    if (!product || !product.customizations) {
-      return [];
-    }
+  // Safe product access
+  const safeProduct = product || {};
   
+  // Parse customizations safely
+  const parsedCustomizations = React.useMemo(() => {
+    if (!safeProduct.customizations) return [];
+    
     try {
-      return typeof product.customizations === 'string'
-        ? JSON.parse(product.customizations)
-        : product.customizations || [];
+      return typeof safeProduct.customizations === 'string'
+        ? JSON.parse(safeProduct.customizations)
+        : safeProduct.customizations || [];
     } catch (error) {
       console.error('Failed to parse customizations:', error);
       return [];
     }
-  }, [product]);
+  }, [safeProduct.customizations]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (isOpen && popupContentRef.current && !popupContentRef.current.contains(event.target)) {
-        handleClose();
+    if (isOpen && safeProduct) {
+      setIsLoading(false);
+      // Set default customization
+      if (parsedCustomizations.length > 0) {
+        setSelectedCustomization(parsedCustomizations[0]);
       }
+    } else {
+      setIsLoading(true);
     }
+  }, [isOpen, safeProduct, parsedCustomizations]);
 
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+  if (!isOpen || isLoading) return null;
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    // Set the default customization to the first option if available
-    if (parsedCustomizations.length > 0) {
-      setSelectedCustomization(parsedCustomizations[0]);
-    }
-  }, [parsedCustomizations]);
-
-  if (!isOpen || !product) return null;
+  const isOutOfStock = safeProduct.stock_quantity <= 0;
 
   const handleQuantityChange = (e) => {
     const amountInput = parseInt(e.target.value);
@@ -126,6 +116,7 @@ function ItemPopup({ isOpen, onClose, product }) {
             onChange={handleQuantityChange}
             min="1"
             max={product.stock_quantity}
+            disabled={isOutOfStock}  // Added disabled state when out of stock
           />
         </div>
         <div className="customizations">
@@ -135,6 +126,7 @@ function ItemPopup({ isOpen, onClose, product }) {
               id="customization"
               value={selectedCustomization}
               onChange={handleCustomizationChange}
+              disabled={isOutOfStock}  // Added disabled state when out of stock
             >
               {parsedCustomizations.map((option, index) => (
                 <option key={index} value={option}>
@@ -147,7 +139,23 @@ function ItemPopup({ isOpen, onClose, product }) {
           )}
         </div>
         <div className="error-message">{error}</div>
-        <button className="btn btn-green" onClick={handleAddToCart}>Add to Cart</button>
+        {isOutOfStock ? (
+          <button 
+            className="btn btn-red" 
+            disabled
+            style={{ opacity: 0.7, cursor: 'not-allowed' }}
+          >
+            Out of Stock
+          </button>
+        ) : (
+          <button 
+            className="btn btn-green" 
+            onClick={handleAddToCart}
+            disabled={!!error}
+          >
+            Add to Cart
+          </button>
+        )}
       </div>
     </div>
   );

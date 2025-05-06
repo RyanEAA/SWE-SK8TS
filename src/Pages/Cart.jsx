@@ -70,25 +70,15 @@ function Cart() {
     }
   
     try {
-      // 1. First fetch current stock for all products
-      const stockCheckPromises = cartItems.map(item => 
-        axios.get(`https://sk8ts-shop.com/api/products/1`)
-      );
-      const stockResponses = await Promise.all(stockCheckPromises);
-      
-      // 2. Verify stock quantities
-      const insufficientStockItems = cartItems.filter((item, index) => {
-        const currentStock = stockResponses[index].data.stock_quantity;
-        return item.quantity > currentStock;
-      });
-  
+      // 1. Verify stock using maxQuantity from cart items
+      const insufficientStockItems = cartItems.filter(item => item.quantity > item.maxQuantity);
       if (insufficientStockItems.length > 0) {
         const itemNames = insufficientStockItems.map(i => i.product_name).join(', ');
         alert(`Insufficient stock for: ${itemNames}`);
         return;
       }
   
-      // 3. Place the order
+      // 2. Place the order
       const orderData = {
         user_id: userData.user_id,
         total_amount: parseFloat(totalPrice.toFixed(2)),
@@ -96,8 +86,8 @@ function Cart() {
         items: cartItems.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity,
-          price: parseFloat(item.price.toFixed(2)),
-          customization: JSON.stringify(item.customizations || []),
+          price: item.price,
+          customization: item.customizations // Already formatted
         })),
       };
   
@@ -106,54 +96,30 @@ function Cart() {
       });
   
       if (orderResponse.status === 201) {
-        // 4. Update stock quantities
+        // 3. Update stock quantities (calculate new stock from maxQuantity)
         try {
-          const updatePromises = cartItems.map((item, index) => {
-            const currentStock = stockResponses[index].data.stock_quantity;
-            const newStock = currentStock - item.quantity;
+          const updatePromises = cartItems.map(item => {
+            const newStock = item.maxQuantity - item.quantity;
             
-            console.log(`Updating product ${item.product_id} stock from ${currentStock} to ${newStock}`);
-            
-            return axios.put(`https://sk8ts-shop.com/api/products/1`, {
-              name: stockResponses[index].data.name,
-              price: stockResponses[index].data.price,
-              stock_quantity: newStock,
-              description: stockResponses[index].data.description,
-              category_id: stockResponses[index].data.category_id,
-              brand_id: stockResponses[index].data.brand_id,
-              sku: stockResponses[index].data.sku,
-              weight: stockResponses[index].data.weight,
-              dimensions: stockResponses[index].data.dimensions,
-              color: stockResponses[index].data.color,
-              size: stockResponses[index].data.size,
-              status: stockResponses[index].data.status,
-              customizations: stockResponses[index].data.customizations
-            }, {
-              headers: { 'Content-Type': 'application/json' }
-            });
+            return axios.put(
+              `https://sk8ts-shop.com/api/products/${item.product_id}`,
+              { stock_quantity: newStock }, // Send absolute value
+              { headers: { 'Content-Type': 'application/json' } }
+            );
           });
   
           await Promise.all(updatePromises);
-          console.log('All stock updates completed successfully');
-          
-          // 5. Clear cart and redirect
           dispatch(clearCart());
           alert('Order placed successfully!');
           navigate('/');
         } catch (updateError) {
           console.error('Stock update error:', updateError);
-          alert('Order was placed but stock update failed. Please contact support.');
+          alert('Order placed but stock update failed. Please contact support.');
         }
-      } else {
-        alert('Failed to place order. Please try again.');
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      if (error.response?.data) {
-        alert(`Error: ${error.response.data.message || 'Failed to place order'}`);
-      } else {
-        alert('An error occurred during checkout. Please try again.');
-      }
+      alert(error.response?.data?.message || 'Checkout failed. Please try again.');
     }
   };
 
