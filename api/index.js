@@ -466,7 +466,6 @@ app.post('/products', (req, res) => {
 // create folder where images will be stored
 const { Octokit } = require('@octokit/rest'); // GitHub API client
 const fs = require('fs');
-const path = require('path');
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
