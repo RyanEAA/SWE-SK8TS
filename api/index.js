@@ -471,6 +471,9 @@ app.post('/products', (req, res) => {
 
 })();
 
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // Files will be stored in the 'uploads' directory
+
 app.post('/createproduct', upload.single('image'), async (req, res) => {
   const {
     name, description, price, stock_quantity, category_id, brand_id,
