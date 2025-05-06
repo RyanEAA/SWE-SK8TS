@@ -15,6 +15,7 @@ function ClaimedOrders() {
                 setIsLoading(true);
                 const response = await fetch(`https://sk8ts-shop.com/api/orders/employee/${userId}`);
                 const data = await response.json();
+                console.log('Claimed orders data:', data); // Add this line
                 setClaimedOrders(data);
             } catch (error) {
                 console.log('Error fetching claimed orders:', error);
@@ -34,21 +35,25 @@ function ClaimedOrders() {
         {isLoading ? (
             <div className="loading-spinner">Loading...</div>
         ) : (
-            <div className="claimed-orders-list scrollable-list">
-                {claimedOrders.length > 0 ? (
-                    claimedOrders.map(order => (
-                        <div 
-                key={order.order_id} 
-                className="order-item"
-                onClick={() => setSelectedOrder(order.order_id)}
-              >
-                <Order orderItems={[order]} editable={true} />
-              </div>
-                    ))
-                ) : (
-                    <p>No claimed orders found</p>
-                )}
-            </div>
+            // ...existing code...
+            <div className="claimed-orders-list recent-list">
+            {claimedOrders.length > 0 ? (
+                claimedOrders.map(order => (
+                    <div 
+                        key={order.order_id} 
+                        className="order-item"
+                        onClick={() => setSelectedOrder(order.order_id)}
+                    >
+                        <Order 
+                            orderId={order.order_id}
+                            editable={true} 
+                        />
+                    </div>
+                ))
+            ) : (
+                <p>No claimed orders found</p>
+            )}
+        </div>
         )}
         </div>
     );

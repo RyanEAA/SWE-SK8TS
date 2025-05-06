@@ -12,6 +12,7 @@ import Home from './Pages/Home.jsx';
 import ProductInfo from './Pages/ProductInfo.jsx';
 import Cart from './Pages/Cart.jsx';
 import RegistrationPage from './Pages/RegistrationPage.jsx';
+import Contact from './Pages/Contact.jsx'
 import LoginPage from './Pages/LoginPage.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx';
 import AboutMe from './Pages/AboutMe.jsx';
@@ -19,9 +20,10 @@ import ChatBot from "react-chatbotify";
 import OrderDashboard from './Pages/OrderDashboard.jsx';
 import { flow, settings, styles } from "./Components/Chatbot/chatbotConfig.js";
 import OllieChatBot from './Components/Chatbot/OllieChatBot.jsx';
-import Admin from './Pages/Admin.jsx'; // Lazy load admin component
 import UserManagement from './Pages/UserManagement.jsx';
 import ProductManagement from './Pages/ProductManagement.jsx';
+
+
 
 function App() {
 
@@ -32,7 +34,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />}/>
           <Route path='/Shop' element={<Catelog/>}/>
-          <Route path='/Contact'/>
+          <Route path='/Contact' element={<Contact/>}/> 
           <Route path='/AboutUs' element={<AboutUs />}/>
           <Route path='/Cart' element={<Cart/>}/>
           <Route path='/ProductInfo/:id' element={<ProductInfo/>}/>
@@ -103,11 +105,6 @@ function App() {
 
             />}/>
             
-          {/* <Route path='Admin' element={
-            // lazy load the admin component
-            // Admin is a placeholder for the actual admin component
-            <Admin />
-          }/> */}
 
           <Route path='AboutUs/john' element={<AboutMe 
             location='Software Development, Music'

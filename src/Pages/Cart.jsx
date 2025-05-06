@@ -68,33 +68,58 @@ function Cart() {
       alert('Please enter a shipping address');
       return;
     }
-
+  
     try {
+      // 1. Verify stock using maxQuantity from cart items
+      const insufficientStockItems = cartItems.filter(item => item.quantity > item.maxQuantity);
+      if (insufficientStockItems.length > 0) {
+        const itemNames = insufficientStockItems.map(i => i.product_name).join(', ');
+        alert(`Insufficient stock for: ${itemNames}`);
+        return;
+      }
+  
+      // 2. Place the order
       const orderData = {
         user_id: userData.user_id,
-        total_amount: totalPrice,
-        shipping_address: address,
+        total_amount: parseFloat(totalPrice.toFixed(2)),
+        shipping_address: address.trim(),
         items: cartItems.map(item => ({
           product_id: item.product_id,
           quantity: item.quantity,
-          price: item.price
-        }))
+          price: item.price,
+          customization: item.customizations // Already formatted
+        })),
       };
-
-      const response = await axios.post('https://sk8ts-shop.com/api/placeOrder', orderData, {
-        headers: { 'Content-Type': 'application/json' }
+  
+      const orderResponse = await axios.post('https://sk8ts-shop.com/api/placeOrder', orderData, {
+        headers: { 'Content-Type': 'application/json' },
       });
-
-      if (response.status === 201) {
-        alert('Order placed successfully!');
-        dispatch(clearCart()); // Clear the cart after successful order
-        navigate('/');
-      } else {
-        alert('Failed to place order. Please try again.');
+  
+      if (orderResponse.status === 201) {
+        // 3. Update stock quantities (calculate new stock from maxQuantity)
+        try {
+          const updatePromises = cartItems.map(item => {
+            const newStock = item.maxQuantity - item.quantity;
+            
+            return axios.put(
+              `https://sk8ts-shop.com/api/products/${item.product_id}`,
+              { stock_quantity: newStock }, // Send absolute value
+              { headers: { 'Content-Type': 'application/json' } }
+            );
+          });
+  
+          await Promise.all(updatePromises);
+          dispatch(clearCart());
+          alert('Order placed successfully!');
+          navigate('/');
+        } catch (updateError) {
+          console.error('Stock update error:', updateError);
+          alert('Order placed but stock update failed. Please contact support.');
+        }
       }
     } catch (error) {
-      console.error('Error placing order:', error);
-      alert('An error occurred while placing your order.');
+      console.error('Checkout error:', error);
+      alert(error.response?.data?.message || 'Checkout failed. Please try again.');
     }
   };
 

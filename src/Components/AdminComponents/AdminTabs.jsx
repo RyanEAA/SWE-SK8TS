@@ -41,7 +41,21 @@ function AdminTabs({ activeTab, setActiveTab }) {
         className={`btn-tab ${activeTab === 'productManagement' ? 'active' : ''}`}
         onClick={() => setActiveTab('productManagement')}
       >
-        Product Management
+        Products
+      </button>
+
+      <button
+        className={`btn-tab ${activeTab === 'allMessages' ? 'active' : ''}`}
+        onClick={() => setActiveTab('allMessages')}
+      >
+        Messages
+      </button>
+
+      <button
+        className={`btn-tab ${activeTab === 'analytics' ? 'active' : ''}`}
+        onClick={() => setActiveTab('analytics')}
+      >
+        Analytics
       </button>
 
       <button  
