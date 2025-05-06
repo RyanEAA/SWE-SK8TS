@@ -36,7 +36,7 @@ function ClaimedOrders() {
             <div className="loading-spinner">Loading...</div>
         ) : (
             // ...existing code...
-            <div className="claimed-orders-list scrollable-list">
+            <div className="claimed-orders-list recent-list">
             {claimedOrders.length > 0 ? (
                 claimedOrders.map(order => (
                     <div 

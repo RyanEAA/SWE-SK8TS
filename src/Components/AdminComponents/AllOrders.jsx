@@ -43,12 +43,12 @@ function AllOrders() {
     }, {});
 
     return (
-        <div className="all-orders">
+        <div className="admin-section">
             <h1>All Orders</h1>
             {isLoading ? (
                 <div className="loading-spinner">Loading...</div>
             ) : (
-                <div className="all-orders-list scrollable-list">
+                <div className="all-orders-list recent-list">
                     {Object.keys(groupedOrders).length > 0 ? (
                         Object.keys(groupedOrders).map(orderId => (
                             <div 

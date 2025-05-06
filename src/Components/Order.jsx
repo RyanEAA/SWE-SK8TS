@@ -105,12 +105,19 @@ function Order({ orderId, editable = false }) {
                     )}
                 </div>
                 <div className='ordered-items-list'>
-                    {orderItems.map((item) => (
+                {orderItems.map((item) => (
                         <OrderedItem 
                             key={`${item.product_id}-${item.customization}`} 
                             item={{
                                 ...item,
-                                customizations: item.customization ? JSON.parse(item.customization) : null
+                                customizations: (() => {
+                                    try {
+                                        return item.customization ? JSON.parse(item.customization) : [];
+                                    } catch (error) {
+                                        console.error('Error parsing customization:', error);
+                                        return []; // Fallback to an empty array if parsing fails
+                                    }
+                                })()
                             }}
                             productName={productNames[item.product_id]} 
                         />
