@@ -512,91 +512,77 @@ app.post('/createproduct', upload.single('image'), (req, res) => {
   );
 });
 
-// app.get('/api/products/:id', (req, res) => {
-//   const productId = req.params.id;
-  
-//   productDb.query('SELECT * FROM products WHERE product_id = ?', [productId], (err, results) => {
-//     if (err) {
-//       console.error('DB error:', err); // full error
-//       return res.status(500).json({ error: 'Database error', details: err.message });
-//     }
-    
-//     if (results.length === 0) {
-//       return res.status(404).json({ message: 'Product not found' });
-//     }
-
-//     const product = results[0];
-//     if (product.customizations) {
-//       try {
-//         product.customizations = JSON.parse(product.customizations);
-//       } catch (e) {
-//         console.error('Error parsing customizations:', e);
-//         product.customizations = null;
-//       }
-//     }
-
-//     res.json(product);
-//   });
-// }); 
-
-// Edit an existing product
+// Update a product (partial update allowed)
 app.put('/products/:id', (req, res) => {
   const productId = req.params.id;
-  const {
-    name,
-    price,
-    stock_quantity,
-    description,
-    category_id,
-    brand_id,
-    sku,
-    weight,
-    dimensions,
-    color,
-    size,
-    status,
-    customizations,
-  } = req.body;
-
-  const parsedCustomizations = customizations ? JSON.stringify(customizations) : null;
-
+  
+  // List of allowed fields that can be updated.
+  const allowedFields = [
+    'name',
+    'price',
+    'stock_quantity',
+    'description',
+    'category_id',
+    'brand_id',
+    'sku',
+    'weight',
+    'dimensions',
+    'color',
+    'size',
+    'status',
+    'customizations'
+  ];
+  
+  // Create an array for dynamic SET statements and values.
+  let updates = [];
+  let values = [];
+  
+  // Iterate over allowed fields and add them if present in req.body.
+  allowedFields.forEach(field => {
+    if (req.body[field] !== undefined) {
+      let value = req.body[field];
+      
+      // If updating customizations, make sure to store it as a JSON string.
+      if (field === 'customizations') {
+        // If it's already a string, use it; otherwise, stringify the value.
+        value = (typeof value === 'string') ? value : JSON.stringify(value);
+      }
+      
+      updates.push(`${field} = ?`);
+      values.push(value);
+    }
+  });
+  
+  // If there are no valid fields to update, return an error.
+  if (updates.length === 0) {
+    return res.status(400).json({ message: 'No valid fields provided for update' });
+  }
+  
+  // Build the query string dynamically.
   const query = `
     UPDATE products
-    SET name = ?, price = ?, stock_quantity = ?, description = ?, category_id = ?, brand_id = ?,
-        sku = ?, weight = ?, dimensions = ?, color = ?, size = ?, status = ?, customizations = ?
+    SET ${updates.join(', ')}
     WHERE product_id = ?
   `;
-
-  const values = [
-    name,
-    price,
-    stock_quantity,
-    description,
-    category_id,
-    brand_id,
-    sku,
-    weight,
-    dimensions,
-    color,
-    size,
-    status,
-    parsedCustomizations,
-    productId,
-  ];
-
+  
+  // Append the productId to the values array.
+  values.push(productId);
+  
+  // Execute the query.
   productDb.query(query, values, (err, result) => {
     if (err) {
       console.error('Error updating product:', err);
       return res.status(500).send('Error updating product');
     }
-
+  
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
+  
     res.json({ message: 'Product updated successfully' });
   });
 });
+
 
 // Delete a product
 app.delete('/products/:id', (req, res) => {
