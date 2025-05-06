@@ -1,81 +1,49 @@
 .dashboard {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 220px; /* Push it up */
-    min-height: 100vh;          /* Ensure it can grow fully */
-    padding: 2rem;
-    overflow-y: auto;           /* Enables vertical scrolling */
-    box-sizing: border-box;
-    background-color: #f9f9fb;
-  }
-
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  box-sizing: border-box;
+  background-color: #f9f9fb;
+  min-height: calc(100vh - 220px); /* Adjust based on your header/footer */
+  height: 100%;
+  overflow: visible; /* Changed from auto to visible */
+}
 
 .dashboard-row {
-display: flex;
-gap: 2rem;
-margin-bottom: 2rem;
-flex-wrap: wrap;
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  height: auto; /* Ensure rows can grow */
 }
 
 .card {
-background: white;
-padding: 1.5rem;
-border-radius: 1rem;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-flex: 1;
-min-width: 280px;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  flex: 1;
+  min-width: 280px;
+  height: auto; /* Allow cards to grow with content */
+  min-height: 200px; /* Minimum height for consistency */
+  display: flex;
+  flex-direction: column;
 }
 
 .full-width {
-flex: 2;
+  flex: 2;
+  min-height: 300px; /* Larger minimum for chart card */
 }
 
-.card h2 {
-font-size: 1.25rem;
-margin-bottom: 1rem;
-border-bottom: 1px solid #e0e0e0;
-padding-bottom: 0.5rem;
+.scrollable-list {
+  max-height: none; /* Remove fixed height */
+  overflow-y: visible; /* Allow content to flow */
+  flex-grow: 1; /* Take available space */
 }
 
-.list-item {
-margin: 0.5rem 0;
-padding: 0.5rem 1rem;
-background-color: #eef3ff;
-border-radius: 0.5rem;
-font-weight: 500;
+/* For the chart container specifically */
+.sales-chart-container {
+  flex-grow: 1;
+  min-height: 250px;
+  position: relative;
 }
-
-.revenue-chart-placeholder {
-height: 200px;
-background: linear-gradient(135deg, #e6f0ff, #f5faff);
-display: flex;
-align-items: center;
-justify-content: center;
-color: #888;
-border-radius: 0.5rem;
-}
-
-.product-bar {
-margin-bottom: 1rem;
-}
-
-.product-bar span {
-display: block;
-margin-bottom: 0.25rem;
-font-weight: 600;
-}
-
-.bar {
-background: #e0e0e0;
-border-radius: 1rem;
-overflow: hidden;
-height: 12px;
-}
-
-.fill {
-background: #007bff;
-height: 100%;
-transition: width 0.3s ease;
-border-radius: 1rem 0 0 1rem;
-}
-

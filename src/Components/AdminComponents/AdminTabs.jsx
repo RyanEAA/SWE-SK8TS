@@ -57,13 +57,6 @@ function AdminTabs({ activeTab, setActiveTab }) {
       >
         Analytics
       </button>
-
-      <button  
-        className={activeTab === 'analytics' ? 'active' : ''}
-        onClick={() => setActiveTab('analytics')} 
-        >
-          Analytics
-          </button>
     
     </div>
   );
