@@ -464,10 +464,13 @@ app.post('/products', (req, res) => {
 
 // Create a new product with image upload
 // create folder where images will be stored
-const { Octokit } = require('@octokit/rest'); // GitHub API client
-const fs = require('fs');
+import { Octokit } from '@octokit/rest'; // Use import instead of require
+import fs from 'fs';
 
-const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+(async () => {
+  const { Octokit } = await import('@octokit/rest');
+  const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+})();
 
 app.post('/createproduct', upload.single('image'), async (req, res) => {
   const {
