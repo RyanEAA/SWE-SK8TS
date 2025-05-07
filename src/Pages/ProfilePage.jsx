@@ -6,6 +6,7 @@ import '../css/ProfilePage.css';
 import '../css/buttons.css';
 import Order from '../Components/Order';
 import Admin from './Admin';
+import Employee from './Employee';
 
 function ProfilePage() {
     const [userData, setUserData] = useState(null);
@@ -136,7 +137,11 @@ function ProfilePage() {
                 <div className="admin-section">
                     <Admin />
                 </div>
-            ) : (
+            ) : isEmployee ? (
+                <div className="employee-section">
+                    <Employee />
+                </div>
+            ): (
                 <div className="orders-section">
                     <h2>Order History</h2>
                     <div className="orders-container">
