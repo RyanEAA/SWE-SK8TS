@@ -72,15 +72,31 @@ const RegistrationPage = () => {
           setMessage(data.error || 'Registration failed');
         }
       } else {
-        // user succesfully registered
+        // user successfully registered
         setMessage('User registered successfully!');
-        // sets cookie
 
-        Cookies.set('user', username, { expires: 7 }); // this is not working
-        navigate('/profile'); // Replace '/profile' with your desired route
-        setTimeout(() => {
-          window.location.reload(); // Force reload
-        }, 100);
+        // Fetch the last user entry
+        const userResponse = await fetch('https://sk8ts-shop.com/api/users', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (userResponse.ok) {
+          const users = await userResponse.json();
+          const lastUser = users[users.length - 1]; // Assuming the API returns an array of users
+
+          // Set cookies with the last user's data
+          Cookies.set('user', lastUser.username, { expires: 7 });
+          Cookies.set('user_role', lastUser.user_role, { expires: 7 });
+          Cookies.set('user_id', lastUser.user_id, { expires: 7 });
+
+          navigate('/profile');
+          setTimeout(() => {
+            window.location.reload(); // Force reload
+          }, 100);
+        } else {
+          setMessage('User registered, but failed to fetch user details.');
+        }
       }
     } catch (error) {
       setMessage('Error registering user');
