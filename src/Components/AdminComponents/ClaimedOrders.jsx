@@ -30,13 +30,12 @@ function ClaimedOrders() {
 
     }, []);
     return (
-        <div className="claimed-orders">
+        <div className="admin-section">
         <h1>Claimed Orders</h1>
         {isLoading ? (
             <div className="loading-spinner">Loading...</div>
         ) : (
-            // ...existing code...
-            <div className="claimed-orders-list recent-list">
+            <div className="recent-list">
             {claimedOrders.length > 0 ? (
                 claimedOrders.map(order => (
                     <div 

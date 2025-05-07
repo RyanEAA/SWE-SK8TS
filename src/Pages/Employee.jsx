@@ -8,7 +8,7 @@ function Employee() {
     const [activeTab, setActiveTab] = useState('claimedOrders');
 
     return (
-        <div className="employee-tabs">
+        <div className="admin-tabs">
             <AdminTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
             {activeTab === 'claimedOrders' && (
